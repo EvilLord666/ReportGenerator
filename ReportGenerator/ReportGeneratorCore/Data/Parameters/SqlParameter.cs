@@ -33,6 +33,7 @@ namespace ReportGenerator.Core.Data.Parameters
         /// </summary>
         /// <param name="conditions">
         ///     List of conditions, would be applied in order of list item. Could be cases like 'Not In', or join as 'Or Not' e.t.c
+        ///     if parameter is first in WHERE statement or in ORDER BY Name ASC, Name2 DESC
         /// </param>
         /// <param name="parameterName"></param>
         /// <param name="parameterValue"></param>

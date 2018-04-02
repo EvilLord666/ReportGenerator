@@ -6,12 +6,6 @@ namespace ReportGenerator.Core.Data.Parameters
 {
     public class ViewParameters
     {
-        public enum SqlParameterType
-        {
-            WhereParameter,
-            OrderByParameter,
-            GroupByParameter
-        }
 
         public ViewParameters()
         {
@@ -20,10 +14,13 @@ namespace ReportGenerator.Core.Data.Parameters
         public ViewParameters(IList<SqlParameter> whereParameters, IList<SqlParameter> orderByParameters,
                               IList<SqlParameter> groupByParameters)
         {
+            WhereParameters = whereParameters;
+            OrderByParameters = orderByParameters;
+            GroupByParameters = groupByParameters;
         }
 
-        // public IList<SqlParameter> WhereParameters
-
-        
+        public IList<SqlParameter> WhereParameters { get; set; }
+        public IList<SqlParameter> OrderByParameters { get; set; }
+        public IList<SqlParameter> GroupByParameters { get; set; }
     }
 }
