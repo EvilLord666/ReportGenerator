@@ -4,12 +4,6 @@ using System.Text;
 
 namespace ReportGenerator.Core.Data.Parameters
 {
-    public enum SqlParameterType
-    {
-        WhereParameter,
-        OrderByParameter,
-        GroupByParameter
-    }
 
     /// <summary>
     /// Condition for parameters Join 
@@ -34,15 +28,21 @@ namespace ReportGenerator.Core.Data.Parameters
         {
         }
 
-        public SqlParameter(SqlParameterType parameterType, IList<JoinCondition> conditions, string parameterName, string parameterValue)
+        /// <summary>
+        /// Sql parameter constructor
+        /// </summary>
+        /// <param name="conditions">
+        ///     List of conditions, would be applied in order of list item. Could be cases like 'Not In', or join as 'Or Not' e.t.c
+        /// </param>
+        /// <param name="parameterName"></param>
+        /// <param name="parameterValue"></param>
+        public SqlParameter(IList<JoinCondition> conditions, string parameterName, string parameterValue)
         {
-            ParameterType = parameterType;
             Conditions = conditions;
             ParameterName = parameterName;
             ParameterValue = parameterValue;
         }
 
-        public SqlParameterType ParameterType { get; private set; }
         public IList<JoinCondition> Conditions { get; private set; }
         public string ParameterName { get; private set; }
         public string ParameterValue { get; private set; }

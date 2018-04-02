@@ -10,7 +10,7 @@ namespace ReportGenerator.Core.Extractor
     {
         DbData Extract(string storedPocedureName, IList<StoredProcedureParameter> parameters);
 
-        DbData Extract(string viewName, IList<ViewParameter> whereParameters, IList<ViewParameter> orderByParameters,
-                       IList<ViewParameter> groupByParameters);
+        DbData Extract(string viewName, IList<SqlParameter> whereParameters, IList<SqlParameter> orderByParameters,
+                       IList<SqlParameter> groupByParameters);
     }
 }
