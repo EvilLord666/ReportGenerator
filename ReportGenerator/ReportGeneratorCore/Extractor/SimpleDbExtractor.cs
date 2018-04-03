@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading.Tasks;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
 
 namespace ReportGenerator.Core.Extractor
 {
+    //todo: umv: add Nlog
     public class SimpleDbExtractor : IDbExtractor
     {
         public SimpleDbExtractor(string connectionString)
@@ -31,16 +34,30 @@ namespace ReportGenerator.Core.Extractor
             _connectionString = builder.ConnectionString;
         }
 
-        public DbData Extract(string storedPocedureName, IList<StoredProcedureParameter> parameters)
+        public async Task<DbData> Extract(string storedPocedureName, IList<StoredProcedureParameter> parameters)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                DbData result = new DbData();
-                return result;
+                try
+                {
+                    await connection.OpenAsync();
+                    SqlCommand command = new SqlCommand(storedPocedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    // execute reader async
+                    DbData result = new DbData();
+                    connection.Close();
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    // todo: add log
+                    return null;
+                }
             }
         }
 
-        public DbData Extract(string viewName, ViewParameters parameters)
+        public async Task<DbData> Extract(string viewName, ViewParameters parameters)
         {
             throw new NotImplementedException();
         }
