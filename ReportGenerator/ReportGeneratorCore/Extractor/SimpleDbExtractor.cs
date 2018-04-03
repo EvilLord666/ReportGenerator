@@ -40,6 +40,7 @@ namespace ReportGenerator.Core.Extractor
             {
                 try
                 {
+                    DbData result = new DbData();
                     await connection.OpenAsync();
                     SqlCommand command = new SqlCommand(storedPocedureName, connection);
                     command.CommandType = CommandType.StoredProcedure;
@@ -64,9 +65,9 @@ namespace ReportGenerator.Core.Extractor
                             object value = reader.GetValue(columnNumber);
                             dbRow.Add(new DbValue(reader.GetName(columnNumber), value));
                         }
+                        result.Rows.Add(dbRow);
                     }
-
-                    DbData result = new DbData();
+                                       
                     connection.Close();
                     return result;
                 }
