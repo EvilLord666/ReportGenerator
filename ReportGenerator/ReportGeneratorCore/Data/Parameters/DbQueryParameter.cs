@@ -22,9 +22,9 @@ namespace ReportGenerator.Core.Data.Parameters
         Between              // Name Between Value, Value is: v1 and v2
     }
 
-    public class SqlParameter
+    public class DbQueryParameter
     {
-        public SqlParameter()
+        public DbQueryParameter()
         {
         }
 
@@ -37,7 +37,7 @@ namespace ReportGenerator.Core.Data.Parameters
         /// </param>
         /// <param name="parameterName"></param>
         /// <param name="parameterValue"></param>
-        public SqlParameter(IList<JoinCondition> conditions, string parameterName, string parameterValue)
+        public DbQueryParameter(IList<JoinCondition> conditions, string parameterName, string parameterValue)
         {
             Conditions = conditions;
             ParameterName = parameterName;

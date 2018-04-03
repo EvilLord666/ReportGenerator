@@ -43,6 +43,16 @@ namespace ReportGenerator.Core.Extractor
                     await connection.OpenAsync();
                     SqlCommand command = new SqlCommand(storedPocedureName, connection);
                     command.CommandType = CommandType.StoredProcedure;
+                    // add parameters
+                    if (parameters != null && parameters.Count > 0)
+                    {
+                        foreach (StoredProcedureParameter parameter in parameters)
+                        {
+                            SqlParameter procedureParameter = new SqlParameter(parameter.ParameterName, parameter.ParameterType);
+                            procedureParameter.Value = parameter.ParameterValue;
+                            command.Parameters.Add(procedureParameter);
+                        }
+                    }
                     SqlDataReader reader = await command.ExecuteReaderAsync();
                     // execute reader async
                     DbData result = new DbData();

@@ -11,16 +11,16 @@ namespace ReportGenerator.Core.Data.Parameters
         {
         }
 
-        public ViewParameters(IList<SqlParameter> whereParameters, IList<SqlParameter> orderByParameters,
-                              IList<SqlParameter> groupByParameters)
+        public ViewParameters(IList<DbQueryParameter> whereParameters, IList<DbQueryParameter> orderByParameters,
+                              IList<DbQueryParameter> groupByParameters)
         {
             WhereParameters = whereParameters;
             OrderByParameters = orderByParameters;
             GroupByParameters = groupByParameters;
         }
 
-        public IList<SqlParameter> WhereParameters { get; set; }
-        public IList<SqlParameter> OrderByParameters { get; set; }
-        public IList<SqlParameter> GroupByParameters { get; set; }
+        public IList<DbQueryParameter> WhereParameters { get; set; }
+        public IList<DbQueryParameter> OrderByParameters { get; set; }
+        public IList<DbQueryParameter> GroupByParameters { get; set; }
     }
 }
