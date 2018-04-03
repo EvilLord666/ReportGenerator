@@ -34,7 +34,7 @@ namespace ReportGenerator.Core.Extractor
             _connectionString = builder.ConnectionString;
         }
 
-        public async Task<DbData> Extract(string storedPocedureName, IList<StoredProcedureParameter> parameters)
+        public async Task<DbData> ExtractAsync(string storedPocedureName, IList<StoredProcedureParameter> parameters)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -53,8 +53,19 @@ namespace ReportGenerator.Core.Extractor
                             command.Parameters.Add(procedureParameter);
                         }
                     }
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
                     // execute reader async
+                    SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
+                    //SqlDataReader reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        IList<DbValue> dbRow = new List<DbValue>();
+                        for (int columnNumber = 0; columnNumber < reader.FieldCount; columnNumber++)
+                        {
+                            object value = reader.GetValue(columnNumber);
+                            dbRow.Add(new DbValue(reader.GetName(columnNumber), value));
+                        }
+                    }
+
                     DbData result = new DbData();
                     connection.Close();
                     return result;
@@ -67,7 +78,7 @@ namespace ReportGenerator.Core.Extractor
             }
         }
 
-        public async Task<DbData> Extract(string viewName, ViewParameters parameters)
+        public async Task<DbData> ExtractAsync(string viewName, ViewParameters parameters)
         {
             throw new NotImplementedException();
         }

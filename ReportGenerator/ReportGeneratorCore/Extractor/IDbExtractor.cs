@@ -9,8 +9,8 @@ namespace ReportGenerator.Core.Extractor
 {
     public interface IDbExtractor
     {
-        Task<DbData> Extract(string storedPocedureName, IList<StoredProcedureParameter> parameters);
+        Task<DbData> ExtractAsync(string storedPocedureName, IList<StoredProcedureParameter> parameters);
 
-        Task<DbData> Extract(string viewName, ViewParameters parameters);
+        Task<DbData> ExtractAsync(string viewName, ViewParameters parameters);
     }
 }
