@@ -35,17 +35,25 @@ namespace ReportGenerator.Core.Data.Parameters
         ///     List of conditions, would be applied in order of list item. Could be cases like 'Not In', or join as 'Or Not' e.t.c
         ///     if parameter is first in WHERE statement or in ORDER BY Name ASC, Name2 DESC
         /// </param>
-        /// <param name="parameterName"></param>
-        /// <param name="parameterValue"></param>
-        public DbQueryParameter(IList<JoinCondition> conditions, string parameterName, string parameterValue)
+        /// <param name="parameterName"> 
+        ///     Name of column 
+        /// </param>
+        /// <param name="comparisonOperator">
+        ///     >, >=, !=, =, IS, e.t.c
+        /// </param>
+        /// <param name="parameterValue">
+        /// </param>
+        public DbQueryParameter(IList<JoinCondition> conditions, string parameterName, string comparisonOperator, string parameterValue)
         {
             Conditions = conditions;
             ParameterName = parameterName;
+            ComparisonOperator = comparisonOperator;
             ParameterValue = parameterValue;
         }
 
         public IList<JoinCondition> Conditions { get; private set; }
         public string ParameterName { get; private set; }
         public string ParameterValue { get; private set; }
+        public string ComparisonOperator { get; private set; }
     }
 }
