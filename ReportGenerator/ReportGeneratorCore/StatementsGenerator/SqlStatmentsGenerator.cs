@@ -18,9 +18,19 @@ namespace ReportGenerator.Core.StatementsGenerator
                 builder.Append(WhereStatement);
                 foreach (DbQueryParameter parameter in parameters.WhereParameters)
                     AppendParameter(builder, parameter);
-                // todo Append Order By
-                // todo Append Group By
-                
+                if (parameters.GroupByParameters != null && parameters.GroupByParameters.Count > 0)
+                {
+                    builder.Append(string.Format(GroupByTemplate, parameters.GroupByParameters[0].ParameterName));
+                    for (int i = 1; i < parameters.GroupByParameters.Count; i++)
+                        builder.Append(", " + parameters.GroupByParameters[i]);
+                }
+
+                if (parameters.OrderByParameters != null && parameters.OrderByParameters.Count > 0)
+                {
+                    builder.Append(string.Format(OrderByTemplate, parameters.OrderByParameters[0].ParameterName, parameters.OrderByParameters[0].ParameterValue));
+                    for (int i = 1; i < parameters.OrderByParameters.Count; i++)
+                        builder.Append(string.Format(", {0} {1}", parameters.OrderByParameters[i].ParameterName, parameters.OrderByParameters[i].ParameterValue));
+                }
             }
             return builder.ToString();
         }
@@ -43,6 +53,8 @@ namespace ReportGenerator.Core.StatementsGenerator
                         case JoinCondition.In:
                         case JoinCondition.Between:
                             builder.Append(String.Format(_conditionsStatements[parameter.Conditions[i]], parameter.ParameterName, parameter.ParameterValue));
+                            break;
+                        default:
                             break;
                     }
                 }
