@@ -22,7 +22,7 @@ namespace ReportGenerator.Core.StatementsGenerator
                 {
                     builder.Append(string.Format(GroupByTemplate, parameters.GroupByParameters[0].ParameterName));
                     for (int i = 1; i < parameters.GroupByParameters.Count; i++)
-                        builder.Append(", " + parameters.GroupByParameters[i]);
+                        builder.Append(", " + parameters.GroupByParameters[i].ParameterName);
                 }
 
                 if (parameters.OrderByParameters != null && parameters.OrderByParameters.Count > 0)
@@ -62,8 +62,8 @@ namespace ReportGenerator.Core.StatementsGenerator
         public const string SelectAllColumns = "*";
         private const string SelectTemplate = "SELECT {0} FROM {1} ";
         private const string WhereStatement = " WHERE ";
-        private const string OrderByTemplate = " ORDER BY {0} ";
-        private const string GroupByTemplate =  "GROUP BY {0} ";
+        private const string OrderByTemplate = " ORDER BY {0} {1}";
+        private const string GroupByTemplate = " GROUP BY {0}";
 
         private static IDictionary<JoinCondition, string> _conditionsStatements = new Dictionary<JoinCondition, string>()
         {
