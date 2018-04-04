@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ReportGenerator.Core.Data.Parameters
 {
@@ -9,6 +7,9 @@ namespace ReportGenerator.Core.Data.Parameters
 
         public ViewParameters()
         {
+            WhereParameters = new List<DbQueryParameter>();
+            OrderByParameters = new List<DbQueryParameter>();
+            GroupByParameters = new List<DbQueryParameter>();
         }
 
         public ViewParameters(IList<DbQueryParameter> whereParameters, IList<DbQueryParameter> orderByParameters,

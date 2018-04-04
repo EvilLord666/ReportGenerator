@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator.Core", "ReportGeneratorCore\ReportGenerator.Core.csproj", "{8C8E565D-6545-4AF8-876D-9B7275B5D58B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator.Core.Tests", "ReportGenerator.Core.Tests\ReportGenerator.Core.Tests.csproj", "{52341C2E-6FEF-4E05-AE92-E0EB79282E2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8C8E565D-6545-4AF8-876D-9B7275B5D58B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C8E565D-6545-4AF8-876D-9B7275B5D58B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C8E565D-6545-4AF8-876D-9B7275B5D58B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52341C2E-6FEF-4E05-AE92-E0EB79282E2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52341C2E-6FEF-4E05-AE92-E0EB79282E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52341C2E-6FEF-4E05-AE92-E0EB79282E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52341C2E-6FEF-4E05-AE92-E0EB79282E2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
