@@ -57,6 +57,10 @@ namespace ReportGenerator.Core.StatementsGenerator
                     }
                 }
             }
+            else
+            {
+                builder.Append(string.Format("{0} {1} {2}", parameter.ParameterName, parameter.ComparisonOperator, parameter.ParameterValue));
+            }
         }
 
         public const string SelectAllColumns = "*";
