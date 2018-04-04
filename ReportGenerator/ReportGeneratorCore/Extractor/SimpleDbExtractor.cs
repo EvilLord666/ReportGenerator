@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
+using ReportGenerator.Core.StatementsGenerator;
 
 namespace ReportGenerator.Core.Extractor
 {
@@ -40,7 +41,6 @@ namespace ReportGenerator.Core.Extractor
             {
                 try
                 {
-                    DbData result = new DbData();
                     await connection.OpenAsync();
                     SqlCommand command = new SqlCommand(storedPocedureName, connection);
                     command.CommandType = CommandType.StoredProcedure;
@@ -54,20 +54,7 @@ namespace ReportGenerator.Core.Extractor
                             command.Parameters.Add(procedureParameter);
                         }
                     }
-                    // execute reader async
-                    SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
-                    //SqlDataReader reader = await command.ExecuteReaderAsync();
-                    while (await reader.ReadAsync())
-                    {
-                        IList<DbValue> dbRow = new List<DbValue>();
-                        for (int columnNumber = 0; columnNumber < reader.FieldCount; columnNumber++)
-                        {
-                            object value = reader.GetValue(columnNumber);
-                            dbRow.Add(new DbValue(reader.GetName(columnNumber), value));
-                        }
-                        result.Rows.Add(dbRow);
-                    }
-                                       
+                    DbData result = await ReadDataImpl(command);                                    
                     connection.Close();
                     return result;
                 }
@@ -81,7 +68,43 @@ namespace ReportGenerator.Core.Extractor
 
         public async Task<DbData> ExtractAsync(string viewName, ViewParameters parameters)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
+                    SqlCommand command = new SqlCommand(cmdText, connection);
+                    command.CommandType = CommandType.Text;
+                    DbData result = await ReadDataImpl(command);
+
+                    connection.Close();
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    // todo: add log
+                    return null;
+                }
+            }
+        }
+
+        private async Task<DbData> ReadDataImpl(SqlCommand command)
+        {
+            DbData result = new DbData();
+            SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
+            //SqlDataReader reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                IList<DbValue> dbRow = new List<DbValue>();
+                for (int columnNumber = 0; columnNumber < reader.FieldCount; columnNumber++)
+                {
+                    object value = reader.GetValue(columnNumber);
+                    dbRow.Add(new DbValue(reader.GetName(columnNumber), value));
+                }
+                result.Rows.Add(dbRow);
+            }
+            return result;
         }
 
         private readonly string _connectionString;

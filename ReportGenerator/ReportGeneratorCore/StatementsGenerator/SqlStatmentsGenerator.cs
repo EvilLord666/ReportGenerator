@@ -54,8 +54,6 @@ namespace ReportGenerator.Core.StatementsGenerator
                         case JoinCondition.Between:
                             builder.Append(String.Format(_conditionsStatements[parameter.Conditions[i]], parameter.ParameterName, parameter.ParameterValue));
                             break;
-                        default:
-                            break;
                     }
                 }
             }

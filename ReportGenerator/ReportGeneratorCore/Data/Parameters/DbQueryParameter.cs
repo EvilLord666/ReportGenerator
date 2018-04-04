@@ -42,6 +42,8 @@ namespace ReportGenerator.Core.Data.Parameters
         ///     >, >=, !=, =, IS, e.t.c
         /// </param>
         /// <param name="parameterValue">
+        ///    a) for where parameter is actual value but for IN should be string 'v1, v2, v3' for BETWEEN - string 'v1 AND v2'
+        ///    b) for order by parameters ASC or DESC
         /// </param>
         public DbQueryParameter(IList<JoinCondition> conditions, string parameterName, string comparisonOperator, string parameterValue)
         {
