@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Text;
 using ReportGenerator.Core.StatementsGenerator;
 using Xunit;
@@ -41,6 +42,12 @@ namespace ReportGenerator.Core.Tests.Extractor
             {
                 connection.Open();
                 // read statements from script and execute ...
+                string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
+                string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
+                SqlCommand command = new SqlCommand(createDatabaseStatement, connection);
+                command.ExecuteNonQuery();
+                command = new SqlCommand(insertDataStatement, connection);
+                command.ExecuteNonQuery();
                 connection.Close();
             }
         }
@@ -71,6 +78,9 @@ namespace ReportGenerator.Core.Tests.Extractor
         private const string MasterDatabase = "master";
 
         private string CreateDatabaseStatementTemplate = "CREATE DATABASE {0};";
-        private string DropDatabaseStatementTemplate = "DROP DATABASE {0};";
+        private string DropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE;  DROP DATABASE [{0}];";
+
+        private const string CreateDatabaseScript = @"..\..\..\DbScripts\CreateDb.sql";
+        private const string InsertDataScript = @"..\..\..\DbScripts\CreateData.sql";
     }
 }

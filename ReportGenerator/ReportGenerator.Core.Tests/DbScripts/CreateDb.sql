@@ -30,28 +30,23 @@ REFERENCES [dbo].[Region] ([Id])
 ALTER TABLE [dbo].[Citizen] WITH CHECK ADD  CONSTRAINT [FK_Citizen_City] FOREIGN KEY([CityId])
 REFERENCES [dbo].[City] ([Id])
 
-GO
-CREATE PROCEDURE [dbo].SelectCitizensWithCities AS
+EXEC('CREATE PROCEDURE [dbo].SelectCitizensWithCities AS
 BEGIN
     SELECT [FirstName], [LastName], [Name] AS CityName FROM [dbo].[Citizen] AS Cz
 	INNER JOIN [dbo].[City] AS Ci ON  Cz.CityId = Ci.Id;
-END
-GO
+END');
 
-GO
-CREATE PROCEDURE [dbo].SelectCitizensWithCitiesByCity @City [nvarchar] (200) AS
+
+EXEC('CREATE PROCEDURE [dbo].SelectCitizensWithCitiesByCity @City [nvarchar] (200) AS
 BEGIN
     SELECT Cz.[FirstName], Cz.[LastName], Ci.[Name] AS CityName FROM [dbo].[Citizen] AS Cz
 	INNER JOIN [dbo].[City] AS Ci ON Cz.CityId = Ci.Id
 	WHERE Ci.[Name] = @City;
-END
-GO
+END');
 
-GO
-CREATE PROCEDURE [dbo].SelectCitizensWithCitiesByCityAndAge @City [nvarchar] (200), @PersonAge [int] AS
+EXEC('CREATE PROCEDURE [dbo].SelectCitizensWithCitiesByCityAndAge @City [nvarchar] (200), @PersonAge [int] AS
 BEGIN
     SELECT Cz.[FirstName], Cz.[LastName], Cz.[Age], Ci.[Name] AS CityName FROM [dbo].[Citizen] AS Cz
 	INNER JOIN [dbo].[City] AS Ci ON  Cz.CityId = Ci.Id
 	WHERE Ci.[Name] = @City AND Cz.[Age] > @PersonAge;
-END
-GO
+END');
