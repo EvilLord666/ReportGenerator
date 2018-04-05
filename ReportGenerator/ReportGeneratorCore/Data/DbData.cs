@@ -8,6 +8,7 @@ namespace ReportGenerator.Core.Data
     {
         public DbData()
         {
+            Rows = new List<IList<DbValue>>();
         }
 
         public DbData(IList<IList<DbValue>> rows)

@@ -98,7 +98,8 @@ namespace ReportGenerator.Core.Extractor
                 for (int columnNumber = 0; columnNumber < reader.FieldCount; columnNumber++)
                 {
                     object value = reader.GetValue(columnNumber);
-                    dbRow.Add(new DbValue(reader.GetName(columnNumber), value));
+                    string column = reader.GetName(columnNumber);
+                    dbRow.Add(new DbValue(column, value));
                 }
                 result.Rows.Add(dbRow);
             }

@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[Citizen]
+﻿CREATE TABLE [dbo].[Citizen]
 (
    [Id] [uniqueidentifier] NOT NULL,
    [FirstName] [nvarchar] (100) NOT NULL,
