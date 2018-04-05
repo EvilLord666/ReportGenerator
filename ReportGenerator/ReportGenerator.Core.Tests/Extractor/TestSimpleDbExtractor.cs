@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Threading.Tasks;
 using ReportGenerator.Core.Data;
@@ -30,6 +31,13 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
+            IDbExtractor extractor = new SimpleDbExtractor(Server, TestDatabase);
+            Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCity, 
+                                                         new List<StoredProcedureParameter>{new StoredProcedureParameter(SqlDbType.NVarChar, "City", "г. Екатеринбург")});
+            result.Wait();
+            DbData rows = result.Result;
+            const int expectedNumberOfRows = 5;
+            Assert.Equal(expectedNumberOfRows, rows.Rows.Count);
             TearDownTestData();
         }
 
@@ -54,5 +62,6 @@ namespace ReportGenerator.Core.Tests.Extractor
         private const string InsertDataScript = @"..\..\..\DbScripts\CreateData.sql";
 
         private const string TestStoredProcedureWithoutParams = "SelectCitizensWithCities";
+        private const string TestStoredProcedureWithCity = "SelectCitizensWithCitiesByCity";
     }
 }

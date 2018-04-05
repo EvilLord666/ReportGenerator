@@ -38,11 +38,11 @@ VALUES (N'A660D90A-BD41-49B5-B42D-9020532501D3', N'Ольга', N'Вялова',
 
 -- Nijniy Tagil citizens
 INSERT INTO [dbo].[Citizen] ([Id], [FirstName], [LastName], [Age], [Sex], [CityId])
-VALUES (N'1861B600-658F-4F18-914E-939DB1317CCF', N'Роман', N'Барашков', 49, 1, N'B9B08522-D89B-486A-BFE5-7694C6AE2D06');
+VALUES (N'1861B600-658F-4F18-914E-939DB1317CCF', N'Роман', N'Барашков', 49, 1, N'0A15EC6D-BA21-4CDC-B166-5301B49D0273');
 INSERT INTO [dbo].[Citizen] ([Id], [FirstName], [LastName], [Age], [Sex], [CityId])
-VALUES (N'1DA29BFC-62D5-4247-AD35-70F7A3467969', N'Татьяна', N'Трололошина', 30, 0, N'B9B08522-D89B-486A-BFE5-7694C6AE2D06');
+VALUES (N'1DA29BFC-62D5-4247-AD35-70F7A3467969', N'Татьяна', N'Трололошина', 30, 0, N'0A15EC6D-BA21-4CDC-B166-5301B49D0273');
 INSERT INTO [dbo].[Citizen] ([Id], [FirstName], [LastName], [Age], [Sex], [CityId])
-VALUES (N'D43B3021-D52F-43F5-AED6-9661F6C1C35E', N'Екатерина', N'Кракозябрина', 22, 0, N'B9B08522-D89B-486A-BFE5-7694C6AE2D06');
+VALUES (N'D43B3021-D52F-43F5-AED6-9661F6C1C35E', N'Екатерина', N'Кракозябрина', 22, 0, N'0A15EC6D-BA21-4CDC-B166-5301B49D0273');
 
 -- Pervoyralsk citizen
 INSERT INTO [dbo].[Citizen] ([Id], [FirstName], [LastName], [Age], [Sex], [CityId])
