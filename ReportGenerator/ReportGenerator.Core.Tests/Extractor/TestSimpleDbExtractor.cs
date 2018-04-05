@@ -26,17 +26,20 @@ namespace ReportGenerator.Core.Tests.Extractor
             TearDownTestData();
         }
 
-        [Fact]
-        public void TestExctractFromStoredProcWithParams()
+        [Theory]
+        [InlineData("г. Екатеринбург", 5)]
+        [InlineData("г. Нижний Тагил", 3)]
+        [InlineData("г. Первоуральск", 3)]
+        [InlineData("г. Челябинск", 4)]
+        public void TestExctractFromStoredProcWithCityParam(string parameterValue, int expectedNumberOfRows)
         {
             SetUpTestData();
             // testing is here
             IDbExtractor extractor = new SimpleDbExtractor(Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCity, 
-                                                         new List<StoredProcedureParameter>{new StoredProcedureParameter(SqlDbType.NVarChar, "City", "г. Екатеринбург")});
+                                                         new List<StoredProcedureParameter>{ new StoredProcedureParameter(SqlDbType.NVarChar, "City", parameterValue) });
             result.Wait();
             DbData rows = result.Result;
-            const int expectedNumberOfRows = 5;
             Assert.Equal(expectedNumberOfRows, rows.Rows.Count);
             TearDownTestData();
         }
