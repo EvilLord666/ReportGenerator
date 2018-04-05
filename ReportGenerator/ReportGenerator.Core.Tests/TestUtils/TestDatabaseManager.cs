@@ -25,6 +25,11 @@ namespace ReportGenerator.Core.Tests.TestUtils
             ExecuteStatement(GetConnectionString(serverInstance, MasterDatabase), string.Format(DropDatabaseStatementTemplate, database));
         }
 
+        public static void ExecuteSql(string serverInstance, string database, string sql)
+        {
+            ExecuteStatement(GetConnectionString(serverInstance, database), sql);
+        }
+
         private static void ExecuteStatement(string connectionString, string statement)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
