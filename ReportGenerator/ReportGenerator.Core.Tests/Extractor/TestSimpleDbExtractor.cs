@@ -35,6 +35,14 @@ namespace ReportGenerator.Core.Tests.Extractor
                 createCommand.ExecuteNonQuery();
                 connection.Close();
             }
+
+            string testDbConnString = GetConnectionString(TestDatabase);
+            using (SqlConnection connection = new SqlConnection(testDbConnString))
+            {
+                connection.Open();
+                // read statements from script and execute ...
+                connection.Close();
+            }
         }
 
         private void TearDownTestData()
@@ -58,8 +66,6 @@ namespace ReportGenerator.Core.Tests.Extractor
             return builder.ConnectionString;
         }
 
-        //(localdb)\MSSQLLocalDB
-        // Server=(localdb)\\mssqllocaldb;Database=e3app;Trusted_Connection=True;"
         private const string Server = @"(localdb)\mssqllocaldb";
         private const string TestDatabase = "ReportGeneratorTestDb";
         private const string MasterDatabase = "master";
