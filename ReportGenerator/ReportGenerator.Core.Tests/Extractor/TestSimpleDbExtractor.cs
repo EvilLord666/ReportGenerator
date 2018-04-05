@@ -44,6 +44,27 @@ namespace ReportGenerator.Core.Tests.Extractor
             TearDownTestData();
         }
 
+        [Theory]
+        [InlineData("г. Екатеринбург", 33, 2)]
+        [InlineData("г. Нижний Тагил", 40, 1)]
+        [InlineData("г. Первоуральск", 31, 1)]
+        [InlineData("г. Челябинск", 15, 3)]
+        public void TestExctractFromStoredProcWithCityAndAgeParams(string cityParameterValue, int ageParameterValue, int expectedNumberOfRows)
+        {
+            SetUpTestData();
+            // testing is here
+            IDbExtractor extractor = new SimpleDbExtractor(Server, TestDatabase);
+            Task<DbData> result = extractor.ExtractAsync(TestStoredprocedureWithCityAndAge,  new List<StoredProcedureParameter>
+            {
+                new StoredProcedureParameter(SqlDbType.NVarChar, "City", cityParameterValue),
+                new StoredProcedureParameter(SqlDbType.Int, "PersonAge", ageParameterValue)
+            });
+            result.Wait();
+            DbData rows = result.Result;
+            Assert.Equal(expectedNumberOfRows, rows.Rows.Count);
+            TearDownTestData();
+        }
+
         private void SetUpTestData()
         {
             TestDatabaseManager.CreateDatabase(Server, TestDatabase, true);
@@ -66,5 +87,6 @@ namespace ReportGenerator.Core.Tests.Extractor
 
         private const string TestStoredProcedureWithoutParams = "SelectCitizensWithCities";
         private const string TestStoredProcedureWithCity = "SelectCitizensWithCitiesByCity";
+        private const string TestStoredprocedureWithCityAndAge = "SelectCitizensWithCitiesByCityAndAge";
     }
 }
