@@ -65,6 +65,20 @@ namespace ReportGenerator.Core.Tests.Extractor
             TearDownTestData();
         }
 
+        [Fact]
+        public void TestExtractFromView()
+        {
+            SetUpTestData();
+            // testing is here
+            IDbExtractor extractor = new SimpleDbExtractor(Server, TestDatabase);
+            Task<DbData> result = extractor.ExtractAsync(TestView, new ViewParameters());
+            result.Wait();
+            DbData rows = result.Result;
+            int expectedNumberOfRows = 15;
+            Assert.Equal(expectedNumberOfRows, rows.Rows.Count);
+            TearDownTestData();
+        }
+
         private void SetUpTestData()
         {
             TestDatabaseManager.CreateDatabase(Server, TestDatabase, true);
@@ -88,5 +102,7 @@ namespace ReportGenerator.Core.Tests.Extractor
         private const string TestStoredProcedureWithoutParams = "SelectCitizensWithCities";
         private const string TestStoredProcedureWithCity = "SelectCitizensWithCitiesByCity";
         private const string TestStoredprocedureWithCityAndAge = "SelectCitizensWithCitiesByCityAndAge";
+
+        private const string TestView = "CitizensWithRegion";
     }
 }
