@@ -10,7 +10,7 @@ using Xunit;
 
 namespace ReportGenerator.Core.Tests.Extractor
 {
-    // todo: check strings in future
+    // todo: umv: check data rows in future
     public class TestSimpleDbExtractor
     {
         [Fact]
