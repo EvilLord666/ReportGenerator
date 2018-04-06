@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using OfficeOpenXml;
 using ReportGenerator.Core.Data;
@@ -23,7 +24,17 @@ namespace ReportGenerator.Core.ReportsGenerator
         {
             if(parameters.Length < 3)
                 throw new ApplicationException("Invalid parameters array length");
+            if (data == null)
+                return false;
+            int workSheetNumber = Convert.ToInt32(parameters[WorkSheetNumberIndex]);
+            int startRow = Convert.ToInt32(parameters[StartRowIndex]);
+            int startColumn = Convert.ToInt32(parameters[StartColumnIndex]);
+            ExcelWorksheet workSheet = _package.Workbook.Worksheets[workSheetNumber];
 
+            foreach (IList<DbValue> dataRow in data.Rows)
+            {
+                // proccess each row
+            }
             return false;
         }
 
@@ -32,6 +43,6 @@ namespace ReportGenerator.Core.ReportsGenerator
         private const int StartColumnIndex = 2;
 
         private readonly string _template;
-        private ExcelPackage _package;
+        private readonly ExcelPackage _package;
     }
 }
