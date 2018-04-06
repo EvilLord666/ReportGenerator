@@ -52,6 +52,6 @@ BEGIN
 END');
 
 EXEC('CREATE VIEW [dbo].[CitizensWithRegion] AS
-SELECT Cz.[FirstName], Cz.[LastName], Cz.[Age], Ci.[Name] AS City, R.[Name] AS Region 
+SELECT Cz.[FirstName], Cz.[LastName], Cz.[Age], Cz.[Sex], Ci.[Name] AS City, R.[Name] AS Region 
 FROM [dbo].[Citizen] AS Cz INNER JOIN [dbo].[City] AS Ci ON Cz.[CityId] = Ci.[Id]
 INNER JOIN [dbo].[Region] AS R ON Ci.[RegionId] = R.[Id];');

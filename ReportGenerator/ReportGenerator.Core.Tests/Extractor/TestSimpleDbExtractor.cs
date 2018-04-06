@@ -10,6 +10,7 @@ using Xunit;
 
 namespace ReportGenerator.Core.Tests.Extractor
 {
+    // todo: check strings in future
     public class TestSimpleDbExtractor
     {
         [Fact]
@@ -75,6 +76,34 @@ namespace ReportGenerator.Core.Tests.Extractor
             result.Wait();
             DbData rows = result.Result;
             int expectedNumberOfRows = 15;
+            Assert.Equal(expectedNumberOfRows, rows.Rows.Count);
+            TearDownTestData();
+        }
+
+        [Theory]
+        [InlineData("N'Алексей'", null, 1)]
+        [InlineData("N'Алексей'", true, 1)]
+        [InlineData("N'Алексей'", false, 0)]
+        [InlineData(null, true, 7)]
+        [InlineData(null, false, 8)]
+        public void TestExtractFromViewWithParams(string name, bool? sex, int expectedNumberOfRows)
+        {
+            SetUpTestData();
+            // testing is here
+            ViewParameters parameters = new ViewParameters();
+            if (!string.IsNullOrEmpty(name))
+            {
+                parameters.WhereParameters.Add(new DbQueryParameter(null, "FirstName", "=", name));
+            }
+            if (sex.HasValue)
+            {
+                IList<JoinCondition> sexJoin = parameters.WhereParameters.Count > 0 ? new List<JoinCondition>() {JoinCondition.And}  : null;
+                parameters.WhereParameters.Add(new DbQueryParameter(sexJoin, "Sex", "=", sex.Value ? "1" : "0"));
+            }
+            IDbExtractor extractor = new SimpleDbExtractor(Server, TestDatabase);
+            Task<DbData> result = extractor.ExtractAsync(TestView, parameters);
+            result.Wait();
+            DbData rows = result.Result;
             Assert.Equal(expectedNumberOfRows, rows.Rows.Count);
             TearDownTestData();
         }
