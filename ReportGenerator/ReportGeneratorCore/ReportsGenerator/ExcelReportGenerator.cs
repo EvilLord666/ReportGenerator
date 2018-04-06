@@ -42,7 +42,6 @@ namespace ReportGenerator.Core.ReportsGenerator
                     // proccess each row
                     WhiteExcelRow(workSheet, row, column, dataRow);
                     row++;
-                    column+=dataRow.Count;
                 }
 
                 // save excel file
