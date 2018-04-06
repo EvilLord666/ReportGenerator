@@ -34,9 +34,15 @@ namespace ReportGenerator.Core.ReportsGenerator
                 int startColumn = Convert.ToInt32(parameters[StartColumnIndex]);
                 ExcelWorksheet workSheet = _package.Workbook.Worksheets[workSheetNumber];
 
+                int row = startRow;
+                int column = startColumn;
+
                 foreach (IList<DbValue> dataRow in data.Rows)
                 {
                     // proccess each row
+                    WhiteExcelRow(workSheet, row, column, dataRow);
+                    row++;
+                    column+=dataRow.Count;
                 }
 
                 // save excel file
@@ -53,6 +59,16 @@ namespace ReportGenerator.Core.ReportsGenerator
             catch (Exception e)
             {
                 return false;
+            }
+        }
+
+        private void WhiteExcelRow(ExcelWorksheet workSheet, int row, int column, IList<DbValue> dataRow)
+        {         
+            foreach (DbValue columnValue in dataRow)
+            {
+                ExcelRange range = workSheet.Cells[row, column];
+                range.Value = columnValue.Value;
+                column++;
             }
         }
 
