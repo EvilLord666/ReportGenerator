@@ -37,7 +37,7 @@ namespace ReportGenerator.Core.StatementsGenerator
 
         private static void AppendParameter(StringBuilder builder, DbQueryParameter parameter)
         {
-            if (parameter.Conditions != null)
+            if (parameter.Conditions != null && parameter.Conditions.Count > 0)
             {
                 for (int i = 0; i < parameter.Conditions.Count; i++)
                 {
