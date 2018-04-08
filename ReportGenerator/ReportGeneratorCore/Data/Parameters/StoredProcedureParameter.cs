@@ -7,6 +7,10 @@ namespace ReportGenerator.Core.Data.Parameters
 {
     public class StoredProcedureParameter
     {
+        public StoredProcedureParameter()
+        {
+        }
+
         public StoredProcedureParameter(SqlDbType parameterType, string parameterName, object parameterValue)
         {
             ParameterType = parameterType;
@@ -14,8 +18,8 @@ namespace ReportGenerator.Core.Data.Parameters
             ParameterValue = parameterValue;
         }
 
-        public SqlDbType ParameterType { get; private set; }
-        public string ParameterName { get; private set; }
-        public object ParameterValue { get; private set; }
+        public SqlDbType ParameterType { get; set; }
+        public string ParameterName { get; set; }
+        public object ParameterValue { get; set; }
     }
 }

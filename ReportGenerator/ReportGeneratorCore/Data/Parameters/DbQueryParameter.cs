@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ReportGenerator.Core.Data.Parameters
@@ -47,15 +48,15 @@ namespace ReportGenerator.Core.Data.Parameters
         /// </param>
         public DbQueryParameter(IList<JoinCondition> conditions, string parameterName, string comparisonOperator, string parameterValue)
         {
-            Conditions = conditions;
+            Conditions = conditions?.ToList();
             ParameterName = parameterName;
             ComparisonOperator = comparisonOperator;
             ParameterValue = parameterValue;
         }
 
-        public IList<JoinCondition> Conditions { get; private set; }
-        public string ParameterName { get; private set; }
-        public string ParameterValue { get; private set; }
-        public string ComparisonOperator { get; private set; }
+        public List<JoinCondition> Conditions { get; set; }
+        public string ParameterName { get; set; }
+        public string ParameterValue { get; set; }
+        public string ComparisonOperator { get; set; }
     }
 }

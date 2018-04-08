@@ -1,0 +1,87 @@
+Пример конфигурации хранимой процедуры:
+
+<?xml version="1.0"?>
+<ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DataSource>StoredProcedure</DataSource>
+  <Name>GetSitizensByCityAndDateOfBirth</Name>
+  <StoredProcedureParameters>
+    <ParameterType>NVarChar</ParameterType>
+    <ParameterName>City</ParameterName>
+    <ParameterValue xsi:type="xsd:string">N'Yekaterinburg</ParameterValue>
+  </StoredProcedureParameters>
+  <StoredProcedureParameters>
+    <ParameterType>Int</ParameterType>
+    <ParameterName>PostalCode</ParameterName>
+    <ParameterValue xsi:type="xsd:string">620000</ParameterValue>
+  </StoredProcedureParameters>
+  <StoredProcedureParameters>
+    <ParameterType>DateTime</ParameterType>
+    <ParameterName>DateOfBirth</ParameterName>
+    <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
+  </StoredProcedureParameters>
+</ExecutionConfig>
+
+##################################################################################################################################
+
+Пример конфигурации представления
+
+<?xml version="1.0"?>
+<ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DataSource>View</DataSource>
+  <Name>CitizensView</Name>
+  <ViewParameters>
+    <WhereParameters>
+      <DbQueryParameter>
+        <ParameterName>FirstName</ParameterName>
+        <ParameterValue>N'Michael'</ParameterValue>
+        <ComparisonOperator>=</ComparisonOperator>
+      </DbQueryParameter>
+      <DbQueryParameter>
+        <Conditions>
+          <JoinCondition>And</JoinCondition>
+          <JoinCondition>Not</JoinCondition>
+        </Conditions>
+        <ParameterName>City</ParameterName>
+        <ParameterValue>N'Yekaterinburg'</ParameterValue>
+        <ComparisonOperator>=</ComparisonOperator>
+      </DbQueryParameter>
+      <DbQueryParameter>
+        <Conditions>
+          <JoinCondition>Between</JoinCondition>
+        </Conditions>
+        <ParameterName>Age</ParameterName>
+        <ParameterValue>18 AND 60</ParameterValue>
+      </DbQueryParameter>
+      <DbQueryParameter>
+        <Conditions>
+          <JoinCondition>In</JoinCondition>
+        </Conditions>
+        <ParameterName>District</ParameterName>
+        <ParameterValue>N'D1', N'A3', N'A5', N'C7'</ParameterValue>
+      </DbQueryParameter>
+      <DbQueryParameter>
+        <Conditions>
+          <JoinCondition>Or</JoinCondition>
+        </Conditions>
+        <ParameterName>Region</ParameterName>
+        <ParameterValue>N'Sverdlovskaya oblast'</ParameterValue>
+        <ComparisonOperator>!=</ComparisonOperator>
+      </DbQueryParameter>
+    </WhereParameters>
+    <OrderByParameters>
+      <DbQueryParameter>
+        <ParameterName>FirstName</ParameterName>
+        <ParameterValue>ASC</ParameterValue>
+      </DbQueryParameter>
+      <DbQueryParameter>
+        <ParameterName>LastName</ParameterName>
+        <ParameterValue>DESC</ParameterValue>
+      </DbQueryParameter>
+    </OrderByParameters>
+    <GroupByParameters>
+      <DbQueryParameter>
+        <ParameterName>District</ParameterName>
+      </DbQueryParameter>
+    </GroupByParameters>
+  </ViewParameters>
+</ExecutionConfig>

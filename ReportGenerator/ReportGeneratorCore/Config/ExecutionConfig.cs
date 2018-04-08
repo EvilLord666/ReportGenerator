@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using ReportGenerator.Core.Data.Parameters;
@@ -23,16 +24,18 @@ namespace ReportGenerator.Core.Config
                                ViewParameters viewParameters)
         {
             DataSource = dataSource;
-            StoredProcedureParameters = storedProcedureParameters;
+            StoredProcedureParameters = storedProcedureParameters.ToList();
             ViewParameters = viewParameters;
         }
-
 
         [XmlElement("DataSource")]
         public ReportDataSource DataSource { get; set; }
 
+        [XmlElement("Name")]
+        public string Name { get; set; }
+
         [XmlElement("StoredProcedureParameters")]
-        public IList<StoredProcedureParameter> StoredProcedureParameters { get; set; }
+        public List<StoredProcedureParameter> StoredProcedureParameters { get; set; }
 
         [XmlElement("ViewParameters")]
         public ViewParameters ViewParameters { get; set; }

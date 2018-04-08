@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DataSource>StoredProcedure</DataSource>
+  <Name>GetSitizensByCityAndDateOfBirth</Name>
+  <StoredProcedureParameters>
+    <ParameterType>NVarChar</ParameterType>
+    <ParameterName>City</ParameterName>
+    <ParameterValue xsi:type="xsd:string">N'Yekaterinburg</ParameterValue>
+  </StoredProcedureParameters>
+  <StoredProcedureParameters>
+    <ParameterType>Int</ParameterType>
+    <ParameterName>PostalCode</ParameterName>
+    <ParameterValue xsi:type="xsd:string">620000</ParameterValue>
+  </StoredProcedureParameters>
+  <StoredProcedureParameters>
+    <ParameterType>DateTime</ParameterType>
+    <ParameterName>DateOfBirth</ParameterName>
+    <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
+  </StoredProcedureParameters>
+</ExecutionConfig>

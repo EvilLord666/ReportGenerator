@@ -22,7 +22,7 @@ namespace ReportGenerator.Core.Tests.StatementsGenerator
         public void TestCreateSelectStatementMultiple()
         {
             ViewParameters parameters = new ViewParameters();
-            IList<DbQueryParameter> whereParams = new List<DbQueryParameter>();
+            List<DbQueryParameter> whereParams = new List<DbQueryParameter>();
             whereParams.Add(new DbQueryParameter(null, "Age", ">", "18"));
             whereParams.Add(new DbQueryParameter(new[] { JoinCondition.And, JoinCondition.Not }, "FirstName", "IS NOT", "'John'"));
             whereParams.Add(new DbQueryParameter(new[] { JoinCondition.Or }, "LastName", "=", "'Smith'"));
@@ -37,7 +37,7 @@ namespace ReportGenerator.Core.Tests.StatementsGenerator
             ViewParameters parameters = new ViewParameters();
             if (useWhereParameters)
             {
-                IList<DbQueryParameter> whereParams = new List<DbQueryParameter>();
+                List<DbQueryParameter> whereParams = new List<DbQueryParameter>();
                 whereParams.Add(new DbQueryParameter(new[] { JoinCondition.In }, "City", string.Empty, "Yekaterinburg, Moscow, Kazan"));
                 whereParams.Add(new DbQueryParameter(new[] { JoinCondition.Or }, "Age", ">", "18"));
                 whereParams.Add(new DbQueryParameter(new[] { JoinCondition.And, JoinCondition.Between }, "District", null, "Northern AND Southerly"));
@@ -46,7 +46,7 @@ namespace ReportGenerator.Core.Tests.StatementsGenerator
 
             if (useOrderByParams)
             {
-                IList<DbQueryParameter> orderByParams = new List<DbQueryParameter>();
+                List<DbQueryParameter> orderByParams = new List<DbQueryParameter>();
                 orderByParams.Add(new DbQueryParameter(null, "City", null, "ASC"));
                 orderByParams.Add(new DbQueryParameter(null, "Name", null, "DESC"));
                 parameters.OrderByParameters = orderByParams;
@@ -54,7 +54,7 @@ namespace ReportGenerator.Core.Tests.StatementsGenerator
 
             if (useGroupByParams)
             {
-                IList<DbQueryParameter> groupByParams = new List<DbQueryParameter>();
+                List<DbQueryParameter> groupByParams = new List<DbQueryParameter>();
                 groupByParams.Add(new DbQueryParameter(null, "Age", null, null));
                 groupByParams.Add(new DbQueryParameter(null, "Name", null, null));
                 parameters.GroupByParameters = groupByParams;

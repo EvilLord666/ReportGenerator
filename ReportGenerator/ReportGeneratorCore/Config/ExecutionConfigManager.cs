@@ -22,10 +22,12 @@ namespace ReportGenerator.Core.Config
         {
             if (config == null)
                 return false;
-            StringWriter stringWriter = new StringWriter();
-            using (var writer = XmlWriter.Create(stringWriter))
+            if (File.Exists(file))
+                File.Delete(file);
+            using (Stream writer = new FileStream(file, FileMode.CreateNew))
             {
                 _serializer.Serialize(writer, config);
+                writer.Flush();
             }
             return true;
         }

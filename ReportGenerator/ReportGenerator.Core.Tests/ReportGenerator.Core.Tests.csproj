@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ReportGeneratorCore\ReportGenerator.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExampleConfig\" />
+  </ItemGroup>
+
 </Project>
