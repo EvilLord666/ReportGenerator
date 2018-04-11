@@ -18,13 +18,13 @@ namespace ReportGenerator.Core.ReportsGenerator
             if (File.Exists(_template))
                 _package = new ExcelPackage(fileInfo);
             else
-                throw new ApplicationException("template file does not exists");
+                throw new FileNotFoundException("template file does not exists");
         }
 
         public bool Generate(DbData data, object[] parameters)
         {
             if(parameters.Length < 3)
-                throw new ApplicationException("Invalid parameters array length");
+                throw new InvalidDataException("Invalid parameters array length");
             if (data == null)
                 return false;
             try

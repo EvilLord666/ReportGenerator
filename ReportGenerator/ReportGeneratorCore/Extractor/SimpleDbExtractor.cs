@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Threading.Tasks;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
@@ -9,7 +10,7 @@ using ReportGenerator.Core.StatementsGenerator;
 
 namespace ReportGenerator.Core.Extractor
 {
-    //todo: umv: add Nlog
+    //todo: umv: add logging
     public class SimpleDbExtractor : IDbExtractor
     {
         public SimpleDbExtractor(string connectionString)
@@ -47,6 +48,8 @@ namespace ReportGenerator.Core.Extractor
                     {
                         foreach (StoredProcedureParameter parameter in parameters)
                         {
+                            if(string.IsNullOrEmpty(parameter.ParameterName))
+                                throw new InvalidDataException("parameter name can't be null or empty");
                             SqlParameter procedureParameter = new SqlParameter(parameter.ParameterName, parameter.ParameterType);
                             procedureParameter.Value = parameter.ParameterValue;
                             command.Parameters.Add(procedureParameter);
@@ -89,21 +92,28 @@ namespace ReportGenerator.Core.Extractor
 
         private async Task<DbData> ReadDataImpl(SqlCommand command)
         {
-            DbData result = new DbData();
-            SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
-            //SqlDataReader reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            try
             {
-                IList<DbValue> dbRow = new List<DbValue>();
-                for (int columnNumber = 0; columnNumber < reader.FieldCount; columnNumber++)
+                DbData result = new DbData();
+                SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
+                //SqlDataReader reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
                 {
-                    object value = reader.GetValue(columnNumber);
-                    string column = reader.GetName(columnNumber);
-                    dbRow.Add(new DbValue(column, value));
+                    IList<DbValue> dbRow = new List<DbValue>();
+                    for (int columnNumber = 0; columnNumber < reader.FieldCount; columnNumber++)
+                    {
+                        object value = reader.GetValue(columnNumber);
+                        string column = reader.GetName(columnNumber);
+                        dbRow.Add(new DbValue(column, value));
+                    }
+                    result.Rows.Add(dbRow);
                 }
-                result.Rows.Add(dbRow);
+                return result;
             }
-            return result;
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         private readonly string _connectionString;
