@@ -40,7 +40,7 @@ namespace ReportGenerator.Core.Extractor
             {
                 try
                 {
-                    await connection.OpenAsync();
+                    await connection.OpenAsync().ConfigureAwait(false); ;
                     SqlCommand command = new SqlCommand(storedPocedureName, connection);
                     command.CommandType = CommandType.StoredProcedure;
                     // add parameters
@@ -73,7 +73,7 @@ namespace ReportGenerator.Core.Extractor
             {
                 try
                 {
-                    await connection.OpenAsync();
+                    await connection.OpenAsync().ConfigureAwait(false); ;
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
                     SqlCommand command = new SqlCommand(cmdText, connection);
                     command.CommandType = CommandType.Text;

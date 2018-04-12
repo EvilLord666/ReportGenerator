@@ -15,10 +15,11 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [Fact]
         public void TestGenerateReport()
         {
+            _testDbName = TestDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
             SetUpTestData();
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(Server, TestDatabase);
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(Server, _testDbName);
             Task<bool> result = manager.Generate(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
@@ -27,16 +28,16 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
         private void SetUpTestData()
         {
-            TestDatabaseManager.CreateDatabase(Server, TestDatabase, true);
+            TestDatabaseManager.CreateDatabase(Server, _testDbName);
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
-            TestDatabaseManager.ExecuteSql(Server, TestDatabase, createDatabaseStatement);
-            TestDatabaseManager.ExecuteSql(Server, TestDatabase, insertDataStatement);
+            TestDatabaseManager.ExecuteSql(Server, _testDbName, createDatabaseStatement);
+            TestDatabaseManager.ExecuteSql(Server, _testDbName, insertDataStatement);
         }
 
         private void TearDownTestData()
         {
-            TestDatabaseManager.DropDatabase(Server, TestDatabase);
+            TestDatabaseManager.DropDatabase(Server, _testDbName);
         }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
@@ -44,9 +45,11 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string DataExecutionConfig = @"..\..\..\ExampleConfig\dataExtractionParams.xml";
 
         private const string Server = @"(localdb)\mssqllocaldb";
-        private const string TestDatabase = "ReportGeneratorTestDb";
+        private const string TestDatabasePattern = "ReportGeneratorTestDb";
 
         private const string CreateDatabaseScript = @"..\..\..\DbScripts\CreateDb.sql";
         private const string InsertDataScript = @"..\..\..\DbScripts\CreateData.sql";
+
+        private string _testDbName;
     }
 }
