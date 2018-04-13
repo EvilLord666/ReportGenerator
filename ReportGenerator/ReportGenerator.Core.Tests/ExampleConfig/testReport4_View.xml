@@ -20,17 +20,19 @@
       </DbQueryParameter>
       <DbQueryParameter>
         <Conditions>
-          <JoinCondition>Between</JoinCondition>
+          <JoinCondition>And</JoinCondition>
         </Conditions>
         <ParameterName>Age</ParameterName>
+        <ComparisonOperator>BETWEEN</ComparisonOperator>
         <ParameterValue>18 AND 60</ParameterValue>
       </DbQueryParameter>
       <DbQueryParameter>
         <Conditions>
-          <JoinCondition>In</JoinCondition>
+          <JoinCondition>And</JoinCondition>
         </Conditions>
         <ParameterName>District</ParameterName>
-        <ParameterValue>N'D1', N'A3', N'A5', N'C7'</ParameterValue>
+        <ComparisonOperator>IN</ComparisonOperator>
+        <ParameterValue>(N'D1', N'A3', N'A5', N'C7')</ParameterValue>
       </DbQueryParameter>
       <DbQueryParameter>
         <Conditions>
