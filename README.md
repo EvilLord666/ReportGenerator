@@ -178,3 +178,5 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
         }
     }
   `
+  # 3 Nuget Package
+  Nuget package is available on nuget.org : https://www.nuget.org/packages/ReportsGenerator/
