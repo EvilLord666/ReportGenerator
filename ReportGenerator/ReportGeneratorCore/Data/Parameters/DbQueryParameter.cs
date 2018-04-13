@@ -11,16 +11,13 @@ namespace ReportGenerator.Core.Data.Parameters
     ///     Or Name = Value
     ///     And Name = Value
     ///     Not Name = Value, if this parameter is not first it shoul follow the Or or And
-    ///     Name In Value, Value is: (v1, v2, ....v3)
-    ///     Name Between Value, Value is: v1 and v2
+    ///     Combined contditions - And Not , Or Not
     /// </summary>
     public enum JoinCondition
     {
         Or,                  // Or Name = Value
         And,                 // And Name = Value
-        Not,                 // Not Name = Value, if this parameter is not first it shoul follow the Or or And
-        In,                  // Name In Value, Value is: (v1, v2, ....v3)
-        Between              // Name Between Value, Value is: v1 and v2
+        Not                  // Not Name = Value, if this parameter is not first it shoul follow the Or or And
     }
 
     public class DbQueryParameter
@@ -40,7 +37,7 @@ namespace ReportGenerator.Core.Data.Parameters
         ///     Name of column 
         /// </param>
         /// <param name="comparisonOperator">
-        ///     >, >=, !=, =, IS, e.t.c
+        ///     >, >=, !=, =, IS, In - Name In Value, Value is: (v1, v2, ....v3), Between - Name Between Value, Value is: v1 and v2, Like
         /// </param>
         /// <param name="parameterValue">
         ///    a) for where parameter is actual value but for IN should be string 'v1, v2, v3' for BETWEEN - string 'v1 AND v2'

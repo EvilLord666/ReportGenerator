@@ -41,20 +41,9 @@ namespace ReportGenerator.Core.StatementsGenerator
             {
                 for (int i = 0; i < parameter.Conditions.Count; i++)
                 {
-                    switch (parameter.Conditions[i])
-                    {
-                        case JoinCondition.Or:
-                        case JoinCondition.And:
-                        case JoinCondition.Not:
-                            builder.Append(_conditionsStatements[parameter.Conditions[i]]);
-                            if (i == parameter.Conditions.Count - 1)
-                                builder.Append(string.Format("{0} {1} {2}", parameter.ParameterName, parameter.ComparisonOperator, parameter.ParameterValue));
-                            break;
-                        case JoinCondition.In:
-                        case JoinCondition.Between:
-                            builder.Append(String.Format(_conditionsStatements[parameter.Conditions[i]], parameter.ParameterName, parameter.ParameterValue));
-                            break;
-                    }
+                    builder.Append(_conditionsStatements[parameter.Conditions[i]]);
+                    if (i == parameter.Conditions.Count - 1)
+                        builder.Append(string.Format("{0} {1} {2}", parameter.ParameterName, parameter.ComparisonOperator, parameter.ParameterValue));
                 }
             }
             else
@@ -71,8 +60,6 @@ namespace ReportGenerator.Core.StatementsGenerator
 
         private static IDictionary<JoinCondition, string> _conditionsStatements = new Dictionary<JoinCondition, string>()
         {
-            {JoinCondition.In, "{0} IN ({1})"},
-            {JoinCondition.Between, " {0} BETWEEN {1}"},
             {JoinCondition.Or, " OR "},
             {JoinCondition.And, " AND "},
             {JoinCondition.Not, " NOT "}

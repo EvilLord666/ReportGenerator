@@ -55,8 +55,8 @@ namespace ReportGenerator.Core.Tests.Config
                 List<DbQueryParameter> whereParameters = new List<DbQueryParameter>();
                 whereParameters.Add(new DbQueryParameter(null, "FirstName", "=", "N'Michael'"));
                 whereParameters.Add(new DbQueryParameter(new List<JoinCondition>(){ JoinCondition.And, JoinCondition.Not }, "City", "=", "N'Yekaterinburg'"));
-                whereParameters.Add(new DbQueryParameter(new List<JoinCondition>() { JoinCondition.Between }, "Age", null, "18 AND 60"));
-                whereParameters.Add(new DbQueryParameter(new List<JoinCondition>() { JoinCondition.In }, "District", null, "N'D1', N'A3', N'A5', N'C7'"));
+                whereParameters.Add(new DbQueryParameter(new List<JoinCondition>() { JoinCondition.And }, "Age", "BETWEEN", "18 AND 60"));
+                whereParameters.Add(new DbQueryParameter(new List<JoinCondition>() { JoinCondition.And }, "District", "IN", "(N'D1', N'A3', N'A5', N'C7')"));
                 whereParameters.Add(new DbQueryParameter(new List<JoinCondition>() { JoinCondition.Or }, "Region", "!=", "N'Sverdlovskaya oblast'"));
                 config.ViewParameters.WhereParameters = whereParameters;
 
