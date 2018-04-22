@@ -146,7 +146,7 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
                 // executing extraction ...
                 object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
                 IReportGeneratorManager manager = new ExcelReportGeneratorManager(Server, TestDatabase);
-                Task<bool> result = manager.Generate(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
+                Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
                 result.Wait();
                 Assert.True(result.Result);
                 TearDownTestData();
@@ -178,5 +178,7 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
         }
     }
   `
+  !!!! THERE IS ONE MORE option : to pass ExecutionConfig like a valiable instead of path to file (see IReportGeneratorManager interface)
+  
   # 3 Nuget Package
   Nuget package is available on nuget.org : https://www.nuget.org/packages/ReportsGenerator/
