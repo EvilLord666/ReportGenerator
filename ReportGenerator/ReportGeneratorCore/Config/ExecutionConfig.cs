@@ -20,10 +20,11 @@ namespace ReportGenerator.Core.Config
         {
         }
 
-        public ExecutionConfig(ReportDataSource dataSource, IList<StoredProcedureParameter> storedProcedureParameters,
+        public ExecutionConfig(ReportDataSource dataSource, string name, IList<StoredProcedureParameter> storedProcedureParameters,
                                ViewParameters viewParameters)
         {
             DataSource = dataSource;
+            Name = name;
             StoredProcedureParameters = storedProcedureParameters.ToList();
             ViewParameters = viewParameters;
         }

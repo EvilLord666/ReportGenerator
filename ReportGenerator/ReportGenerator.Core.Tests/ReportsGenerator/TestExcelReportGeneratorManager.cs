@@ -20,7 +20,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(Server, _testDbName);
-            Task<bool> result = manager.Generate(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownTestData();

@@ -19,13 +19,23 @@ namespace ReportGenerator.Core.ReportsGenerator
             _extractor = new SimpleDbExtractor(connectionString);
         }
 
-        public async Task<bool> Generate(string template, string executionConfigFile, string reportFile, object[] parameters)
+        public async Task<bool> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)
+        {
+            ExecutionConfig config = ExecutionConfigManager.Read(executionConfigFile);
+            return await GenerateImplAsync(template, config, reportFile, parameters);
+        }
+
+        public async Task<bool> GenerateAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
+        {
+            return await GenerateImplAsync(template, config, reportFile, parameters);
+        }
+
+        public async Task<bool> GenerateImplAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
         {
             try
             {
-                ExecutionConfig config = ExecutionConfigManager.Read(executionConfigFile);
                 DbData result = config.DataSource == ReportDataSource.View ? await _extractor.ExtractAsync(config.Name, config.ViewParameters)
-                                                                           : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
+                    : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
                 if (result == null)
                     return false;
                 IReportGenerator generator = new ExcelReportGenerator(template, reportFile);
