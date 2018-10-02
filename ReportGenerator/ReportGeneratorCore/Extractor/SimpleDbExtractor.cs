@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
 using ReportGenerator.Core.StatementsGenerator;
@@ -13,15 +14,22 @@ namespace ReportGenerator.Core.Extractor
     //todo: umv: add logging
     public class SimpleDbExtractor : IDbExtractor
     {
-        public SimpleDbExtractor(string connectionString)
+        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string connectionString)
         {
-            if(string.IsNullOrEmpty(connectionString))
+            _logger = logger;
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                _logger.LogError("Connection string is Null.");
                 throw new ArgumentNullException(connectionString);
+            }
+
             _connectionString = connectionString;
         }
 
-        public SimpleDbExtractor(string host, string database, bool trustedConnection = true, string username = null, string password = null)
+        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string host, string database, 
+                                 bool trustedConnection = true, string username = null, string password = null)
         {
+            _logger = logger;
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
             builder.DataSource = host;
             builder.InitialCatalog = database;
@@ -40,6 +48,7 @@ namespace ReportGenerator.Core.Extractor
             {
                 try
                 {
+                    _logger.LogDebug("Extract db data async via \"Stored procedure\" started");
                     await connection.OpenAsync().ConfigureAwait(false); ;
                     SqlCommand command = new SqlCommand(storedPocedureName, connection);
                     command.CommandType = CommandType.StoredProcedure;
@@ -55,13 +64,14 @@ namespace ReportGenerator.Core.Extractor
                             command.Parameters.Add(procedureParameter);
                         }
                     }
-                    DbData result = await ReadDataImpl(command);                                    
+                    DbData result = await ReadDataImplAsync(command);                                    
                     connection.Close();
+                    _logger.LogDebug("Extract db data async via \"Stored procedure\" completed");
                     return result;
                 }
                 catch (Exception e)
                 {
-                    // todo: add log
+                    _logger.LogError($"An error occured during async data extraction via \"Stored procedure\", exception: {e}");
                     return null;
                 }
             }
@@ -73,24 +83,26 @@ namespace ReportGenerator.Core.Extractor
             {
                 try
                 {
+                    _logger.LogDebug("Extract db data async via \"View\" started");
                     await connection.OpenAsync().ConfigureAwait(false); ;
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
                     SqlCommand command = new SqlCommand(cmdText, connection);
                     command.CommandType = CommandType.Text;
-                    DbData result = await ReadDataImpl(command);
+                    DbData result = await ReadDataImplAsync(command);
 
                     connection.Close();
+                    _logger.LogDebug("Extract db data async via \"View\" completed");
                     return result;
                 }
                 catch (Exception e)
                 {
-                    // todo: add log
+                    _logger.LogError($"An error occured during async data extraction via \"View\", exception: {e}");
                     return null;
                 }
             }
         }
 
-        private async Task<DbData> ReadDataImpl(SqlCommand command)
+        private async Task<DbData> ReadDataImplAsync(SqlCommand command)
         {
             try
             {
@@ -112,10 +124,12 @@ namespace ReportGenerator.Core.Extractor
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occured during read data impl async, exception: {e}");
                 return null;
             }
         }
 
         private readonly string _connectionString;
+        private readonly ILogger<SimpleDbExtractor> _logger;
     }
 }

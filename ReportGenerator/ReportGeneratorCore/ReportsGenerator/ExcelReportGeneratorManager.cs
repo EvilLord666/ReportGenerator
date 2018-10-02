@@ -15,12 +15,13 @@ namespace ReportGenerator.Core.ReportsGenerator
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
-            _extractor = new SimpleDbExtractor(server, database, trustedConnection, userName, password);
+            _extractor = new SimpleDbExtractor(loggerFactory.CreateLogger<SimpleDbExtractor>(), server, database, 
+                                               trustedConnection, userName, password);
         }
 
         public ExcelReportGeneratorManager(string connectionString)
         {
-            _extractor = new SimpleDbExtractor(connectionString);
+            _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), connectionString);
         }
 
         public async Task<bool> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)
@@ -38,11 +39,13 @@ namespace ReportGenerator.Core.ReportsGenerator
         {
             try
             {
+                _logger.LogDebug("Report generation started");
                 DbData result = config.DataSource == ReportDataSource.View ? await _extractor.ExtractAsync(config.Name, config.ViewParameters)
                     : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
                 if (result == null)
                     return false;
                 IReportGenerator generator = new ExcelReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, reportFile);
+                _logger.LogDebug("Report generation completed");
                 return generator.Generate(result, parameters);
             }
             catch (Exception e)
