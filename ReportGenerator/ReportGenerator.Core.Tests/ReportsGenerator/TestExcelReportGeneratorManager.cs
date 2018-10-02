@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
@@ -19,7 +20,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             SetUpTestData();
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(Server, _testDbName);
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, Server, _testDbName);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.ReportsGenerator;
 using Xunit;
@@ -13,7 +15,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         {
             if (File.Exists(ReportFile))
                 File.Delete(ReportFile);
-            IReportGenerator generator = new ExcelReportGenerator(TestExcelTemplate, ReportFile);
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            ILogger<ExcelReportGenerator> logger = loggerFactory.CreateLogger<ExcelReportGenerator>();
+            IReportGenerator generator = new ExcelReportGenerator(logger, TestExcelTemplate, ReportFile);
             // Worksheet - 1, start row - 2, start column - 3
             object[] parameters = {1, 2, 3};
             DbData data = new DbData();
