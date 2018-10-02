@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Config;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Extractor;
@@ -8,10 +9,13 @@ namespace ReportGenerator.Core.ReportsGenerator
 {
     public class ExcelReportGeneratorManager : IReportGeneratorManager
     {
-        public ExcelReportGeneratorManager(string server, string database,  bool trustedconnection = true, 
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, 
+                                           string server, string database, bool trustedConnection = true, 
                                            string userName = null, string password = null)
         {
-            _extractor = new SimpleDbExtractor(server, database, trustedconnection, userName, password);
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
+            _extractor = new SimpleDbExtractor(server, database, trustedConnection, userName, password);
         }
 
         public ExcelReportGeneratorManager(string connectionString)
@@ -30,7 +34,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             return await GenerateImplAsync(template, config, reportFile, parameters);
         }
 
-        public async Task<bool> GenerateImplAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
+        private async Task<bool> GenerateImplAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
         {
             try
             {
@@ -38,15 +42,18 @@ namespace ReportGenerator.Core.ReportsGenerator
                     : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
                 if (result == null)
                     return false;
-                IReportGenerator generator = new ExcelReportGenerator(template, reportFile);
+                IReportGenerator generator = new ExcelReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, reportFile);
                 return generator.Generate(result, parameters);
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occurred during report generation, exception is: {e}");
                 return false;
             }
         }
 
         private readonly IDbExtractor _extractor;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<ExcelReportGeneratorManager> _logger;
     }
 }
