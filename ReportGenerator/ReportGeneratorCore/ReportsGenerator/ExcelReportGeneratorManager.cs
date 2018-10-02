@@ -19,8 +19,9 @@ namespace ReportGenerator.Core.ReportsGenerator
                                                trustedConnection, userName, password);
         }
 
-        public ExcelReportGeneratorManager(string connectionString)
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, string connectionString)
         {
+            _loggerFactory = loggerFactory;
             _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), connectionString);
         }
 
