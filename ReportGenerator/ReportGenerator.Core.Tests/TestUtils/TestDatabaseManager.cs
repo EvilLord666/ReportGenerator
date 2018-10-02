@@ -15,7 +15,7 @@ namespace ReportGenerator.Core.Tests.TestUtils
                 {
                     DropDatabase(serverInstance, database);
                 }
-                catch (Exception e) { }
+                catch (Exception ) { }
             }
             ExecuteStatement(GetConnectionString(serverInstance, MasterDatabase), string.Format(CreateDatabaseStatementTemplate, database));
         }
