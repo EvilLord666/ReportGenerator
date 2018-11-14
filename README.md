@@ -1,11 +1,12 @@
 # ReportGenerator
 # 1 Overview
-A small tool 4 generating excel reports based (MS SQL, other db were not tested) on data from db and excel template
+A small tool 4 generating excel tables (further they will be mentioned as reports) based (MS SQL, other db were not tested) on data from db and excel template, all logic for extracting depends on getting data from Stored procedures or Views. Report generator passes clauses for data filtering in View or Variables for Stored Procedures.
+
 There are two ways for getting data:
 
-from stored procedure
+- from stored procedure (passing variables)
 
-from view
+- from view (passing where clauses, ordering and grouping conditions)
 
 In both 2 ways there are a possibility to manipulate data selection by setting parameters (for stored procedure) and automatic sql generation for filtering View data.
 It should be noted that there is a configuration of View and StoredProcedure in xml.
@@ -52,7 +53,7 @@ DbQueryParameter consist of following:
 
 -comparison operator (make sense only for WHERE parameters) - is any valid SQL condition operator like >, <, =, IS, IS NOT, IN, BETWEEN, LIKE and so on...
 
--parameter value works for WHERE (value for comparison) and ORDER BY (ASC or DESC)
+-parameter value works for WHERE (value for comparison) and ORDER BY (ASC or DESC),  THESE are DEFAULT values, they OF COURSE could be set during the runtime
 
 Example:
 `
