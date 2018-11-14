@@ -1,6 +1,8 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Extensions;
+using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
 using Xunit;
 
@@ -13,6 +15,7 @@ namespace ReportGenerator.Core.Tests.Extensions
             _testDbName = TestDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
             _connectionString = TestDatabaseManager.CreateDatabase(Server, _testDbName);
             _services = new ServiceCollection();
+            _services.AddScoped<ILoggerFactory>(_ => new LoggerFactory());
             _services.AddReportGenerator(_connectionString);
         }
 
@@ -24,7 +27,10 @@ namespace ReportGenerator.Core.Tests.Extensions
         [Fact]
         public void TestServiceInstantiationViaProvider()
         {
+            IServiceProvider serviceProvider = _services.BuildServiceProvider();
+            IReportGeneratorManager reportGenerator = serviceProvider.GetService<IReportGeneratorManager>();
             
+            Assert.NotNull(reportGenerator);
         }
 
         private const string Server = @"(localdb)\mssqllocaldb";
