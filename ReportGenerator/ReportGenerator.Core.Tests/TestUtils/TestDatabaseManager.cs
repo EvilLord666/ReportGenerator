@@ -7,7 +7,7 @@ namespace ReportGenerator.Core.Tests.TestUtils
 {
     public static class TestDatabaseManager
     {
-        public static void CreateDatabase(string serverInstance, string database, bool drop = false)
+        public static string CreateDatabase(string serverInstance, string database, bool drop = false)
         {
             if (drop)
             {
@@ -15,14 +15,24 @@ namespace ReportGenerator.Core.Tests.TestUtils
                 {
                     DropDatabase(serverInstance, database);
                 }
-                catch (Exception ) { }
+                catch (Exception e)
+                {
+                    // todo: umv: do something in future
+                }
             }
             ExecuteStatement(GetConnectionString(serverInstance, MasterDatabase), string.Format(CreateDatabaseStatementTemplate, database));
+            return GetConnectionString(serverInstance, database);
         }
 
         public static void DropDatabase(string serverInstance, string database)
         {
             ExecuteStatement(GetConnectionString(serverInstance, MasterDatabase), string.Format(DropDatabaseStatementTemplate, database));
+        }
+
+        public static void DropDatabase(string connectionString)
+        {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+            ExecuteStatement(connectionString, string.Format(DropDatabaseStatementTemplate, builder.InitialCatalog));
         }
 
         public static void ExecuteSql(string serverInstance, string database, string sql)
@@ -41,7 +51,7 @@ namespace ReportGenerator.Core.Tests.TestUtils
             }
         }
 
-        private static  string GetConnectionString(string serverInstance, string database)
+        private static string GetConnectionString(string serverInstance, string database)
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
             builder.DataSource = serverInstance;
