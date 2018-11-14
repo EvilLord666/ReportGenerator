@@ -14,7 +14,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
     public class TestExcelReportGeneratorManager
     {
         [Fact]
-        public void TestGenerateReport()
+        public void TestGenerateReportMsSql()
         {
             _testDbName = TestDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
             SetUpTestData();
@@ -26,6 +26,21 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             result.Wait();
             Assert.True(result.Result);
             TearDownTestData();
+        }
+
+        public void TestGenerateReportSqlLite()
+        {
+            
+        }
+        
+        public void TestGenerateReportPostgres()
+        {
+            
+        }
+        
+        public void TestGenerateReportMySql()
+        {
+            
         }
 
         private void SetUpTestData()
