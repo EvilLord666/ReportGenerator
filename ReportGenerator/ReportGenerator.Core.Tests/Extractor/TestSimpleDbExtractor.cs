@@ -119,16 +119,16 @@ namespace ReportGenerator.Core.Tests.Extractor
 
         private void SetUpTestData()
         {
-            TestDatabaseManager.CreateDatabase(Server, TestDatabase, true);
+            TestSqlServerDatabaseManager.CreateDatabase(Server, TestDatabase, true);
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
-            TestDatabaseManager.ExecuteSql(Server, TestDatabase, createDatabaseStatement);
-            TestDatabaseManager.ExecuteSql(Server, TestDatabase, insertDataStatement);
+            TestSqlServerDatabaseManager.ExecuteSql(Server, TestDatabase, createDatabaseStatement);
+            TestSqlServerDatabaseManager.ExecuteSql(Server, TestDatabase, insertDataStatement);
         }
 
         private void TearDownTestData()
         {
-            TestDatabaseManager.DropDatabase(Server, TestDatabase);
+            TestSqlServerDatabaseManager.DropDatabase(Server, TestDatabase);
         }
 
         private const string Server = @"(localdb)\mssqllocaldb";

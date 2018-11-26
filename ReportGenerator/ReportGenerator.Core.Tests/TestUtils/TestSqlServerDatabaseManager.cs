@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ReportGenerator.Core.Tests.TestUtils
 {
-    public static class TestDatabaseManager
+    public static class TestSqlServerDatabaseManager
     {
         public static string CreateDatabase(string serverInstance, string database, bool drop = false)
         {
