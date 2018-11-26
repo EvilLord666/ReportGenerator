@@ -13,7 +13,7 @@ namespace ReportGenerator.Core.Tests.Extensions
         public ServiceCollectionExtensionsTests()
         {
             _testDbName = TestDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
-            _connectionString = TestDatabaseManager.CreateDatabase(Server, _testDbName);
+            _connectionString = TestSqlServerDatabaseManager.CreateDatabase(Server, _testDbName);
             _services = new ServiceCollection();
             _services.AddScoped<ILoggerFactory>(_ => new LoggerFactory());
             _services.AddReportGenerator(_connectionString);
@@ -21,7 +21,7 @@ namespace ReportGenerator.Core.Tests.Extensions
 
         public void Dispose()
         {
-            TestDatabaseManager.DropDatabase(Server, _testDbName);
+            TestSqlServerDatabaseManager.DropDatabase(Server, _testDbName);
         }
 
         [Fact]
