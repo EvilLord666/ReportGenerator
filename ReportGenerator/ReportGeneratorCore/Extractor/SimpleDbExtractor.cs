@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
+using ReportGenerator.Core.Database;
 using ReportGenerator.Core.StatementsGenerator;
 
 namespace ReportGenerator.Core.Extractor
@@ -14,7 +16,7 @@ namespace ReportGenerator.Core.Extractor
     //todo: umv: add logging
     public class SimpleDbExtractor : IDbExtractor
     {
-        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string connectionString)
+        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string connectionString, DatabaseEngine dbEngine)
         {
             _logger = logger;
             if (string.IsNullOrEmpty(connectionString))
@@ -24,6 +26,7 @@ namespace ReportGenerator.Core.Extractor
             }
 
             _connectionString = connectionString;
+            _dbEngine = dbEngine;
         }
 
         public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string host, string database, 
@@ -44,27 +47,33 @@ namespace ReportGenerator.Core.Extractor
 
         public async Task<DbData> ExtractAsync(string storedPocedureName, IList<StoredProcedureParameter> parameters)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (DbConnection connection = DbFactory.Create(_connectionString, databaseEngine: _dbEngine))
             {
                 try
                 {
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" started");
+                    DbData result = null;
                     await connection.OpenAsync().ConfigureAwait(false); ;
-                    SqlCommand command = new SqlCommand(storedPocedureName, connection);
-                    command.CommandType = CommandType.StoredProcedure;
-                    // add parameters
-                    if (parameters != null && parameters.Count > 0)
+                    using (IDbCommand command = DbFactory.Create(connection, storedPocedureName, _dbEngine))
                     {
-                        foreach (StoredProcedureParameter parameter in parameters)
+                        command.CommandType = CommandType.StoredProcedure;
+                        // add parameters
+                        if (parameters != null && parameters.Count > 0)
                         {
-                            if(string.IsNullOrEmpty(parameter.ParameterName))
-                                throw new InvalidDataException("parameter name can't be null or empty");
-                            SqlParameter procedureParameter = new SqlParameter(parameter.ParameterName, parameter.ParameterType);
-                            procedureParameter.Value = parameter.ParameterValue;
-                            command.Parameters.Add(procedureParameter);
+                            foreach (StoredProcedureParameter parameter in parameters)
+                            {
+                                if (string.IsNullOrEmpty(parameter.ParameterName))
+                                    throw new InvalidDataException("parameter name can't be null or empty");
+                                SqlParameter procedureParameter =
+                                    new SqlParameter(parameter.ParameterName, parameter.ParameterType);
+                                procedureParameter.Value = parameter.ParameterValue;
+                                command.Parameters.Add(procedureParameter);
+                            }
                         }
+
+                        result = await ReadDataImplAsync(command);
                     }
-                    DbData result = await ReadDataImplAsync(command);                                    
+
                     connection.Close();
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" completed");
                     return result;
@@ -79,16 +88,20 @@ namespace ReportGenerator.Core.Extractor
 
         public async Task<DbData> ExtractAsync(string viewName, ViewParameters parameters)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (DbConnection connection = DbFactory.Create(_connectionString, _dbEngine))
             {
                 try
                 {
                     _logger.LogDebug("Extract db data async via \"View\" started");
+                    DbData result = null;
                     await connection.OpenAsync().ConfigureAwait(false); ;
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
-                    SqlCommand command = new SqlCommand(cmdText, connection);
-                    command.CommandType = CommandType.Text;
-                    DbData result = await ReadDataImplAsync(command);
+                    using (IDbCommand command = DbFactory.Create(connection, cmdText, _dbEngine))
+                        //new SqlCommand(cmdText, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+                        result = await ReadDataImplAsync(command);
+                    }
 
                     connection.Close();
                     _logger.LogDebug("Extract db data async via \"View\" completed");
@@ -102,7 +115,7 @@ namespace ReportGenerator.Core.Extractor
             }
         }
 
-        private async Task<DbData> ReadDataImplAsync(SqlCommand command)
+        private async Task<DbData> ReadDataImplAsync(IDbCommand command)
         {
             try
             {
@@ -131,5 +144,6 @@ namespace ReportGenerator.Core.Extractor
 
         private readonly string _connectionString;
         private readonly ILogger<SimpleDbExtractor> _logger;
+        private readonly DatabaseEngine _dbEngine;
     }
 }
