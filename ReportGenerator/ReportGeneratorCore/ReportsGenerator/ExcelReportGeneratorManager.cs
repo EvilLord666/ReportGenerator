@@ -22,6 +22,7 @@ namespace ReportGenerator.Core.ReportsGenerator
         public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, string connectionString)
         {
             _loggerFactory = loggerFactory;
+            _logger = _loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
             _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), connectionString);
         }
 
@@ -40,18 +41,18 @@ namespace ReportGenerator.Core.ReportsGenerator
         {
             try
             {
-                //_logger.LogDebug("Report generation started");
+                _logger.LogDebug("Report generation started");
                 DbData result = config.DataSource == ReportDataSource.View ? await _extractor.ExtractAsync(config.Name, config.ViewParameters)
                     : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
                 if (result == null)
                     return false;
                 IReportGenerator generator = new ExcelReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, reportFile);
-                //_logger.LogDebug("Report generation completed");
+                _logger.LogDebug("Report generation completed");
                 return generator.Generate(result, parameters);
             }
             catch (Exception e)
             {
-                //_logger.LogError($"An error occurred during report generation, exception is: {e}");
+                _logger.LogError($"An error occurred during report generation, exception is: {e}");
                 return false;
             }
         }
