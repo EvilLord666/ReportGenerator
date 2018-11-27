@@ -16,7 +16,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [Fact]
         public void TestGenerateReportMsSql()
         {
-            _testDbName = TestSqlServerDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
+            _testDbName = TestSqlServerDatabasePattern + "_" + DateTime.Now.Millisecond.ToString();
             SetUpSqlServerTestData();
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
@@ -49,8 +49,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private void SetUpSqlServerTestData()
         {
             TestSqlServerDatabaseManager.CreateDatabase(Server, _testDbName);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqlServerCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqlServerInsertDataScript));
             TestSqlServerDatabaseManager.ExecuteSql(Server, _testDbName, createDatabaseStatement);
             TestSqlServerDatabaseManager.ExecuteSql(Server, _testDbName, insertDataStatement);
         }
@@ -63,8 +63,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private void SetUpSqLiteTestData()
         {
             TestSqLiteDatabaseManager.CreateDatabase(TestSqLiteDatabase);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqLiteCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqLiteInsertDataScript));
             TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, createDatabaseStatement);
             TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, insertDataStatement);
         }
@@ -82,8 +82,10 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";
         private const string TestSqLiteDatabase = "ReportGeneratorTestDb.sqlite";
 
-        private const string CreateDatabaseScript = @"..\..\..\DbScripts\CreateDb.sql";
-        private const string InsertDataScript = @"..\..\..\DbScripts\CreateData.sql";
+        private const string SqlServerCreateDatabaseScript = @"..\..\..\DbScripts\SqlServerCreateDb.sql";
+        private const string SqlServerInsertDataScript = @"..\..\..\DbScripts\SqlServerCreateData.sql";
+        private const string SqLiteCreateDatabaseScript = @"..\..\..\DbScripts\SqLiteCreateDb.sql";
+        private const string SqLiteInsertDataScript = @"..\..\..\DbScripts\SqLiteCreateData.sql";
 
         private string _testDbName;
     }

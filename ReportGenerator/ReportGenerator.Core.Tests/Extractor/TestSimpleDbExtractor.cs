@@ -134,8 +134,8 @@ namespace ReportGenerator.Core.Tests.Extractor
         private const string Server = @"(localdb)\mssqllocaldb";
         private const string TestDatabase = "ReportGeneratorTestDb";
 
-        private const string CreateDatabaseScript = @"..\..\..\DbScripts\CreateDb.sql";
-        private const string InsertDataScript = @"..\..\..\DbScripts\CreateData.sql";
+        private const string CreateDatabaseScript = @"..\..\..\DbScripts\SqlServerCreateDb.sql";
+        private const string InsertDataScript = @"..\..\..\DbScripts\SqlServerCreateData.sql";
 
         private const string TestStoredProcedureWithoutParams = "SelectCitizensWithCities";
         private const string TestStoredProcedureWithCity = "SelectCitizensWithCitiesByCity";
