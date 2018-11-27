@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
@@ -34,6 +35,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             SetUpSqLiteTestData();
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
+            loggerFactory.AddConsole();
+            loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, $"Data Source={TestSqLiteDatabase};Version={3}");
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
             result.Wait();

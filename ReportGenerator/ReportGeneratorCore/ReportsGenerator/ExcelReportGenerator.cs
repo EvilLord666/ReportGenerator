@@ -51,7 +51,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                 int workSheetNumber = Convert.ToInt32(parameters[WorkSheetNumberIndex]);
                 int startRow = Convert.ToInt32(parameters[StartRowIndex]);
                 int startColumn = Convert.ToInt32(parameters[StartColumnIndex]);
-                //_logger.LogDebug($"Write DB data to excel file with template: {_template} at worksheet: {workSheetNumber}, start row: {startRow}, start column: {startColumn}");
+                _logger.LogDebug($"Write DB data to excel file with template: {_template} at worksheet: {workSheetNumber}, start row: {startRow}, start column: {startColumn}");
                 ExcelWorksheet workSheet = _package.Workbook.Worksheets[workSheetNumber];
 
                 int row = startRow;
@@ -73,7 +73,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                     Directory.CreateDirectory(fileInfo.DirectoryName);
 
                 _package.SaveAs(fileInfo);
-                //_logger.LogDebug("Write DB data to excel file completed");
+                _logger.LogDebug("Write DB data to excel file completed");
                 return true;
             }
             catch (Exception e)
