@@ -32,7 +32,12 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         public void TestGenerateReportSqlLite()
         {
             SetUpSqLiteTestData();
-            // test impl ...
+            object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, $"Data Source={TestSqLiteDatabase};Version={3}");
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
+            result.Wait();
+            Assert.True(result.Result);
             TearDownSqLiteTestData();
         }
         
