@@ -31,8 +31,10 @@ namespace ReportGenerator.Core.Tests.TestUtils
                                                                                     database, 3)))
             {
                 connection.Open();
-                SQLiteCommand command = new SQLiteCommand(sql, connection);
-                command.ExecuteNonQuery();
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
                 connection.Close();
             }
         }
