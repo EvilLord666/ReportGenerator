@@ -64,14 +64,13 @@ namespace ReportGenerator.Core.Extractor
                             {
                                 if (string.IsNullOrEmpty(parameter.ParameterName))
                                     throw new InvalidDataException("parameter name can't be null or empty");
-                                SqlParameter procedureParameter =
-                                    new SqlParameter(parameter.ParameterName, parameter.ParameterType);
+                                SqlParameter procedureParameter = new SqlParameter(parameter.ParameterName, parameter.ParameterType);
                                 procedureParameter.Value = parameter.ParameterValue;
                                 command.Parameters.Add(procedureParameter);
                             }
                         }
 
-                        result = await ReadDataImplAsync(command);
+                        result = await ReadDataImplAsync((DbCommand)command);
                     }
 
                     connection.Close();
@@ -97,10 +96,9 @@ namespace ReportGenerator.Core.Extractor
                     await connection.OpenAsync().ConfigureAwait(false); ;
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
                     using (IDbCommand command = DbFactory.Create(connection, cmdText, _dbEngine))
-                        //new SqlCommand(cmdText, connection))
                     {
                         command.CommandType = CommandType.Text;
-                        result = await ReadDataImplAsync(command);
+                        result = await ReadDataImplAsync((DbCommand)command);
                     }
 
                     connection.Close();
@@ -115,12 +113,12 @@ namespace ReportGenerator.Core.Extractor
             }
         }
 
-        private async Task<DbData> ReadDataImplAsync(IDbCommand command)
+        private async Task<DbData> ReadDataImplAsync(DbCommand command)
         {
             try
             {
                 DbData result = new DbData();
-                SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
+                DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
                 //SqlDataReader reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
@@ -145,5 +143,6 @@ namespace ReportGenerator.Core.Extractor
         private readonly string _connectionString;
         private readonly ILogger<SimpleDbExtractor> _logger;
         private readonly DatabaseEngine _dbEngine;
+        private readonly IDbManager _dbManager;
     }
 }
