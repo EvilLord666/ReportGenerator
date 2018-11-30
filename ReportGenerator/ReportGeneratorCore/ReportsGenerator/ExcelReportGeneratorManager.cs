@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Config;
 using ReportGenerator.Core.Data;
+using ReportGenerator.Core.Database;
 using ReportGenerator.Core.Extractor;
 
 namespace ReportGenerator.Core.ReportsGenerator
@@ -19,11 +20,11 @@ namespace ReportGenerator.Core.ReportsGenerator
                                                trustedConnection, userName, password);
         }
 
-        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, string connectionString)
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, string connectionString, DatabaseEngine dbEngine)
         {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
-            _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), connectionString);
+            _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), connectionString, dbEngine);
         }
 
         public async Task<bool> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)

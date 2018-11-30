@@ -6,15 +6,15 @@ using System.Data.SQLite;
 
 namespace ReportGenerator.Core.Database
 {
+    // todo: impl 4 other DB engine types
     public static class DbFactory
     {
-        public static DbConnection Create(string connectionString, DatabaseEngine databaseEngine = DatabaseEngine.SqlServer)
+        /*public static DbConnection Create(string connectionString, DatabaseEngine databaseEngine = DatabaseEngine.SqlServer)
         {
             if (databaseEngine == DatabaseEngine.SqlServer)
                 return new SqlConnection(connectionString);
             if(databaseEngine == DatabaseEngine.SqLite)
-                return new SQLiteConnection(connectionString);
-            // todo: impl 4 other DB engine types
+                return new SQLiteConnection(connectionString);          
             return null;
         }
 
@@ -24,7 +24,13 @@ namespace ReportGenerator.Core.Database
                 return new SqlCommand(commandText, connection as SqlConnection);
             if (databaseEngine == DatabaseEngine.SqLite)
                 return new SQLiteCommand(commandText, connection as SQLiteConnection);
-            // todo: impl 4 other DB engine types
+            return null;
+        }*/
+
+        public static IDbManager Create(DatabaseEngine dbEngine)
+        {
+            if (dbEngine == DatabaseEngine.SqlServer)
+                return new SqlServerDbManager();
             return null;
         }
     }
