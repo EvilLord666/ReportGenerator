@@ -1,6 +1,6 @@
 namespace ReportGenerator.Core.Database
 {
-    public enum DatabaseEngine
+    public enum DbEngine
     {
         SqlServer,
         SqLite,

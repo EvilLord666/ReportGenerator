@@ -16,7 +16,7 @@ namespace ReportGenerator.Core.Extractor
     //todo: umv: add logging
     public class SimpleDbExtractor : IDbExtractor
     {
-        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string connectionString, DatabaseEngine dbEngine)
+        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string connectionString, DbEngine dbEngine)
         {
             _logger = logger;
             if (string.IsNullOrEmpty(connectionString))
@@ -29,12 +29,14 @@ namespace ReportGenerator.Core.Extractor
             _dbEngine = dbEngine;
         }
 
-        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string host, string database, 
+        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string host, DbEngine dbEngine, string database, 
                                  bool trustedConnection = true, string username = null, string password = null)
         {
             _logger = logger;
+            _dbEngine = dbEngine;
+            _dbManager = DbFactory.Create(dbEngine);
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            builder.DataSource = host;
+            /*builder.DataSource = host;
             builder.InitialCatalog = database;
             builder.TrustServerCertificate = trustedConnection;
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
@@ -42,7 +44,7 @@ namespace ReportGenerator.Core.Extractor
                 builder.UserID = username;
                 builder.Password = password;
             }
-            _connectionString = builder.ConnectionString;
+            _connectionString = builder.ConnectionString;*/
         }
 
         public async Task<DbData> ExtractAsync(string storedPocedureName, IList<StoredProcedureParameter> parameters)
@@ -142,7 +144,7 @@ namespace ReportGenerator.Core.Extractor
 
         private readonly string _connectionString;
         private readonly ILogger<SimpleDbExtractor> _logger;
-        private readonly DatabaseEngine _dbEngine;
+        private readonly DbEngine _dbEngine;
         private readonly IDbManager _dbManager;
     }
 }

@@ -20,7 +20,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                                                trustedConnection, userName, password);
         }
 
-        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, string connectionString, DatabaseEngine dbEngine)
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, string connectionString, DbEngine dbEngine)
         {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
