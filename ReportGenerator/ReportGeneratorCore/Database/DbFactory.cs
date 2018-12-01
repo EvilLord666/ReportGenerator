@@ -27,9 +27,9 @@ namespace ReportGenerator.Core.Database
             return null;
         }*/
 
-        public static IDbManager Create(DatabaseEngine dbEngine)
+        public static IDbManager Create(DbEngine dbEngine)
         {
-            if (dbEngine == DatabaseEngine.SqlServer)
+            if (dbEngine == DbEngine.SqlServer)
                 return new SqlServerDbManager();
             return null;
         }
