@@ -66,7 +66,7 @@ namespace ReportGenerator.Core.Extractor
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" started");
                     DbData result = null;
                     await connection.OpenAsync().ConfigureAwait(false); ;
-                    using (IDbCommand command = DbManagerFactory.Create(connection, storedPocedureName, _dbEngine))
+                    using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, storedPocedureName))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         // add parameters
@@ -107,7 +107,7 @@ namespace ReportGenerator.Core.Extractor
                     DbData result = null;
                     await connection.OpenAsync().ConfigureAwait(false); ;
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
-                    using (IDbCommand command = DbManagerFactory.Create(connection, cmdText, _dbEngine))
+                    using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText))
                     {
                         command.CommandType = CommandType.Text;
                         result = await ReadDataImplAsync((DbCommand)command);
