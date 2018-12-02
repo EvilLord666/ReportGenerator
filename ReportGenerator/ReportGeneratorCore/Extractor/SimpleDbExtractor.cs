@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
 using ReportGenerator.Core.Database;
+using ReportGenerator.Core.Database.Factories;
+using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.StatementsGenerator;
 
 namespace ReportGenerator.Core.Extractor
@@ -16,7 +18,7 @@ namespace ReportGenerator.Core.Extractor
     //todo: umv: add logging
     public class SimpleDbExtractor : IDbExtractor
     {
-        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string connectionString, DbEngine dbEngine)
+        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, DbEngine dbEngine, string connectionString)
         {
             _logger = logger;
             if (string.IsNullOrEmpty(connectionString))
@@ -29,34 +31,41 @@ namespace ReportGenerator.Core.Extractor
             _dbEngine = dbEngine;
         }
 
-        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, string host, DbEngine dbEngine, string database, 
+        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, DbEngine dbEngine, string host, string database, 
                                  bool trustedConnection = true, string username = null, string password = null)
         {
             _logger = logger;
             _dbEngine = dbEngine;
-            _dbManager = DbFactory.Create(dbEngine);
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            /*builder.DataSource = host;
-            builder.InitialCatalog = database;
-            builder.TrustServerCertificate = trustedConnection;
-            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            _dbManager = DbManagerFactory.Create(dbEngine);
+            IDictionary<string, string> parameters = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(host))
+                parameters[DbParametersDefs.HostKey] = host;
+            if (!string.IsNullOrEmpty(database))
+                parameters[DbParametersDefs.DatabaseKey] = database;
+            parameters[DbParametersDefs.UseTrustedConnectionKey] = trustedConnection.ToString();
+
+            if (username == null && password == null)
+                parameters[DbParametersDefs.UseIntegratedSecurityKey] = true.ToString();
+            else
             {
-                builder.UserID = username;
-                builder.Password = password;
+                parameters[DbParametersDefs.LoginKey] = username;
+                parameters[DbParametersDefs.PasswordKey] = password;
+                parameters[DbParametersDefs.UseIntegratedSecurityKey] = false.ToString();
             }
-            _connectionString = builder.ConnectionString;*/
+
+            _connectionString = ConnectionStringBuilder.Build(dbEngine, parameters);
         }
 
         public async Task<DbData> ExtractAsync(string storedPocedureName, IList<StoredProcedureParameter> parameters)
         {
-            using (DbConnection connection = DbFactory.Create(_connectionString, databaseEngine: _dbEngine))
+            using (DbConnection connection = DbManagerFactory.Create(_connectionString, databaseEngine: _dbEngine))
             {
                 try
                 {
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" started");
                     DbData result = null;
                     await connection.OpenAsync().ConfigureAwait(false); ;
-                    using (IDbCommand command = DbFactory.Create(connection, storedPocedureName, _dbEngine))
+                    using (IDbCommand command = DbManagerFactory.Create(connection, storedPocedureName, _dbEngine))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         // add parameters
@@ -89,7 +98,7 @@ namespace ReportGenerator.Core.Extractor
 
         public async Task<DbData> ExtractAsync(string viewName, ViewParameters parameters)
         {
-            using (DbConnection connection = DbFactory.Create(_connectionString, _dbEngine))
+            using (DbConnection connection = DbManagerFactory.Create(_connectionString, _dbEngine))
             {
                 try
                 {
@@ -97,7 +106,7 @@ namespace ReportGenerator.Core.Extractor
                     DbData result = null;
                     await connection.OpenAsync().ConfigureAwait(false); ;
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
-                    using (IDbCommand command = DbFactory.Create(connection, cmdText, _dbEngine))
+                    using (IDbCommand command = DbManagerFactory.Create(connection, cmdText, _dbEngine))
                     {
                         command.CommandType = CommandType.Text;
                         result = await ReadDataImplAsync((DbCommand)command);

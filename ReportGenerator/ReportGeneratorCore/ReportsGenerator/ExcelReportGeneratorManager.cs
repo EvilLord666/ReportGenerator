@@ -10,21 +10,22 @@ namespace ReportGenerator.Core.ReportsGenerator
 {
     public class ExcelReportGeneratorManager : IReportGeneratorManager
     {
-        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, 
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory,
+                                           DbEngine dbEngine,
                                            string server, string database, bool trustedConnection = true, 
                                            string userName = null, string password = null)
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
-            _extractor = new SimpleDbExtractor(loggerFactory.CreateLogger<SimpleDbExtractor>(), server, database, 
+            _extractor = new SimpleDbExtractor(loggerFactory.CreateLogger<SimpleDbExtractor>(), dbEngine, server, database, 
                                                trustedConnection, userName, password);
         }
 
-        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, string connectionString, DbEngine dbEngine)
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, DbEngine dbEngine, string connectionString)
         {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
-            _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), connectionString, dbEngine);
+            _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), dbEngine, connectionString);
         }
 
         public async Task<bool> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)
