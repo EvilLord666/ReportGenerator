@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace ReportGenerator.Core.Database
+namespace ReportGenerator.Core.Database.Managers
 {
     // todo: umv: pass logger here
     public class SqlServerDbManager : IDbManager

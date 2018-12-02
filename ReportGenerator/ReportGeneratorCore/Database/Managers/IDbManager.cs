@@ -2,7 +2,7 @@ using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace ReportGenerator.Core.Database
+namespace ReportGenerator.Core.Database.Managers
 {
     public interface IDbManager
     {
