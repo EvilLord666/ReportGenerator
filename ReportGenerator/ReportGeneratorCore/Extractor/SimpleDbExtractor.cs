@@ -10,6 +10,7 @@ using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
 using ReportGenerator.Core.Database;
 using ReportGenerator.Core.Database.Factories;
+using ReportGenerator.Core.Database.Managers;
 using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.StatementsGenerator;
 
@@ -58,7 +59,7 @@ namespace ReportGenerator.Core.Extractor
 
         public async Task<DbData> ExtractAsync(string storedPocedureName, IList<StoredProcedureParameter> parameters)
         {
-            using (DbConnection connection = DbManagerFactory.Create(_connectionString, databaseEngine: _dbEngine))
+            using (DbConnection connection = DbConnectionFactory.Create(_dbEngine, _connectionString))
             {
                 try
                 {
@@ -98,7 +99,7 @@ namespace ReportGenerator.Core.Extractor
 
         public async Task<DbData> ExtractAsync(string viewName, ViewParameters parameters)
         {
-            using (DbConnection connection = DbManagerFactory.Create(_connectionString, _dbEngine))
+            using (DbConnection connection = DbConnectionFactory.Create(_dbEngine, _connectionString))
             {
                 try
                 {
