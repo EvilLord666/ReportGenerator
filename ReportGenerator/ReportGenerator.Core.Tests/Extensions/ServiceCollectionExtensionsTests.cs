@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ReportGenerator.Core.Database;
 using ReportGenerator.Core.Extensions;
 using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
@@ -16,7 +17,7 @@ namespace ReportGenerator.Core.Tests.Extensions
             _connectionString = TestSqlServerDatabaseManager.CreateDatabase(Server, _testDbName);
             _services = new ServiceCollection();
             _services.AddScoped<ILoggerFactory>(_ => new LoggerFactory());
-            _services.AddReportGenerator(_connectionString);
+            _services.AddReportGenerator(DbEngine.SqlServer, _connectionString);
         }
 
         public void Dispose()
