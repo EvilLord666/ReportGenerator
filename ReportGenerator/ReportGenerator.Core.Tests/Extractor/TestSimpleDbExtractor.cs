@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
+using ReportGenerator.Core.Database;
 using ReportGenerator.Core.Extractor;
 using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
@@ -22,12 +23,12 @@ namespace ReportGenerator.Core.Tests.Extractor
         }
 
         [Fact]
-        public void TestExctractFromStoredProcNoParams()
+        public void TestExtractFromStoredProcNoParams()
         {
             SetUpTestData();
             // testing is here
             
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithoutParams, new List<StoredProcedureParameter>());
             result.Wait();
             DbData rows = result.Result;
@@ -41,11 +42,11 @@ namespace ReportGenerator.Core.Tests.Extractor
         [InlineData("г. Нижний Тагил", 3)]
         [InlineData("г. Первоуральск", 3)]
         [InlineData("г. Челябинск", 4)]
-        public void TestExctractFromStoredProcWithCityParam(string parameterValue, int expectedNumberOfRows)
+        public void TestExtractFromStoredProcWithCityParam(string parameterValue, int expectedNumberOfRows)
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCity, 
                                                          new List<StoredProcedureParameter>{ new StoredProcedureParameter(SqlDbType.NVarChar, "City", parameterValue) });
             result.Wait();
@@ -59,11 +60,11 @@ namespace ReportGenerator.Core.Tests.Extractor
         [InlineData("г. Нижний Тагил", 40, 1)]
         [InlineData("г. Первоуральск", 31, 1)]
         [InlineData("г. Челябинск", 15, 3)]
-        public void TestExctractFromStoredProcWithCityAndAgeParams(string cityParameterValue, int ageParameterValue, int expectedNumberOfRows)
+        public void TestExtractFromStoredProcWithCityAndAgeParams(string cityParameterValue, int ageParameterValue, int expectedNumberOfRows)
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCityAndAge,  new List<StoredProcedureParameter>
             {
                 new StoredProcedureParameter(SqlDbType.NVarChar, "City", cityParameterValue),
@@ -80,7 +81,7 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestView, new ViewParameters());
             result.Wait();
             DbData rows = result.Result;
@@ -109,7 +110,7 @@ namespace ReportGenerator.Core.Tests.Extractor
                 IList<JoinCondition> sexJoin = parameters.WhereParameters.Count > 0 ? new List<JoinCondition>() {JoinCondition.And}  : null;
                 parameters.WhereParameters.Add(new DbQueryParameter(sexJoin, "Sex", "=", sex.Value ? "1" : "0"));
             }
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestView, parameters);
             result.Wait();
             DbData rows = result.Result;

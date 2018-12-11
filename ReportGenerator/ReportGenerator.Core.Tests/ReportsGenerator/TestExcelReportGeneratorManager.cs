@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using ReportGenerator.Core.Database;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
@@ -22,7 +23,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, Server, _testDbName);
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, 
+                                                                              Server, _testDbName);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
@@ -37,7 +39,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             ILoggerFactory loggerFactory = new LoggerFactory();
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, $"Data Source={TestSqLiteDatabase};Version={3}");
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, 
+                                                                              $"Data Source={TestSqLiteDatabase};Version={3}");
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
