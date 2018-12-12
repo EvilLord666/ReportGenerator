@@ -42,6 +42,7 @@ namespace ReportGenerator.Core.Database.Managers
             }
         }
 
+        // todo: umv: implement following methods
         public bool ExecuteNonQuery(IDbCommand command)
         {
             throw new System.NotImplementedException();

@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SQLite;
 
 namespace ReportGenerator.Core.Database.Factories
 {
@@ -10,8 +11,9 @@ namespace ReportGenerator.Core.Database.Factories
         {
             if (dbEngine == DbEngine.SqlServer)
                 return new SqlCommand(cmdText, connection as SqlConnection);
-            throw new NotImplementedException("other db engines are not ready yet!");
-            return null;
+            if (dbEngine == DbEngine.SqLite)
+                return new SQLiteCommand(cmdText, connection as SQLiteConnection);
+            throw new NotImplementedException("Other db engine were not implemented yet");
         }
     }
 }
