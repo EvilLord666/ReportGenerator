@@ -16,16 +16,16 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
     public class TestExcelReportGeneratorManager
     {
         [Fact]
-        public void TestGenerateReportMsSql()
+        public void TestGenerateReportSqlServer()
         {
             _testDbName = TestSqlServerDatabasePattern + "_" + DateTime.Now.Millisecond.ToString();
             SetUpSqlServerTestData();
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, 
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqlServer, 
                                                                               Server, _testDbName);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqlServerDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownSqlServerTestData();
@@ -41,7 +41,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, 
                                                                               $"Data Source={TestSqLiteDatabase};Version={3}");
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, DataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownSqLiteTestData();
@@ -87,7 +87,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
         private const string ReportFile = @".\Report.xlsx";
-        private const string DataExecutionConfig = @"..\..\..\ExampleConfig\dataExtractionParams.xml";
+        private const string SqlServerDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
+        private const string SqLiteDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
 
         private const string Server = @"(localdb)\mssqllocaldb";
         private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";
