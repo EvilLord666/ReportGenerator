@@ -8,7 +8,7 @@ namespace ReportGenerator.Core.Database.Factories
     {
         public static IDbCommand Create(DbEngine dbEngine, IDbConnection connection, string cmdText)
         {
-            if (dbEngine == DbEngine.MySql)
+            if (dbEngine == DbEngine.SqlServer)
                 return new SqlCommand(cmdText, connection as SqlConnection);
             throw new NotImplementedException("other db engines are not ready yet!");
             return null;
