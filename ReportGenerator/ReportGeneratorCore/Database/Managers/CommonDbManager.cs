@@ -17,6 +17,7 @@ namespace ReportGenerator.Core.Database.Managers
             _logger = logger;
         }
 
+        // todo: umv: Change, SqlConnectionStringBuilder
         public bool CreateDatabase(string connectionString, bool dropIfExists)
         {
             try
@@ -36,6 +37,7 @@ namespace ReportGenerator.Core.Database.Managers
 
         }
 
+        // todo: umv: Change, SqlConnectionStringBuilder
         public bool DropDatabase(string connectionString)
         {
             try
@@ -95,9 +97,14 @@ namespace ReportGenerator.Core.Database.Managers
 
         public async Task<bool> ExecuteNonQueryAsync(string connectionString, string cmdText)
         {
-            IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
-            IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
-            return await ExecuteNonQueryAsync(command as DbCommand);
+            using (DbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString))
+            {
+                IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
+                await connection.OpenAsync();
+                bool result = await ExecuteNonQueryAsync(command as DbCommand);
+                connection.Close();
+                return result;
+            }
         }
 
         public IDataReader ExecuteDbReader(IDbCommand command)
@@ -149,10 +156,14 @@ namespace ReportGenerator.Core.Database.Managers
 
         private bool ExecuteStatement(string connectionString, string statement)
         {
+            bool result = true;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                connection.Open();
                 SqlCommand command = new SqlCommand(statement, connection);
-                return ExecuteNonQuery(command);
+                result = ExecuteNonQuery(command);
+                connection.Close();
+                return result;
             }
         }
 

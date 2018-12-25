@@ -10,26 +10,31 @@ namespace ReportGenerator.Core.Database.Utils
         {
             if (dbEngine == DbEngine.SqlServer)
                 return BuildSqlServerConnectionString(parameters);
-            throw new NotImplementedException("Unsupported Db Engine type, please write an issue () iw you would like me to support other Db engine");
+            throw new NotImplementedException("Other db engine were not implemented yet");
 
         }
 
         private static string BuildSqlServerConnectionString(IDictionary<string, string> parameters)
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            if (parameters.ContainsKey(DbParametersDefs.HostKey))
-                builder.DataSource = parameters[DbParametersDefs.HostKey];
-            if (parameters.ContainsKey(DbParametersDefs.DatabaseKey))
-                builder.InitialCatalog = parameters[DbParametersDefs.DatabaseKey];
-            if (parameters.ContainsKey(DbParametersDefs.LoginKey))
-                builder.UserID = parameters[DbParametersDefs.LoginKey];
-            if (parameters.ContainsKey(DbParametersDefs.PasswordKey))
-                builder.Password = parameters[DbParametersDefs.PasswordKey];
-            if (parameters.ContainsKey(DbParametersDefs.UseIntegratedSecurityKey))
-                builder.IntegratedSecurity = Convert.ToBoolean(parameters[DbParametersDefs.UseIntegratedSecurityKey]);
-            if (parameters.ContainsKey(DbParametersDefs.UseTrustedConnectionKey))
-                builder.TrustServerCertificate = Convert.ToBoolean(parameters[DbParametersDefs.UseTrustedConnectionKey]);
+            if (parameters.ContainsKey(DbParametersKeys.HostKey))
+                builder.DataSource = parameters[DbParametersKeys.HostKey];
+            if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
+                builder.InitialCatalog = parameters[DbParametersKeys.DatabaseKey];
+            if (parameters.ContainsKey(DbParametersKeys.LoginKey))
+                builder.UserID = parameters[DbParametersKeys.LoginKey];
+            if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
+                builder.Password = parameters[DbParametersKeys.PasswordKey];
+            if (parameters.ContainsKey(DbParametersKeys.UseIntegratedSecurityKey))
+                builder.IntegratedSecurity = Convert.ToBoolean(parameters[DbParametersKeys.UseIntegratedSecurityKey]);
+            if (parameters.ContainsKey(DbParametersKeys.UseTrustedConnectionKey))
+                builder.TrustServerCertificate = Convert.ToBoolean(parameters[DbParametersKeys.UseTrustedConnectionKey]);
             return builder.ConnectionString;
+        }
+
+        private static string BuildSqLiteConnectionString()
+        {
+            return string.Empty;
         }
     }
 }

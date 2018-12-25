@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using ReportGenerator.Core.Database;
 using ReportGenerator.Core.Database.Factories;
 using ReportGenerator.Core.Database.Managers;
+using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
@@ -20,13 +21,13 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [Fact]
         public void TestGenerateReportSqlServer()
         {
-            _testDbName = TestSqlServerDatabasePattern + "_" + DateTime.Now.Millisecond.ToString();
+            _testSqlServerDbName = TestSqlServerDatabasePattern + "_" + DateTime.Now.Millisecond.ToString();
             SetUpSqlServerTestData();
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqlServer, 
-                                                                              Server, _testDbName);
+                                                                              TestSqlServerHost, _testSqlServerDbName);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqlServerDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
@@ -61,19 +62,30 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
         private void SetUpSqlServerTestData()
         {
+            // TestSqlServerDatabaseManager.CreateDatabase(TestSqlServerHost, _testSqlServerDbName);
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
-            //_dbManager.CreateDatabase()
-            TestSqlServerDatabaseManager.CreateDatabase(Server, _testDbName);
+            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
+            {
+                {DbParametersKeys.HostKey, TestSqlServerHost},
+                {DbParametersKeys.DatabaseKey, _testSqlServerDbName},
+                {DbParametersKeys.UseIntegratedSecurityKey, "true"},
+                {DbParametersKeys.UseTrustedConnectionKey, "true"}
+            };
+            _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
+            _dbManager.CreateDatabase(_connectionString, true);
+            // 
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqlServerCreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqlServerInsertDataScript));
-            TestSqlServerDatabaseManager.ExecuteSql(Server, _testDbName, createDatabaseStatement);
-            TestSqlServerDatabaseManager.ExecuteSql(Server, _testDbName, insertDataStatement);
-            //_dbManager.ExecuteNonQueryAsync()
+            // TestSqlServerDatabaseManager.ExecuteSql(TestSqlServerHost, _testSqlServerDbName, createDatabaseStatement);
+            // TestSqlServerDatabaseManager.ExecuteSql(TestSqlServerHost, _testSqlServerDbName, insertDataStatement);
+            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
+            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
 
         private void TearDownSqlServerTestData()
         {
             //TestSqlServerDatabaseManager.DropDatabase(Server, _testDbName);
+            _dbManager.DropDatabase(_connectionString);
         }
 
         private void SetUpSqLiteTestData()
@@ -109,7 +121,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string SqlServerDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
         private const string SqLiteDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
 
-        private const string Server = @"(localdb)\mssqllocaldb";
+        private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";
         private const string TestSqLiteDatabase = "ReportGeneratorTestDb.sqlite";
 
@@ -120,7 +132,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string MySqlCreateDatabaseScript = @"..\..\..\DbScripts\MySqlCreateDb.sql";
         private const string MySqlInsertDataScript = @"..\..\..\DbScripts\MySqlCreateData.sql";
 
-        private string _testDbName;
+        private string _testSqlServerDbName;
         private string _connectionString;
         private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
         private IDbManager _dbManager;
