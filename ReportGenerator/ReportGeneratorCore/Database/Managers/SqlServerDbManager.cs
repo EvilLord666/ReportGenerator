@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using ReportGenerator.Core.Database.Factories;
 
 namespace ReportGenerator.Core.Database.Managers
 {
@@ -83,6 +84,13 @@ namespace ReportGenerator.Core.Database.Managers
             return result;
         }
 
+        public async Task<bool> ExecuteNonQueryAsync(string connectionString, string cmdText)
+        {
+            IDbConnection connection = DbConnectionFactory.Create(DbEngine.SqlServer, connectionString);
+            IDbCommand command = DbCommandFactory.Create(DbEngine.SqlServer, connection, cmdText);
+            return await ExecuteNonQueryAsync(command as DbCommand);
+        }
+
         public IDataReader ExecuteDbReader(IDbCommand command)
         {
             IDataReader result = null;
@@ -121,6 +129,13 @@ namespace ReportGenerator.Core.Database.Managers
             }
 
             return result;
+        }
+
+        public async Task<DbDataReader> ExecuteDbReaderAsync(string connectionString, string cmdText)
+        {
+            IDbConnection connection = DbConnectionFactory.Create(DbEngine.SqlServer, connectionString);
+            IDbCommand command = DbCommandFactory.Create(DbEngine.SqlServer, connection, cmdText);
+            return await ExecuteDbReaderAsync(command as DbCommand);
         }
 
         private bool ExecuteStatement(string connectionString, string statement)
