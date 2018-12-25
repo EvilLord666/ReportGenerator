@@ -10,7 +10,9 @@ namespace ReportGenerator.Core.Database.Managers
         bool DropDatabase(string connectionString);
         bool ExecuteNonQuery(IDbCommand command);      
         Task<bool> ExecuteNonQueryAsync(DbCommand command);
+        Task<bool> ExecuteNonQueryAsync(string connectionString, string cmdText);
         IDataReader ExecuteDbReader(IDbCommand command);
         Task<DbDataReader> ExecuteDbReaderAsync(DbCommand command);
+        Task<DbDataReader> ExecuteDbReaderAsync(string connectionString, string cmdText);
     }
 }
