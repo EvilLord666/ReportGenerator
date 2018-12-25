@@ -45,22 +45,82 @@ namespace ReportGenerator.Core.Database.Managers
         // todo: umv: implement following methods
         public bool ExecuteNonQuery(IDbCommand command)
         {
-            throw new System.NotImplementedException();
+            bool result = true;
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                // todo: umv: log an Error
+                result = false;
+            }
+            finally
+            {
+                command.Dispose();
+            }
+
+            return result;
         }
 
-        public async Task<bool> ExecuteNonQueryAsync(IDbCommand command)
+        public async Task<bool> ExecuteNonQueryAsync(DbCommand command)
         {
-            throw new System.NotImplementedException();
+            bool result = true;
+            try
+            {
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e)
+            {
+                // todo: umv: log an Error
+                result = false;
+            }
+            finally
+            {
+                command.Dispose();
+            }
+
+            return result;
         }
 
-        public DbDataReader ExecuteDbReader(IDbCommand command)
+        public IDataReader ExecuteDbReader(IDbCommand command)
         {
-            throw new System.NotImplementedException();
+            IDataReader result = null;
+            try
+            {
+                result = command.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                // todo: umv: log an Error
+                result = null;
+            }
+            finally
+            {
+                command.Dispose();
+            }
+
+            return result;
         }
 
-        public async Task<DbDataReader> ExecuteDbReaderAsync(IDbCommand command)
+        public async Task<DbDataReader> ExecuteDbReaderAsync(DbCommand command)
         {
-            throw new System.NotImplementedException();
+            DbDataReader result = null;
+            try
+            {
+                result = await command.ExecuteReaderAsync();
+            }
+            catch (Exception e)
+            {
+                // todo: umv: log an Error
+                result = null;
+            }
+            finally
+            {
+                command.Dispose();
+            }
+
+            return result;
         }
 
         private bool ExecuteStatement(string connectionString, string statement)

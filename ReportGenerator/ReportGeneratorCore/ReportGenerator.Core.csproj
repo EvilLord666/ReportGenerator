@@ -8,6 +8,7 @@
     <PackageReference Include="EPPlus.Core" Version="1.5.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0-preview2-35157" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0-preview2-35157" />
+    <PackageReference Include="MySql.Data" Version="8.0.13" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.109.2" />
   </ItemGroup>

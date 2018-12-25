@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using MySql.Data.MySqlClient;
 
 namespace ReportGenerator.Core.Database.Factories
 {
@@ -13,6 +14,8 @@ namespace ReportGenerator.Core.Database.Factories
                 return new SqlCommand(cmdText, connection as SqlConnection);
             if (dbEngine == DbEngine.SqLite)
                 return new SQLiteCommand(cmdText, connection as SQLiteConnection);
+            if (dbEngine == DbEngine.MySql)
+                return new MySqlCommand(cmdText, connection as MySqlConnection);
             throw new NotImplementedException("Other db engine were not implemented yet");
         }
     }
