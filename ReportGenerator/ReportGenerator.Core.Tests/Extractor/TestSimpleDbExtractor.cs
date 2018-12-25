@@ -18,8 +18,8 @@ namespace ReportGenerator.Core.Tests.Extractor
     {
         public TestSimpleDbExtractor()
         {
-            ILoggerFactory loggerFactory = new LoggerFactory();
-            _logger = loggerFactory.CreateLogger<SimpleDbExtractor>();
+            _loggerFactory = new LoggerFactory();
+            //_logger = loggerFactory.CreateLogger<SimpleDbExtractor>();
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace ReportGenerator.Core.Tests.Extractor
             SetUpTestData();
             // testing is here
             
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithoutParams, new List<StoredProcedureParameter>());
             result.Wait();
             DbData rows = result.Result;
@@ -46,7 +46,7 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCity, 
                                                          new List<StoredProcedureParameter>{ new StoredProcedureParameter(SqlDbType.NVarChar, "City", parameterValue) });
             result.Wait();
@@ -64,7 +64,7 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCityAndAge,  new List<StoredProcedureParameter>
             {
                 new StoredProcedureParameter(SqlDbType.NVarChar, "City", cityParameterValue),
@@ -81,7 +81,7 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestView, new ViewParameters());
             result.Wait();
             DbData rows = result.Result;
@@ -110,7 +110,7 @@ namespace ReportGenerator.Core.Tests.Extractor
                 IList<JoinCondition> sexJoin = parameters.WhereParameters.Count > 0 ? new List<JoinCondition>() {JoinCondition.And}  : null;
                 parameters.WhereParameters.Add(new DbQueryParameter(sexJoin, "Sex", "=", sex.Value ? "1" : "0"));
             }
-            IDbExtractor extractor = new SimpleDbExtractor(_logger, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestView, parameters);
             result.Wait();
             DbData rows = result.Result;
@@ -144,6 +144,6 @@ namespace ReportGenerator.Core.Tests.Extractor
 
         private const string TestView = "CitizensWithRegion";
 
-        private readonly ILogger<SimpleDbExtractor> _logger;
+        private readonly ILoggerFactory _loggerFactory;
     }
 }

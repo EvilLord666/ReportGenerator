@@ -17,7 +17,7 @@ namespace ReportGenerator.Core.ReportsGenerator
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
-            _extractor = new SimpleDbExtractor(loggerFactory.CreateLogger<SimpleDbExtractor>(), dbEngine, server, database, 
+            _extractor = new SimpleDbExtractor(loggerFactory, dbEngine, server, database, 
                                                trustedConnection, userName, password);
         }
 
@@ -25,7 +25,7 @@ namespace ReportGenerator.Core.ReportsGenerator
         {
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger<ExcelReportGeneratorManager>();
-            _extractor = new SimpleDbExtractor(_loggerFactory.CreateLogger<SimpleDbExtractor>(), dbEngine, connectionString);
+            _extractor = new SimpleDbExtractor(_loggerFactory, dbEngine, connectionString);
         }
 
         public async Task<bool> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)

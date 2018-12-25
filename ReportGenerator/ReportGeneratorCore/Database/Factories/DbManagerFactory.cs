@@ -3,18 +3,16 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Database.Managers;
 
 namespace ReportGenerator.Core.Database.Factories
 {
-    // todo: impl 4 other DB engine types
     public static class DbManagerFactory
     {
-        public static IDbManager Create(DbEngine dbEngine)
+        public static IDbManager Create(DbEngine dbEngine, ILoggerFactory loggerFactory)
         {
-            if (dbEngine == DbEngine.SqlServer)
-                return new SqlServerDbManager();
-            return null;
+            return new CommonDbManager(dbEngine, loggerFactory.CreateLogger<CommonDbManager>());
         }
     }
 }
