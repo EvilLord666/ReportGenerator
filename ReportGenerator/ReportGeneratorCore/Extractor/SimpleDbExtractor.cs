@@ -41,18 +41,18 @@ namespace ReportGenerator.Core.Extractor
             _dbManager = DbManagerFactory.Create(dbEngine, loggerFactory);
             IDictionary<string, string> parameters = new Dictionary<string, string>();
             if (!string.IsNullOrEmpty(host))
-                parameters[DbParametersDefs.HostKey] = host;
+                parameters[DbParametersKeys.HostKey] = host;
             if (!string.IsNullOrEmpty(database))
-                parameters[DbParametersDefs.DatabaseKey] = database;
-            parameters[DbParametersDefs.UseTrustedConnectionKey] = trustedConnection.ToString();
+                parameters[DbParametersKeys.DatabaseKey] = database;
+            parameters[DbParametersKeys.UseTrustedConnectionKey] = trustedConnection.ToString();
 
             if (username == null && password == null)
-                parameters[DbParametersDefs.UseIntegratedSecurityKey] = true.ToString();
+                parameters[DbParametersKeys.UseIntegratedSecurityKey] = true.ToString();
             else
             {
-                parameters[DbParametersDefs.LoginKey] = username;
-                parameters[DbParametersDefs.PasswordKey] = password;
-                parameters[DbParametersDefs.UseIntegratedSecurityKey] = false.ToString();
+                parameters[DbParametersKeys.LoginKey] = username;
+                parameters[DbParametersKeys.PasswordKey] = password;
+                parameters[DbParametersKeys.UseIntegratedSecurityKey] = false.ToString();
             }
 
             _connectionString = ConnectionStringBuilder.Build(dbEngine, parameters);

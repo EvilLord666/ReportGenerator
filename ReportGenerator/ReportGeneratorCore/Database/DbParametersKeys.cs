@@ -1,6 +1,6 @@
 namespace ReportGenerator.Core.Database
 {
-    public static class DbParametersDefs
+    public static class DbParametersKeys
     {
         public const string HostKey = "host";
         public const string DatabaseKey = "database";
