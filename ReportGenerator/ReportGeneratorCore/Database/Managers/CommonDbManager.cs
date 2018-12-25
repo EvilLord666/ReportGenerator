@@ -3,13 +3,20 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Database.Factories;
 
 namespace ReportGenerator.Core.Database.Managers
 {
     // todo: umv: pass logger here
-    public class SqlServerDbManager : IDbManager
+    public class CommonDbManager : IDbManager
     {
+        public CommonDbManager(DbEngine dbEngine, ILogger<CommonDbManager> logger)
+        {
+            _dbEngine = dbEngine;
+            _logger = logger;
+        }
+
         public bool CreateDatabase(string connectionString, bool dropIfExists)
         {
             try
@@ -23,6 +30,7 @@ namespace ReportGenerator.Core.Database.Managers
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occured during database creation, exception {e}");
                 return false;
             }
 
@@ -39,6 +47,7 @@ namespace ReportGenerator.Core.Database.Managers
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occured during database drop, exception {e}");
                 return false;
             }
         }
@@ -53,7 +62,7 @@ namespace ReportGenerator.Core.Database.Managers
             }
             catch (Exception e)
             {
-                // todo: umv: log an Error
+                _logger.LogError($"An error occured during execute non query, exception {e}");
                 result = false;
             }
             finally
@@ -73,7 +82,7 @@ namespace ReportGenerator.Core.Database.Managers
             }
             catch (Exception e)
             {
-                // todo: umv: log an Error
+                _logger.LogError($"An error occured during execute non query async, exception {e}");
                 result = false;
             }
             finally
@@ -86,8 +95,8 @@ namespace ReportGenerator.Core.Database.Managers
 
         public async Task<bool> ExecuteNonQueryAsync(string connectionString, string cmdText)
         {
-            IDbConnection connection = DbConnectionFactory.Create(DbEngine.SqlServer, connectionString);
-            IDbCommand command = DbCommandFactory.Create(DbEngine.SqlServer, connection, cmdText);
+            IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
+            IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
             return await ExecuteNonQueryAsync(command as DbCommand);
         }
 
@@ -133,8 +142,8 @@ namespace ReportGenerator.Core.Database.Managers
 
         public async Task<DbDataReader> ExecuteDbReaderAsync(string connectionString, string cmdText)
         {
-            IDbConnection connection = DbConnectionFactory.Create(DbEngine.SqlServer, connectionString);
-            IDbCommand command = DbCommandFactory.Create(DbEngine.SqlServer, connection, cmdText);
+            IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString);
+            IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
             return await ExecuteDbReaderAsync(command as DbCommand);
         }
 
@@ -150,5 +159,8 @@ namespace ReportGenerator.Core.Database.Managers
         private const string MasterDatabase = "master";
         private const string CreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
         private const string DropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
+
+        private readonly DbEngine _dbEngine;
+        private readonly ILogger<CommonDbManager> _logger;
     }
 }

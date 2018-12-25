@@ -19,9 +19,9 @@ namespace ReportGenerator.Core.Extractor
     //todo: umv: add logging
     public class SimpleDbExtractor : IDbExtractor
     {
-        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, DbEngine dbEngine, string connectionString)
+        public SimpleDbExtractor(ILoggerFactory loggerFactory, DbEngine dbEngine, string connectionString)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<SimpleDbExtractor>();
             if (string.IsNullOrEmpty(connectionString))
             {
                 _logger.LogError("Connection string is Null.");
@@ -30,14 +30,15 @@ namespace ReportGenerator.Core.Extractor
 
             _connectionString = connectionString;
             _dbEngine = dbEngine;
+            _dbManager = DbManagerFactory.Create(dbEngine, loggerFactory);
         }
 
-        public SimpleDbExtractor(ILogger<SimpleDbExtractor> logger, DbEngine dbEngine, string host, string database, 
+        public SimpleDbExtractor(ILoggerFactory loggerFactory, DbEngine dbEngine, string host, string database, 
                                  bool trustedConnection = true, string username = null, string password = null)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<SimpleDbExtractor>();
             _dbEngine = dbEngine;
-            _dbManager = DbManagerFactory.Create(dbEngine);
+            _dbManager = DbManagerFactory.Create(dbEngine, loggerFactory);
             IDictionary<string, string> parameters = new Dictionary<string, string>();
             if (!string.IsNullOrEmpty(host))
                 parameters[DbParametersDefs.HostKey] = host;
