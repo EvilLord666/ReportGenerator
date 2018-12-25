@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReportGenerator.Core.Database;
+using ReportGenerator.Core.Database.Factories;
+using ReportGenerator.Core.Database.Managers;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using ReportGenerator.Core.Tests.TestUtils;
@@ -59,16 +61,19 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
         private void SetUpSqlServerTestData()
         {
+            _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
+            //_dbManager.CreateDatabase()
             TestSqlServerDatabaseManager.CreateDatabase(Server, _testDbName);
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqlServerCreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqlServerInsertDataScript));
             TestSqlServerDatabaseManager.ExecuteSql(Server, _testDbName, createDatabaseStatement);
             TestSqlServerDatabaseManager.ExecuteSql(Server, _testDbName, insertDataStatement);
+            //_dbManager.ExecuteNonQueryAsync()
         }
 
         private void TearDownSqlServerTestData()
         {
-            TestSqlServerDatabaseManager.DropDatabase(Server, _testDbName);
+            //TestSqlServerDatabaseManager.DropDatabase(Server, _testDbName);
         }
 
         private void SetUpSqLiteTestData()
@@ -84,6 +89,20 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         {
             TestSqLiteDatabaseManager.DropDatabase(TestSqLiteDatabase);
         }
+        
+        private void SetUpMySqlTestData()
+        {
+            //TestSqLiteDatabaseManager.CreateDatabase(TestSqLiteDatabase);
+            //string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqLiteCreateDatabaseScript));
+            //string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqLiteInsertDataScript));
+            //TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, createDatabaseStatement);
+            //TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, insertDataStatement);
+        }
+
+        private void TearDownMySqlTestData()
+        {
+            //TestSqLiteDatabaseManager.DropDatabase(TestSqLiteDatabase);
+        }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
         private const string ReportFile = @".\Report.xlsx";
@@ -98,7 +117,12 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string SqlServerInsertDataScript = @"..\..\..\DbScripts\SqlServerCreateData.sql";
         private const string SqLiteCreateDatabaseScript = @"..\..\..\DbScripts\SqLiteCreateDb.sql";
         private const string SqLiteInsertDataScript = @"..\..\..\DbScripts\SqLiteCreateData.sql";
+        private const string MySqlCreateDatabaseScript = @"..\..\..\DbScripts\MySqlCreateDb.sql";
+        private const string MySqlInsertDataScript = @"..\..\..\DbScripts\MySqlCreateData.sql";
 
         private string _testDbName;
+        private string _connectionString;
+        private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
+        private IDbManager _dbManager;
     }
 }
