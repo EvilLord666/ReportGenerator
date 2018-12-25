@@ -13,7 +13,7 @@ namespace ReportGenerator.Core.Database.Utils
             throw new NotImplementedException("Other db engine were not implemented yet");
 
         }
-
+        
         private static string BuildSqlServerConnectionString(IDictionary<string, string> parameters)
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();

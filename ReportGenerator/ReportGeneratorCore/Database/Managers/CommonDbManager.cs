@@ -25,8 +25,8 @@ namespace ReportGenerator.Core.Database.Managers
                 if (dropIfExists)
                     DropDatabase(connectionString);
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                string createDbStatement = string.Format(CreateDatabaseStatementTemplate, builder.InitialCatalog);
-                builder.InitialCatalog = MasterDatabase;
+                string createDbStatement = string.Format(SqlServerCreateDatabaseStatementTemplate, builder.InitialCatalog);
+                builder.InitialCatalog = SqlServerMasterDatabase;
                 return ExecuteStatement(builder.ConnectionString, createDbStatement);
             }
             catch (Exception e)
@@ -43,8 +43,8 @@ namespace ReportGenerator.Core.Database.Managers
             try
             {
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                string dropDbStatement = string.Format(DropDatabaseStatementTemplate, builder.InitialCatalog);
-                builder.InitialCatalog = MasterDatabase;
+                string dropDbStatement = string.Format(SqlServerDropDatabaseStatementTemplate, builder.InitialCatalog);
+                builder.InitialCatalog = SqlServerMasterDatabase;
                 return ExecuteStatement(builder.ConnectionString, dropDbStatement);
             }
             catch (Exception e)
@@ -167,9 +167,25 @@ namespace ReportGenerator.Core.Database.Managers
             }
         }
 
-        private const string MasterDatabase = "master";
-        private const string CreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
-        private const string DropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
+        private string GetDropDatabaseStatement(string dbName)
+        {
+            if (_dbEngine == DbEngine.SqlServer)
+                return string.Format(SqlServerDropDatabaseStatementTemplate, dbName);
+            if (_dbEngine == DbEngine.SqLite)
+                return string.Format(SqLiteDropDatabaseStatementTemplate, dbName);
+            if (_dbEngine == DbEngine.MySql)
+                return string.Format(MySqlDropDatabaseStatementTemplate, dbName);
+            throw new NotImplementedException("Other db engine were not implemented yet");
+        }
+
+
+        private const string SqlServerMasterDatabase = "master";
+        // create database statements
+        private const string SqlServerCreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
+        // drop database statements
+        private const string SqlServerDropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
+        private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0} IF EXISTS";
+        private const string SqLiteDropDatabaseStatementTemplate = "DETACH DATABASE {0}";
 
         private readonly DbEngine _dbEngine;
         private readonly ILogger<CommonDbManager> _logger;
