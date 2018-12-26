@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Database.Factories;
+using ReportGenerator.Core.Database.Utils;
 
 namespace ReportGenerator.Core.Database.Managers
 {
@@ -25,7 +26,7 @@ namespace ReportGenerator.Core.Database.Managers
                 if (dropIfExists)
                     DropDatabase(connectionString);
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                string createDbStatement = string.Format(SqlServerCreateDatabaseStatementTemplate, builder.InitialCatalog);
+                string createDbStatement = string.Format(CommonServerCreateDatabaseStatementTemplate, builder.InitialCatalog);
                 builder.InitialCatalog = SqlServerMasterDatabase;
                 return ExecuteStatement(builder.ConnectionString, createDbStatement);
             }
@@ -42,10 +43,20 @@ namespace ReportGenerator.Core.Database.Managers
         {
             try
             {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                string dropDbStatement = string.Format(SqlServerDropDatabaseStatementTemplate, builder.InitialCatalog);
-                builder.InitialCatalog = SqlServerMasterDatabase;
-                return ExecuteStatement(builder.ConnectionString, dropDbStatement);
+                //SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+                //string dropDbStatement = string.Format(SqlServerDropDatabaseStatementTemplate, builder.InitialCatalog);
+                //builder.InitialCatalog = SqlServerMasterDatabase;
+                //return ExecuteStatement(builder.ConnectionString, dropDbStatement);
+                string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
+                string dropSqlStatement = GetDropDatabaseStatement(dbName);
+                if (_dbEngine == DbEngine.SqlServer)
+                {
+                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+                    builder.InitialCatalog = "master";
+                    connectionString = builder.ConnectionString;
+                }
+
+                return ExecuteStatement(connectionString, dropSqlStatement);
             }
             catch (Exception e)
             {
@@ -181,7 +192,7 @@ namespace ReportGenerator.Core.Database.Managers
 
         private const string SqlServerMasterDatabase = "master";
         // create database statements
-        private const string SqlServerCreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
+        private const string CommonServerCreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
         // drop database statements
         private const string SqlServerDropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
         private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0} IF EXISTS";
