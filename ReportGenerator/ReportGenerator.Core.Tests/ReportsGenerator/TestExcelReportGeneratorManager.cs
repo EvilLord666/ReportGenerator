@@ -35,7 +35,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         }
 
         [Fact]
-        public void TestGenerateReportSqlLite()
+        public void TestGenerateReportSqLite()
         {
             SetUpSqLiteTestData();
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);

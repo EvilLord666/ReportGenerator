@@ -10,6 +10,8 @@ namespace ReportGenerator.Core.Database.Utils
         {
             if (dbEngine == DbEngine.SqlServer)
                 return BuildSqlServerConnectionString(parameters);
+            if (dbEngine == DbEngine.SqLite)
+                return BuildSqLiteConnectionString(parameters);
             throw new NotImplementedException("Other db engine were not implemented yet");
 
         }
@@ -32,7 +34,7 @@ namespace ReportGenerator.Core.Database.Utils
             return builder.ConnectionString;
         }
 
-        private static string BuildSqLiteConnectionString()
+        private static string BuildSqLiteConnectionString(IDictionary<string, string> parameters)
         {
             return string.Empty;
         }
