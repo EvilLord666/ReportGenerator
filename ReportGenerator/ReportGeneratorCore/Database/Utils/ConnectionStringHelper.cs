@@ -29,5 +29,14 @@ namespace ReportGenerator.Core.Database.Utils
 
             throw new NotImplementedException("Other db engine were not implemented yet");
         }
+
+        public static string GetSqlServerMasterConnectionString(string connectionString)
+        {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+            builder.InitialCatalog = "master";
+            return builder.ConnectionString;
+        }
+        
+        private const string SqlServerMasterDatabase = "master";
     }
 }

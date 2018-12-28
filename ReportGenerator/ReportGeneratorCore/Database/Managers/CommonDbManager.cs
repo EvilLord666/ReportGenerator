@@ -28,11 +28,7 @@ namespace ReportGenerator.Core.Database.Managers
                 string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
                 string createDbStatement = string.Format(CommonServerCreateDatabaseStatementTemplate, dbName);
                 if (_dbEngine == DbEngine.SqlServer)
-                {
-                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                    builder.InitialCatalog = "master";
-                    connectionString = builder.ConnectionString;
-                }
+                    connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
                 return ExecuteStatement(connectionString, createDbStatement);
             }
             catch (Exception e)
@@ -49,12 +45,8 @@ namespace ReportGenerator.Core.Database.Managers
             {
                 string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
                 string dropSqlStatement = GetDropDatabaseStatement(dbName);
-                if (_dbEngine == DbEngine.SqlServer) // todo: umv: move outside ??
-                {
-                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                    builder.InitialCatalog = "master";
-                    connectionString = builder.ConnectionString;
-                }
+                if (_dbEngine == DbEngine.SqlServer)
+                    connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
 
                 return ExecuteStatement(connectionString, dropSqlStatement);
             }
@@ -189,7 +181,6 @@ namespace ReportGenerator.Core.Database.Managers
         }
 
 
-        private const string SqlServerMasterDatabase = "master";
         // create database statements
         private const string CommonServerCreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
         // drop database statements
