@@ -2,6 +2,8 @@ using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Data.SQLite;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Database.Factories;
@@ -25,9 +27,15 @@ namespace ReportGenerator.Core.Database.Managers
                 if (dropIfExists)
                     DropDatabase(connectionString);
                 string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
+                if (_dbEngine == DbEngine.SqLite)
+                {
+                    SQLiteConnection.CreateFile(dbName);
+                    return true;
+                }
                 string createDbStatement = string.Format(CommonServerCreateDatabaseStatementTemplate, dbName);
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
+
                 return ExecuteStatement(connectionString, createDbStatement);
             }
             catch (Exception e)
@@ -43,9 +51,16 @@ namespace ReportGenerator.Core.Database.Managers
             try
             {
                 string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
+                if (_dbEngine == DbEngine.SqLite)
+                {
+                    if (File.Exists(dbName))
+                        File.Delete(dbName);
+                    return true;
+                }
                 string dropSqlStatement = GetDropDatabaseStatement(dbName);
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
+                
 
                 return ExecuteStatement(connectionString, dropSqlStatement);
             }

@@ -41,7 +41,7 @@ namespace ReportGenerator.Core.Database.Utils
         private static string BuildSqLiteConnectionString(IDictionary<string, string> parameters)
         {
             SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
-            if (parameters.ContainsKey(DbParametersKeys.HostKey))
+            if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
                 builder.DataSource = parameters[DbParametersKeys.DatabaseKey];
             if (parameters.ContainsKey(DbParametersKeys.DatabaseEngineVersion))
                 builder.Version = Convert.ToInt32(parameters[DbParametersKeys.DatabaseEngineVersion]);
