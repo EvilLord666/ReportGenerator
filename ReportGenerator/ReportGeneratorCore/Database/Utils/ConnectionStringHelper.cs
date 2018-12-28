@@ -36,7 +36,12 @@ namespace ReportGenerator.Core.Database.Utils
             builder.InitialCatalog = "master";
             return builder.ConnectionString;
         }
-        
+
+        public static string GetMySqlDbNameLessConnectionString(string connectionString)
+        {
+            return null;
+        }
+
         private const string SqlServerMasterDatabase = "master";
     }
 }

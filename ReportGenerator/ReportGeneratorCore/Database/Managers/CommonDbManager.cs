@@ -35,6 +35,10 @@ namespace ReportGenerator.Core.Database.Managers
                 string createDbStatement = string.Format(CommonServerCreateDatabaseStatementTemplate, dbName);
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
+                if (_dbEngine == DbEngine.MySql)
+                {
+                    
+                }
 
                 return ExecuteStatement(connectionString, createDbStatement);
             }
@@ -197,6 +201,7 @@ namespace ReportGenerator.Core.Database.Managers
 
         // create database statements
         private const string CommonServerCreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
+        private const string MySqlCreateDatabaseStatementTemplate = "CREATE DATABASE {0} IF EXISTS";
         // drop database statements
         private const string SqlServerDropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
         private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0} IF EXISTS";
