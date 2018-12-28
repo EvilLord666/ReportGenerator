@@ -42,8 +42,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             ILoggerFactory loggerFactory = new LoggerFactory();
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, 
-                                                                              $"Data Source={TestSqLiteDatabase};Version={3}");
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
+                                                                              //$"Data Source={TestSqLiteDatabase};Version={3}");
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
@@ -62,7 +62,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
         private void SetUpSqlServerTestData()
         {
-            // TestSqlServerDatabaseManager.CreateDatabase(TestSqlServerHost, _testSqlServerDbName);
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
@@ -76,30 +75,33 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             // 
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqlServerCreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqlServerInsertDataScript));
-            // TestSqlServerDatabaseManager.ExecuteSql(TestSqlServerHost, _testSqlServerDbName, createDatabaseStatement);
-            // TestSqlServerDatabaseManager.ExecuteSql(TestSqlServerHost, _testSqlServerDbName, insertDataStatement);
             _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
             _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
 
         private void TearDownSqlServerTestData()
         {
-            //TestSqlServerDatabaseManager.DropDatabase(Server, _testDbName);
             _dbManager.DropDatabase(_connectionString);
         }
 
         private void SetUpSqLiteTestData()
         {
-            TestSqLiteDatabaseManager.CreateDatabase(TestSqLiteDatabase);
+            _dbManager = new CommonDbManager(DbEngine.SqLite, _loggerFactory.CreateLogger<CommonDbManager>());
+            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
+            {
+                {DbParametersKeys.DatabaseKey, TestSqLiteDatabase},
+                {DbParametersKeys.DatabaseEngineVersion, "3"}
+            };
+            _dbManager.CreateDatabase(_connectionString, true);
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqLiteCreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqLiteInsertDataScript));
-            TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, createDatabaseStatement);
-            TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, insertDataStatement);
+            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
+            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
 
         private void TearDownSqLiteTestData()
         {
-            TestSqLiteDatabaseManager.DropDatabase(TestSqLiteDatabase);
+            _dbManager.DropDatabase(_connectionString);
         }
         
         private void SetUpMySqlTestData()
