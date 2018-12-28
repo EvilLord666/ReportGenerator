@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
 using ReportGenerator.Core.Database;
+using ReportGenerator.Core.Database.Managers;
+using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.Extractor;
-using ReportGenerator.Core.ReportsGenerator;
-using ReportGenerator.Core.Tests.TestUtils;
 using Xunit;
 
 namespace ReportGenerator.Core.Tests.Extractor
@@ -19,7 +19,6 @@ namespace ReportGenerator.Core.Tests.Extractor
         public TestSimpleDbExtractor()
         {
             _loggerFactory = new LoggerFactory();
-            //_logger = loggerFactory.CreateLogger<SimpleDbExtractor>();
         }
 
         [Fact]
@@ -120,16 +119,32 @@ namespace ReportGenerator.Core.Tests.Extractor
 
         private void SetUpTestData()
         {
-            TestSqlServerDatabaseManager.CreateDatabase(Server, TestDatabase, true);
+            /*TestSqlServerDatabaseManager.CreateDatabase(Server, TestDatabase, true);
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
             TestSqlServerDatabaseManager.ExecuteSql(Server, TestDatabase, createDatabaseStatement);
-            TestSqlServerDatabaseManager.ExecuteSql(Server, TestDatabase, insertDataStatement);
+            TestSqlServerDatabaseManager.ExecuteSql(Server, TestDatabase, insertDataStatement);*/
+            
+            _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
+            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
+            {
+                {DbParametersKeys.HostKey, Server},
+                {DbParametersKeys.DatabaseKey, TestDatabase},
+                {DbParametersKeys.UseIntegratedSecurityKey, "true"},
+                {DbParametersKeys.UseTrustedConnectionKey, "true"}
+            };
+            _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
+            _dbManager.CreateDatabase(_connectionString, true);
+            // 
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
+            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
+            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
 
         private void TearDownTestData()
         {
-            TestSqlServerDatabaseManager.DropDatabase(Server, TestDatabase);
+            _dbManager.DropDatabase(_connectionString);
         }
 
         private const string Server = @"(localdb)\mssqllocaldb";
@@ -144,6 +159,8 @@ namespace ReportGenerator.Core.Tests.Extractor
 
         private const string TestView = "CitizensWithRegion";
 
-        private readonly ILoggerFactory _loggerFactory;
+        private string _connectionString;
+        private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
+        private IDbManager _dbManager;
     }
 }
