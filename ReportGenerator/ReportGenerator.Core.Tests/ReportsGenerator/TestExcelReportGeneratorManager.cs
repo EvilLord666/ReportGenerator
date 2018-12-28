@@ -50,9 +50,19 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             
         }
         
+        [Fact]
         public void TestGenerateReportMySql()
         {
-            
+            SetUpMySqlTestData();
+            object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            loggerFactory.AddConsole();
+            loggerFactory.AddDebug();
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
+            result.Wait();
+            Assert.True(result.Result);
+            TearDownMySqlTestData();
         }
 
         private void SetUpSqlServerTestData()
@@ -102,16 +112,26 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         
         private void SetUpMySqlTestData()
         {
-            //TestSqLiteDatabaseManager.CreateDatabase(TestSqLiteDatabase);
-            //string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqLiteCreateDatabaseScript));
-            //string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqLiteInsertDataScript));
-            //TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, createDatabaseStatement);
-            //TestSqLiteDatabaseManager.ExecuteSql(TestSqLiteDatabase, insertDataStatement);
+            _dbManager = new CommonDbManager(DbEngine.MySql, _loggerFactory.CreateLogger<CommonDbManager>());
+            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
+            {
+                {DbParametersKeys.HostKey, TestMySqlHost},
+                {DbParametersKeys.DatabaseKey, TestMySqlDatabase},
+                // {DbParametersKeys.UseIntegratedSecurityKey, "true"} // is not working ...
+                {DbParametersKeys.LoginKey, "root"},
+                {DbParametersKeys.PasswordKey, ""}
+            };
+            _connectionString = ConnectionStringBuilder.Build(DbEngine.MySql, connectionStringParams);
+            _dbManager.CreateDatabase(_connectionString, true);
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(MySqlCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(MySqlInsertDataScript));
+            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
+            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
 
         private void TearDownMySqlTestData()
         {
-            //TestSqLiteDatabaseManager.DropDatabase(TestSqLiteDatabase);
+            _dbManager.DropDatabase(_connectionString);
         }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
@@ -122,6 +142,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";
         private const string TestSqLiteDatabase = "ReportGeneratorTestDb.sqlite";
+        private const string TestMySqlHost = "localhost";
+        private const string TestMySqlDatabase = "ReportGeneratorTestDb";
 
         private const string SqlServerCreateDatabaseScript = @"..\..\..\DbScripts\SqlServerCreateDb.sql";
         private const string SqlServerInsertDataScript = @"..\..\..\DbScripts\SqlServerCreateData.sql";

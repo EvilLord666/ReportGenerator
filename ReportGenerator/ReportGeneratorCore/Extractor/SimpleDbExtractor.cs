@@ -16,7 +16,6 @@ using ReportGenerator.Core.StatementsGenerator;
 
 namespace ReportGenerator.Core.Extractor
 {
-    //todo: umv: add logging
     public class SimpleDbExtractor : IDbExtractor
     {
         public SimpleDbExtractor(ILoggerFactory loggerFactory, DbEngine dbEngine, string connectionString)
@@ -132,7 +131,6 @@ namespace ReportGenerator.Core.Extractor
             {
                 DbData result = new DbData();
                 DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
-                //SqlDataReader reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
                     IList<DbValue> dbRow = new List<DbValue>();

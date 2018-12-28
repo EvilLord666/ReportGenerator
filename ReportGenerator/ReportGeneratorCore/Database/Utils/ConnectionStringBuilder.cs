@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using MySql.Data.MySqlClient;
 
 namespace ReportGenerator.Core.Database.Utils
 {
@@ -13,6 +14,8 @@ namespace ReportGenerator.Core.Database.Utils
                 return BuildSqlServerConnectionString(parameters);
             if (dbEngine == DbEngine.SqLite)
                 return BuildSqLiteConnectionString(parameters);
+            if (dbEngine == DbEngine.MySql)
+                return BuildMysqlConnectionString(parameters);
             throw new NotImplementedException("Other db engine were not implemented yet");
 
         }
@@ -38,8 +41,30 @@ namespace ReportGenerator.Core.Database.Utils
         private static string BuildSqLiteConnectionString(IDictionary<string, string> parameters)
         {
             SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
-            builder.DataSource = parameters[DbParametersKeys.DatabaseKey];
-            builder.Version = Convert.ToInt32(parameters[DbParametersKeys.DatabaseEngineVersion]);
+            if (parameters.ContainsKey(DbParametersKeys.HostKey))
+                builder.DataSource = parameters[DbParametersKeys.DatabaseKey];
+            if (parameters.ContainsKey(DbParametersKeys.DatabaseEngineVersion))
+                builder.Version = Convert.ToInt32(parameters[DbParametersKeys.DatabaseEngineVersion]);
+            return builder.ConnectionString;
+        }
+
+        private static string BuildMysqlConnectionString(IDictionary<string, string> parameters)
+        {
+            MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
+            if (parameters.ContainsKey(DbParametersKeys.HostKey))
+                builder.Server = parameters[DbParametersKeys.HostKey];
+            if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
+                builder.Database = parameters[DbParametersKeys.DatabaseKey];
+            /*if (parameters.ContainsKey(DbParametersKeys.UseIntegratedSecurityKey))
+                builder.IntegratedSecurity = Convert.ToBoolean(parameters[DbParametersKeys.UseIntegratedSecurityKey]);
+            else
+            {
+                builder.IntegratedSecurity = false;
+                builder.UserID = parameters[DbParametersKeys.LoginKey];
+                builder.Password = parameters[DbParametersKeys.PasswordKey];
+            }*/
+            builder.UserID = parameters[DbParametersKeys.LoginKey];
+            builder.Password = parameters[DbParametersKeys.PasswordKey];
             return builder.ConnectionString;
         }
     }
