@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using ReportGenerator.Core.Database;
-using ReportGenerator.Core.Database.Factories;
 using ReportGenerator.Core.Database.Managers;
 using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
-using ReportGenerator.Core.Tests.TestUtils;
 using Xunit;
 
 namespace ReportGenerator.Core.Tests.ReportsGenerator
@@ -43,7 +39,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
-                                                                              //$"Data Source={TestSqLiteDatabase};Version={3}");
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
