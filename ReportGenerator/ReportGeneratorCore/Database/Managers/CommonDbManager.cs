@@ -25,10 +25,15 @@ namespace ReportGenerator.Core.Database.Managers
             {
                 if (dropIfExists)
                     DropDatabase(connectionString);
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                string createDbStatement = string.Format(CommonServerCreateDatabaseStatementTemplate, builder.InitialCatalog);
-                builder.InitialCatalog = SqlServerMasterDatabase;
-                return ExecuteStatement(builder.ConnectionString, createDbStatement);
+                string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
+                string createDbStatement = string.Format(CommonServerCreateDatabaseStatementTemplate, dbName);
+                if (_dbEngine == DbEngine.SqlServer)
+                {
+                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+                    builder.InitialCatalog = "master";
+                    connectionString = builder.ConnectionString;
+                }
+                return ExecuteStatement(connectionString, createDbStatement);
             }
             catch (Exception e)
             {
@@ -38,18 +43,13 @@ namespace ReportGenerator.Core.Database.Managers
 
         }
 
-        // todo: umv: Change, SqlConnectionStringBuilder
         public bool DropDatabase(string connectionString)
         {
             try
             {
-                //SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                //string dropDbStatement = string.Format(SqlServerDropDatabaseStatementTemplate, builder.InitialCatalog);
-                //builder.InitialCatalog = SqlServerMasterDatabase;
-                //return ExecuteStatement(builder.ConnectionString, dropDbStatement);
                 string dbName = ConnectionStringHelper.GetDatabaseName(connectionString, _dbEngine);
                 string dropSqlStatement = GetDropDatabaseStatement(dbName);
-                if (_dbEngine == DbEngine.SqlServer)
+                if (_dbEngine == DbEngine.SqlServer) // todo: umv: move outside ??
                 {
                     SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
                     builder.InitialCatalog = "master";
@@ -65,7 +65,6 @@ namespace ReportGenerator.Core.Database.Managers
             }
         }
 
-        // todo: umv: implement following methods
         public bool ExecuteNonQuery(IDbCommand command)
         {
             bool result = true;
