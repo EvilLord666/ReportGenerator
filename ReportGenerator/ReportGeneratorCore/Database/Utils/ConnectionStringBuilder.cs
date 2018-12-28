@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Data.SQLite;
 
 namespace ReportGenerator.Core.Database.Utils
 {
@@ -36,7 +37,10 @@ namespace ReportGenerator.Core.Database.Utils
 
         private static string BuildSqLiteConnectionString(IDictionary<string, string> parameters)
         {
-            return string.Empty;
+            SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
+            builder.DataSource = parameters[DbParametersKeys.DatabaseKey];
+            builder.Version = Convert.ToInt32(parameters[DbParametersKeys.DatabaseEngineVersion]);
+            return builder.ConnectionString;
         }
     }
 }

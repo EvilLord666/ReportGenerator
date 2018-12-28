@@ -18,7 +18,6 @@ namespace ReportGenerator.Core.Database.Managers
             _logger = logger;
         }
 
-        // todo: umv: Change, SqlConnectionStringBuilder
         public bool CreateDatabase(string connectionString, bool dropIfExists)
         {
             try
