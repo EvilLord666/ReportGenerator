@@ -92,6 +92,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
                 {DbParametersKeys.DatabaseKey, TestSqLiteDatabase},
                 {DbParametersKeys.DatabaseEngineVersion, "3"}
             };
+            _connectionString = ConnectionStringBuilder.Build(DbEngine.SqLite, connectionStringParams);
             _dbManager.CreateDatabase(_connectionString, true);
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqLiteCreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqLiteInsertDataScript));
