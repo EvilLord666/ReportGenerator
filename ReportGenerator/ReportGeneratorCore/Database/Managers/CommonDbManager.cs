@@ -36,9 +36,7 @@ namespace ReportGenerator.Core.Database.Managers
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
                 if (_dbEngine == DbEngine.MySql)
-                {
-                    
-                }
+                    connectionString = ConnectionStringHelper.GetMySqlDbNameLessConnectionString(connectionString);
 
                 return ExecuteStatement(connectionString, createDbStatement);
             }
@@ -177,10 +175,10 @@ namespace ReportGenerator.Core.Database.Managers
         private bool ExecuteStatement(string connectionString, string statement)
         {
             bool result = true;
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (IDbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString))
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand(statement, connection);
+                IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, statement);
                 result = ExecuteNonQuery(command);
                 connection.Close();
                 return result;
@@ -200,12 +198,12 @@ namespace ReportGenerator.Core.Database.Managers
 
 
         // create database statements
-        private const string CommonServerCreateDatabaseStatementTemplate = "CREATE DATABASE {0}";
-        private const string MySqlCreateDatabaseStatementTemplate = "CREATE DATABASE {0} IF EXISTS";
+        private const string CommonServerCreateDatabaseStatementTemplate = "CREATE DATABASE {0};";
+        //private const string MySqlCreateDatabaseStatementTemplate = "CREATE DATABASE {0} IF EXISTS;";
         // drop database statements
         private const string SqlServerDropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
-        private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0} IF EXISTS";
-        private const string SqLiteDropDatabaseStatementTemplate = "DETACH DATABASE {0}";
+        private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0} IF EXISTS;";
+        private const string SqLiteDropDatabaseStatementTemplate = "DETACH DATABASE {0};";
 
         private readonly DbEngine _dbEngine;
         private readonly ILogger<CommonDbManager> _logger;

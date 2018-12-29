@@ -33,15 +33,18 @@ namespace ReportGenerator.Core.Database.Utils
         public static string GetSqlServerMasterConnectionString(string connectionString)
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-            builder.InitialCatalog = "master";
+            builder.InitialCatalog = SqlServerMasterDatabase;
             return builder.ConnectionString;
         }
 
         public static string GetMySqlDbNameLessConnectionString(string connectionString)
         {
-            return null;
+            MySqlConnectionStringBuilder mySqlConnStringBuilder = new MySqlConnectionStringBuilder(connectionString);
+            mySqlConnStringBuilder.Database = MySqlDatabase;
+            return mySqlConnStringBuilder.ConnectionString;
         }
 
         private const string SqlServerMasterDatabase = "master";
+        private const string MySqlDatabase = "mysql";
     }
 }

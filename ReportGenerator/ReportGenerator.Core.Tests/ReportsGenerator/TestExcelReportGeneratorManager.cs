@@ -58,7 +58,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             ILoggerFactory loggerFactory = new LoggerFactory();
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, _connectionString);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
@@ -119,7 +119,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
                 {DbParametersKeys.DatabaseKey, TestMySqlDatabase},
                 // {DbParametersKeys.UseIntegratedSecurityKey, "true"} // is not working ...
                 {DbParametersKeys.LoginKey, "root"},
-                {DbParametersKeys.PasswordKey, ""}
+                {DbParametersKeys.PasswordKey, "123"}
             };
             _connectionString = ConnectionStringBuilder.Build(DbEngine.MySql, connectionStringParams);
             _dbManager.CreateDatabase(_connectionString, true);
