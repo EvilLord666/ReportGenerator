@@ -76,7 +76,8 @@ namespace ReportGenerator.Core.Extractor
                             {
                                 if (string.IsNullOrEmpty(parameter.ParameterName))
                                     throw new InvalidDataException("parameter name can't be null or empty");
-                                SqlParameter procedureParameter = new SqlParameter(parameter.ParameterName, parameter.ParameterType);
+                                // todo: use factory ...
+                                DbParameter procedureParameter = new SqlParameter(parameter.ParameterName, parameter.ParameterType);
                                 procedureParameter.Value = parameter.ParameterValue;
                                 command.Parameters.Add(procedureParameter);
                             }
