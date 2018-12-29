@@ -63,8 +63,11 @@ namespace ReportGenerator.Core.Database.Utils
                 builder.UserID = parameters[DbParametersKeys.LoginKey];
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
             }*/
-            builder.UserID = parameters[DbParametersKeys.LoginKey];
-            builder.Password = parameters[DbParametersKeys.PasswordKey];
+            if (parameters.ContainsKey(DbParametersKeys.LoginKey))
+                builder.UserID = parameters[DbParametersKeys.LoginKey];
+            if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
+                builder.Password = parameters[DbParametersKeys.PasswordKey];
+            //return "server=localhost;database=reportGenTestDb;UID=root;password=123;";
             return builder.ConnectionString;
         }
     }

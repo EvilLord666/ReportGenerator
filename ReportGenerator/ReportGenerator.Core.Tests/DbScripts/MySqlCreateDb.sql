@@ -1,6 +1,4 @@
-﻿--ATTACH DATABASE ':memory:' AS dbo;
-
-CREATE TABLE Region
+﻿CREATE TABLE Region
 (
    Id INTEGER PRIMARY KEY,
    Name NVARCHAR(200) NOT NULL
