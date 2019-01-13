@@ -5,13 +5,14 @@
    -->
   <DataSource>StoredProcedure</DataSource>
   <!-- MySqL stored procedure name should be defined as dbName.procedureName -->
-  <Name>reportgeneratortestdb.GetCitizensByCityAndAge</Name>
+  <Name>reportgeneratortestdb.GetCitizensWithCitiesByCityAndAge</Name>
   <StoredProcedureParameters>
     <!-- MySql VarString enum value is 15, VarChar - 253-->
     <ParameterType>253</ParameterType> 
     <ParameterName>CityName</ParameterName>
-    <ParameterValue xsi:type="xsd:string">"Yekaterinburg"</ParameterValue>
+    <ParameterValue xsi:type="xsd:string">'Yekaterinburg'</ParameterValue>
   </StoredProcedureParameters>
+  
   <StoredProcedureParameters>
     <!-- MySql Int32 enum value is 3-->
     <ParameterType>3</ParameterType>
