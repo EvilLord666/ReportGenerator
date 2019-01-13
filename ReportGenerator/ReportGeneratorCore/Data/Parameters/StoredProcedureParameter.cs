@@ -11,14 +11,14 @@ namespace ReportGenerator.Core.Data.Parameters
         {
         }
 
-        public StoredProcedureParameter(SqlDbType parameterType, string parameterName, object parameterValue)
+        public StoredProcedureParameter(int parameterType, string parameterName, object parameterValue)
         {
             ParameterType = parameterType;
             ParameterName = parameterName;
             ParameterValue = parameterValue;
         }
 
-        public SqlDbType ParameterType { get; set; }   // todo: make cross db 
+        public int ParameterType { get; set; }   // todo: make cross db 
         public string ParameterName { get; set; }
         public object ParameterValue { get; set; }
     }

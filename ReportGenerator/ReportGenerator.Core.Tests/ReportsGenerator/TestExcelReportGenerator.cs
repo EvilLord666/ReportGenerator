@@ -13,11 +13,12 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [Fact]
         public void TestGenerate()
         {
-            if (File.Exists(ReportFile))
-                File.Delete(ReportFile);
+            string reportFile = string.Format(ReportFileTemplate, Guid.NewGuid());
+            if (File.Exists(reportFile))
+                File.Delete(reportFile);
             ILoggerFactory loggerFactory = new LoggerFactory();
             ILogger<ExcelReportGenerator> logger = loggerFactory.CreateLogger<ExcelReportGenerator>();
-            IReportGenerator generator = new ExcelReportGenerator(logger, TestExcelTemplate, ReportFile);
+            IReportGenerator generator = new ExcelReportGenerator(logger, TestExcelTemplate, reportFile);
             // Worksheet - 1, start row - 2, start column - 3
             object[] parameters = {1, 2, 3};
             DbData data = new DbData();
@@ -29,12 +30,12 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
             bool result = generator.Generate(data, parameters);
             Assert.True(result);
-            Assert.True(File.Exists(ReportFile));
+            Assert.True(File.Exists(reportFile));
 
             // todo: umv: add read excel doc and check
 
-            if (File.Exists(ReportFile))
-                File.Delete(ReportFile);
+            if (File.Exists(reportFile))
+                File.Delete(reportFile);
         }
 
         private IList<DbValue> GetDataRow(string firstName, string lastName, int age, string sex, string city, string region)
@@ -51,6 +52,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
-        private const string ReportFile = @".\Report.xlsx";
+        private const string ReportFileTemplate = @".\Report_{0}.xlsx";
     }
 }

@@ -134,7 +134,7 @@ namespace ReportGenerator.Core.Database.Managers
             }
             catch (Exception e)
             {
-                // todo: umv: log an Error
+                _logger.LogError($"An error occurred during Db Reader Execution: {e}");
                 result = null;
             }
             finally
@@ -154,7 +154,7 @@ namespace ReportGenerator.Core.Database.Managers
             }
             catch (Exception e)
             {
-                // todo: umv: log an Error
+                _logger.LogError($"An error occurred during Async Db Reader Execution: {e}");
                 result = null;
             }
             finally
