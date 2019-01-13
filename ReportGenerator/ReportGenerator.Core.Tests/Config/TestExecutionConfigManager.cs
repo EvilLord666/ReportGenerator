@@ -41,9 +41,9 @@ namespace ReportGenerator.Core.Tests.Config
             if (source == ReportDataSource.StoredProcedure)
             {
                 List<StoredProcedureParameter> procedureParameters = new List<StoredProcedureParameter>();
-                procedureParameters.Add(new StoredProcedureParameter(SqlDbType.NVarChar, "City", "N'Yekaterinburg"));
-                procedureParameters.Add(new StoredProcedureParameter(SqlDbType.Int, "PostalCode", "620000"));
-                procedureParameters.Add(new StoredProcedureParameter(SqlDbType.DateTime, "DateOfBirth", "'2018-01-01'"));
+                procedureParameters.Add(new StoredProcedureParameter((int)SqlDbType.NVarChar, "City", "N'Yekaterinburg"));
+                procedureParameters.Add(new StoredProcedureParameter((int)SqlDbType.Int, "PostalCode", "620000"));
+                procedureParameters.Add(new StoredProcedureParameter((int)SqlDbType.DateTime, "DateOfBirth", "'2018-01-01'"));
                 config.StoredProcedureParameters = procedureParameters;
                 config.Name = "GetSitizensByCityAndDateOfBirth";
             }
@@ -123,7 +123,7 @@ namespace ReportGenerator.Core.Tests.Config
             }
         }
 
-        private const string ExecutionConfigForStoredProcedure = @"..\..\..\ExampleConfig\testReport4_StoredProcedure.xml";
+        private const string ExecutionConfigForStoredProcedure = @"..\..\..\ExampleConfig\sqlServer_testReport4_StoredProcedure.xml";
         private const string ExecutionConfigForView = @"..\..\..\ExampleConfig\testReport4_View.xml";
     }
 }

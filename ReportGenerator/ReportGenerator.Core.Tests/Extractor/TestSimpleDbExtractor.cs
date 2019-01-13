@@ -47,7 +47,7 @@ namespace ReportGenerator.Core.Tests.Extractor
             // testing is here
             IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCity, 
-                                                         new List<StoredProcedureParameter>{ new StoredProcedureParameter(SqlDbType.NVarChar, "City", parameterValue) });
+                                                         new List<StoredProcedureParameter>{ new StoredProcedureParameter((int)SqlDbType.NVarChar, "City", parameterValue) });
             result.Wait();
             DbData rows = result.Result;
             Assert.Equal(expectedNumberOfRows, rows.Rows.Count);
@@ -66,8 +66,8 @@ namespace ReportGenerator.Core.Tests.Extractor
             IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCityAndAge,  new List<StoredProcedureParameter>
             {
-                new StoredProcedureParameter(SqlDbType.NVarChar, "City", cityParameterValue),
-                new StoredProcedureParameter(SqlDbType.Int, "PersonAge", ageParameterValue)
+                new StoredProcedureParameter((int)SqlDbType.NVarChar, "City", cityParameterValue),
+                new StoredProcedureParameter((int)SqlDbType.Int, "PersonAge", ageParameterValue)
             });
             result.Wait();
             DbData rows = result.Result;
@@ -160,7 +160,7 @@ namespace ReportGenerator.Core.Tests.Extractor
         private const string TestView = "CitizensWithRegion";
 
         private string _connectionString;
-        private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
+        private readonly ILoggerFactory _loggerFactory;
         private IDbManager _dbManager;
     }
 }
