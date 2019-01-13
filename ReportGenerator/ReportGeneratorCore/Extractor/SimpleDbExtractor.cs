@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -76,8 +75,7 @@ namespace ReportGenerator.Core.Extractor
                             {
                                 if (string.IsNullOrEmpty(parameter.ParameterName))
                                     throw new InvalidDataException("parameter name can't be null or empty");
-                                // todo: use factory ...
-                                DbParameter procedureParameter = new SqlParameter(parameter.ParameterName, parameter.ParameterType);
+                                DbParameter procedureParameter = DbParameterFactory.Create(_dbEngine, parameter.ParameterName, parameter.ParameterType);
                                 procedureParameter.Value = parameter.ParameterValue;
                                 command.Parameters.Add(procedureParameter);
                             }

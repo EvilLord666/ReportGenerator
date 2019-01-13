@@ -1,21 +1,18 @@
 using System;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Data.SQLite;
 using MySql.Data.MySqlClient;
 
 namespace ReportGenerator.Core.Database.Factories
 {
-    public static class DbConnectionFactory
+    public static class DbParameterFactory
     {
-        public static DbConnection Create(DbEngine dbEngine, string connectionString)
+        public static DbParameter Create(DbEngine dbEngine, string parameterName, int parameterType)
         {
             if (dbEngine == DbEngine.SqlServer)
-                return new SqlConnection(connectionString);
-            if (dbEngine == DbEngine.SqLite)
-                return new SQLiteConnection(connectionString);
+                return new SqlParameter(parameterName, parameterType);
             if (dbEngine == DbEngine.MySql)
-                return new MySqlConnection(connectionString);
+                return new MySqlParameter(parameterName, parameterType);
             throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/ReportGenerator");
         }
     }

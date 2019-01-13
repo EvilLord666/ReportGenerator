@@ -18,7 +18,7 @@ namespace ReportGenerator.Core.Data.Parameters
             ParameterValue = parameterValue;
         }
 
-        public int ParameterType { get; set; }   // todo: make cross db 
+        public int ParameterType { get; set; }
         public string ParameterName { get; set; }
         public object ParameterValue { get; set; }
     }
