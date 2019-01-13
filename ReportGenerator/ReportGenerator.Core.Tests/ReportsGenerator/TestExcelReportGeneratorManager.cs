@@ -59,7 +59,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, MySqlDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownMySqlTestData();
@@ -138,6 +138,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string ReportFile = @".\Report.xlsx";
         private const string SqlServerDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
         private const string SqLiteDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
+        private const string MySqlDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
 
         private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";

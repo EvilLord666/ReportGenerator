@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <!-- 
-       If use SQL Server see for parameters Type : https://docs.microsoft.com/ru-ru/dotnet/api/system.data.sqldbtype 
+       If use MySQL See for parameters Type : https://dev.mysql.com/doc/dev/connector-net/8.0/html/T_MySql_Data_MySqlClient_MySqlDbType.htm
    -->
   <DataSource>StoredProcedure</DataSource>
   <Name>GetSitizensByCityAndDateOfBirth</Name>
   <StoredProcedureParameters>
-    <!-- SQL Server NVarChar enum value is 12-->
-    <ParameterType>12</ParameterType> 
+    <!-- MySql VarString enum value is 15-->
+    <ParameterType>15</ParameterType> 
     <ParameterName>City</ParameterName>
     <ParameterValue xsi:type="xsd:string">N'Yekaterinburg</ParameterValue>
   </StoredProcedureParameters>
   <StoredProcedureParameters>
-    <!-- SQL Server Int enum value is 8-->
-    <ParameterType>8</ParameterType>
+    <!-- MySql Int32 enum value is 3-->
+    <ParameterType>3</ParameterType>
     <ParameterName>PostalCode</ParameterName>
     <ParameterValue xsi:type="xsd:string">620000</ParameterValue>
   </StoredProcedureParameters>
   <StoredProcedureParameters>
-    <!-- SQL Server Date enum value is 4-->
-    <ParameterType>4</ParameterType>
+    <!-- SQL Server Date enum value is 10-->
+    <ParameterType>10</ParameterType>
     <ParameterName>DateOfBirth</ParameterName>
     <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
   </StoredProcedureParameters>
