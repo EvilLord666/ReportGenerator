@@ -4,23 +4,18 @@
        If use MySQL See for parameters Type : https://dev.mysql.com/doc/dev/connector-net/8.0/html/T_MySql_Data_MySqlClient_MySqlDbType.htm
    -->
   <DataSource>StoredProcedure</DataSource>
-  <Name>GetSitizensByCityAndDateOfBirth</Name>
+  <!-- MySqL stored procedure name should be defined as dbName.procedureName -->
+  <Name>reportgeneratortestdb.GetCitizensByCityAndAge</Name>
   <StoredProcedureParameters>
-    <!-- MySql VarString enum value is 15-->
-    <ParameterType>15</ParameterType> 
-    <ParameterName>City</ParameterName>
-    <ParameterValue xsi:type="xsd:string">N'Yekaterinburg</ParameterValue>
+    <!-- MySql VarString enum value is 15, VarChar - 253-->
+    <ParameterType>253</ParameterType> 
+    <ParameterName>CityName</ParameterName>
+    <ParameterValue xsi:type="xsd:string">"Yekaterinburg"</ParameterValue>
   </StoredProcedureParameters>
   <StoredProcedureParameters>
     <!-- MySql Int32 enum value is 3-->
     <ParameterType>3</ParameterType>
-    <ParameterName>PostalCode</ParameterName>
-    <ParameterValue xsi:type="xsd:string">620000</ParameterValue>
-  </StoredProcedureParameters>
-  <StoredProcedureParameters>
-    <!-- SQL Server Date enum value is 10-->
-    <ParameterType>10</ParameterType>
-    <ParameterName>DateOfBirth</ParameterName>
-    <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
+    <ParameterName>PersonAge</ParameterName>
+    <ParameterValue xsi:type="xsd:string">18</ParameterValue>
   </StoredProcedureParameters>
 </ExecutionConfig>
