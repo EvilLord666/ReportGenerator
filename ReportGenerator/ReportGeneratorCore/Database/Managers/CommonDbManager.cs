@@ -201,7 +201,7 @@ namespace ReportGenerator.Core.Database.Managers
         //private const string MySqlCreateDatabaseStatementTemplate = "CREATE DATABASE {0} IF EXISTS;";
         // drop database statements
         private const string SqlServerDropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
-        private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0} IF EXISTS;";
+        private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0};";
         private const string SqLiteDropDatabaseStatementTemplate = "DETACH DATABASE {0};";
 
         private readonly DbEngine _dbEngine;

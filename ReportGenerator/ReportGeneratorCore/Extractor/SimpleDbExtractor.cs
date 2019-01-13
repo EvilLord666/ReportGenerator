@@ -64,10 +64,11 @@ namespace ReportGenerator.Core.Extractor
                 {
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" started");
                     DbData result = null;
-                    await connection.OpenAsync().ConfigureAwait(false); ;
+                    await connection.OpenAsync().ConfigureAwait(false);
                     using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, storedPocedureName))
                     {
                         command.CommandType = CommandType.StoredProcedure;
+                        // command.CommandText = "call " + command.CommandText;
                         // add parameters
                         if (parameters != null && parameters.Count > 0)
                         {
@@ -146,6 +147,7 @@ namespace ReportGenerator.Core.Extractor
             catch (Exception e)
             {
                 _logger.LogError($"An error occured during read data impl async, exception: {e}");
+                //throw;
                 return null;
             }
         }
