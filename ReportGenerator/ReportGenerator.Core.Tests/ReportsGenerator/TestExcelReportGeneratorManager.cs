@@ -45,9 +45,12 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             TearDownSqLiteTestData();
         }
         
+        [Fact]
         public void TestGenerateReportPostgres()
         {
-            
+            SetUpPostgresSqlTestData();
+            // todo: test with postgres ...
+            TearDownPostgresSqlTestData();
         }
         
         [Fact]
@@ -132,6 +135,16 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private void TearDownMySqlTestData()
         {
             _dbManager.DropDatabase(_connectionString);
+        }
+
+        private void SetUpPostgresSqlTestData()
+        {
+            
+        }
+        
+        private void TearDownPostgresSqlTestData()
+        {
+            
         }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
