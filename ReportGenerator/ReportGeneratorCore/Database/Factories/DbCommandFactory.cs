@@ -16,7 +16,7 @@ namespace ReportGenerator.Core.Database.Factories
                 return new SQLiteCommand(cmdText, connection as SQLiteConnection);
             if (dbEngine == DbEngine.MySql)
                 return new MySqlCommand(cmdText, connection as MySqlConnection);
-            throw new NotImplementedException("Other db engine were not implemented yet");
+            throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/ReportGenerator");
         }
     }
 }

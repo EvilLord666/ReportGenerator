@@ -11,7 +11,6 @@ using ReportGenerator.Core.Database.Utils;
 
 namespace ReportGenerator.Core.Database.Managers
 {
-    // todo: umv: pass logger here
     public class CommonDbManager : IDbManager
     {
         public CommonDbManager(DbEngine dbEngine, ILogger<CommonDbManager> logger)

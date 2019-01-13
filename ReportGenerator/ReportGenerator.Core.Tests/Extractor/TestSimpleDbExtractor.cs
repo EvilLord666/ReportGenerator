@@ -118,13 +118,7 @@ namespace ReportGenerator.Core.Tests.Extractor
         }
 
         private void SetUpTestData()
-        {
-            /*TestSqlServerDatabaseManager.CreateDatabase(Server, TestDatabase, true);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
-            TestSqlServerDatabaseManager.ExecuteSql(Server, TestDatabase, createDatabaseStatement);
-            TestSqlServerDatabaseManager.ExecuteSql(Server, TestDatabase, insertDataStatement);*/
-            
+        {            
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
