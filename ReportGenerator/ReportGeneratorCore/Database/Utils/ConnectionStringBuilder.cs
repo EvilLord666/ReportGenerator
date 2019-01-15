@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using MySql.Data.MySqlClient;
+using Npgsql;
 
 namespace ReportGenerator.Core.Database.Utils
 {
@@ -16,6 +17,8 @@ namespace ReportGenerator.Core.Database.Utils
                 return BuildSqLiteConnectionString(parameters);
             if (dbEngine == DbEngine.MySql)
                 return BuildMysqlConnectionString(parameters);
+            if (dbEngine == DbEngine.PostgresSql)
+                return BuildPostgresSqlConnectionString(parameters);
             throw new NotImplementedException("Other db engine were not implemented yet");
 
         }
@@ -65,6 +68,20 @@ namespace ReportGenerator.Core.Database.Utils
             }*/
             if (parameters.ContainsKey(DbParametersKeys.LoginKey))
                 builder.UserID = parameters[DbParametersKeys.LoginKey];
+            if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
+                builder.Password = parameters[DbParametersKeys.PasswordKey];
+            return builder.ConnectionString;
+        }
+
+        private static string BuildPostgresSqlConnectionString(IDictionary<string, string> parameters)
+        {
+            NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder();
+            if (parameters.ContainsKey(DbParametersKeys.HostKey))
+                builder.Host = parameters[DbParametersKeys.HostKey];
+            if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
+                builder.Database = parameters[DbParametersKeys.DatabaseKey];
+            if (parameters.ContainsKey(DbParametersKeys.LoginKey))
+                builder.Username = parameters[DbParametersKeys.LoginKey];
             if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
             return builder.ConnectionString;

@@ -5,6 +5,8 @@ namespace ReportGenerator.Core.Database
         SqlServer,
         SqLite,
         MySql,
-        PostgreSql
+        PostgresSql,
+        MongoDb,
+        Other
     }
 }
