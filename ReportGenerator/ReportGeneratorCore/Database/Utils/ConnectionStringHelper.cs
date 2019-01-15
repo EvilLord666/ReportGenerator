@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using MySql.Data.MySqlClient;
+using Npgsql;
 
 namespace ReportGenerator.Core.Database.Utils
 {
@@ -27,6 +28,12 @@ namespace ReportGenerator.Core.Database.Utils
                 return mySqlConnStringBuilder.Database;
             }
 
+            if (dbEngine == DbEngine.PostgresSql)
+            {
+                NpgsqlConnectionStringBuilder postgresConnStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+                return postgresConnStringBuilder.Database;
+            }
+
             throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/ReportGenerator");
         }
 
@@ -43,8 +50,16 @@ namespace ReportGenerator.Core.Database.Utils
             mySqlConnStringBuilder.Database = MySqlDatabase;
             return mySqlConnStringBuilder.ConnectionString;
         }
+        
+        public static string GetPostgresSqlDbNameLessConnectionString(string connectionString)
+        {
+            NpgsqlConnectionStringBuilder mySqlConnStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+            mySqlConnStringBuilder.Database = PostgresSqlDatabase;
+            return mySqlConnStringBuilder.ConnectionString;
+        }
 
         private const string SqlServerMasterDatabase = "master";
         private const string MySqlDatabase = "mysql";
+        private const string PostgresSqlDatabase = "postgres";
     }
 }

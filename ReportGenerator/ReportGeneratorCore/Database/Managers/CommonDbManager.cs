@@ -36,6 +36,8 @@ namespace ReportGenerator.Core.Database.Managers
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
                 if (_dbEngine == DbEngine.MySql)
                     connectionString = ConnectionStringHelper.GetMySqlDbNameLessConnectionString(connectionString);
+                if (_dbEngine == DbEngine.PostgresSql)
+                    connectionString = ConnectionStringHelper.GetPostgresSqlDbNameLessConnectionString(connectionString);
 
                 return ExecuteStatement(connectionString, createDbStatement);
             }
