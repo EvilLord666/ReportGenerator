@@ -19,7 +19,7 @@ namespace ReportGenerator.Core.Database.Utils
                 return BuildMysqlConnectionString(parameters);
             if (dbEngine == DbEngine.PostgresSql)
                 return BuildPostgresSqlConnectionString(parameters);
-            throw new NotImplementedException("Other db engine were not implemented yet");
+            throw new NotImplementedException("Other db engine are not supported yet, please add a github issue https://github.com/EvilLord666/ReportGenerator");
 
         }
         

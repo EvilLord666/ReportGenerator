@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
+using Npgsql;
+using NpgsqlTypes;
 
 namespace ReportGenerator.Core.Database.Factories
 {
@@ -18,6 +20,11 @@ namespace ReportGenerator.Core.Database.Factories
                 };
             if (dbEngine == DbEngine.MySql)
                 return new MySqlParameter(parameterName, (MySqlDbType)parameterType)
+                {
+                    Direction = parameterDirection
+                };
+            if (dbEngine == DbEngine.PostgresSql)
+                return new NpgsqlParameter(parameterName, (NpgsqlDbType) parameterType)
                 {
                     Direction = parameterDirection
                 };
