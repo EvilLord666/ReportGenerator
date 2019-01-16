@@ -207,6 +207,8 @@ namespace ReportGenerator.Core.Database.Managers
                 return string.Format(SqLiteDropDatabaseStatementTemplate, dbName);
             if (_dbEngine == DbEngine.MySql)
                 return string.Format(MySqlDropDatabaseStatementTemplate, dbName);
+            if (_dbEngine == DbEngine.PostgresSql)
+                return string.Format(PostgresSqlDropDatabaseStatementTemplate, dbName);
             throw new NotImplementedException("Other db engine were not implemented yet");
         }
 
@@ -218,6 +220,7 @@ namespace ReportGenerator.Core.Database.Managers
         private const string SqlServerDropDatabaseStatementTemplate = "ALTER DATABASE {0} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{0}];";
         private const string MySqlDropDatabaseStatementTemplate = "DROP DATABASE {0};";
         private const string SqLiteDropDatabaseStatementTemplate = "DETACH DATABASE {0};";
+        private const string PostgresSqlDropDatabaseStatementTemplate = @"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname ='{0}' AND pid <> pg_backend_pid(); DROP DATABASE {0};";
 
         private readonly DbEngine _dbEngine;
         private readonly ILogger<CommonDbManager> _logger;
