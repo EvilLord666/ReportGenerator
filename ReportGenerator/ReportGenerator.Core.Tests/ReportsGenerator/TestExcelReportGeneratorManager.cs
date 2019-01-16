@@ -12,6 +12,7 @@ using Xunit;
 
 namespace ReportGenerator.Core.Tests.ReportsGenerator
 {
+    // todo: umv: test data execution both with View and StoredProcedure config and check resulting data
     public class TestExcelReportGeneratorManager
     {
         [Fact]
@@ -54,7 +55,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.PostgresSql, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, PostgresSqlDataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, PostgresSqlViewDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownPostgresSqlTestData();
@@ -173,7 +174,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string SqlServerDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
         private const string SqLiteDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
         private const string MySqlDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
-        private const string PostgresSqlDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewDataExtractionParams.xml";
+        private const string PostgresSqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewDataExtractionParams.xml";
+        private const string PostgresSqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\postgresStoredProcDataExtractionParams.xml";
 
         private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";

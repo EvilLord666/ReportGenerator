@@ -60,7 +60,7 @@ $$
 
 LANGUAGE 'plpgsql';
 
-CREATE FUNCTION GetCitizensWithCitiesByCity(IN CityName VARCHAR(200))
+CREATE FUNCTION GetCitizensWithCitiesByCity(CityName VARCHAR(200))
 RETURNS TABLE (
     FirstName VARCHAR(100),
 	LastName VARCHAR(100),
