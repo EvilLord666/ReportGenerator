@@ -159,8 +159,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _dbManager.CreateDatabase(_connectionString, true);
             string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(PostgresSqlCreateDatabaseScript));
             string insertDataStatement = File.ReadAllText(Path.GetFullPath(PostgresSqlInsertDataScript));
-            _dbManager.ExecuteNonQuery(_connectionString, createDatabaseStatement);//.Wait();
-            _dbManager.ExecuteNonQuery(_connectionString, insertDataStatement);//.Wait();
+            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
+            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
         
         private void TearDownPostgresSqlTestData()
