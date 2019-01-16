@@ -105,7 +105,7 @@ namespace ReportGenerator.Core.Extractor
                 {
                     _logger.LogDebug("Extract db data async via \"View\" started");
                     DbData result = null;
-                    await connection.OpenAsync().ConfigureAwait(false); ;
+                    await connection.OpenAsync().ConfigureAwait(false);
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
                     using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText))
                     {
