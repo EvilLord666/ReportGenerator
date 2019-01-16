@@ -27,3 +27,20 @@ CREATE VIEW CitizensWithRegion AS
 SELECT Cz.FirstName, Cz.LastName, Cz.Age, Cz.Sex, Ci.Name AS City, R.Name AS Region 
 FROM Citizen AS Cz INNER JOIN City AS Ci ON Cz.CityId = Ci.Id
 INNER JOIN Region AS R ON Ci.RegionId = R.Id;
+
+CREATE FUNCTION GetCitizensWithCitiesByCityAndAge(CityName VARCHAR(200), PersonAge INTEGER)
+RETURNS TABLE (
+    FirstName VARCHAR(100),
+	LastName VARCHAR(100),
+	Age INTEGER,
+	City VARCHAR(200)
+)
+AS $$
+  BEGIN
+    RETURN QUERY SELECT Cz.FirstName, Cz.LastName, Cz.Age, Ci.Name AS City FROM Citizen AS Cz
+	INNER JOIN City AS Ci ON  Cz.CityId = Ci.Id
+	WHERE Ci.Name = CityName AND Cz.Age > PersonAge;
+  END;
+$$
+
+LANGUAGE 'plpgsql';
