@@ -8,7 +8,8 @@ namespace ReportGenerator.Core.Database.Managers
     {
         bool CreateDatabase(string connectionString, bool dropIfExists);
         bool DropDatabase(string connectionString);
-        bool ExecuteNonQuery(IDbCommand command);      
+        bool ExecuteNonQuery(IDbCommand command);
+        bool ExecuteNonQuery(string connectionString, string cmdText); 
         Task<bool> ExecuteNonQueryAsync(DbCommand command);
         Task<bool> ExecuteNonQueryAsync(string connectionString, string cmdText);
         IDataReader ExecuteDbReader(IDbCommand command);

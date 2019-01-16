@@ -57,7 +57,7 @@ namespace ReportGenerator.Core.Database.Utils
             if (parameters.ContainsKey(DbParametersKeys.HostKey))
                 builder.Server = parameters[DbParametersKeys.HostKey];
             if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
-                builder.Database = parameters[DbParametersKeys.DatabaseKey].ToLower(); // otherwise is not working, ORACLE = shit
+                builder.Database = parameters[DbParametersKeys.DatabaseKey].ToLower(); // otherwise is not working
             /*if (parameters.ContainsKey(DbParametersKeys.UseIntegratedSecurityKey))
                 builder.IntegratedSecurity = Convert.ToBoolean(parameters[DbParametersKeys.UseIntegratedSecurityKey]);
             else
@@ -79,11 +79,12 @@ namespace ReportGenerator.Core.Database.Utils
             if (parameters.ContainsKey(DbParametersKeys.HostKey))
                 builder.Host = parameters[DbParametersKeys.HostKey];
             if (parameters.ContainsKey(DbParametersKeys.DatabaseKey))
-                builder.Database = parameters[DbParametersKeys.DatabaseKey];
+                builder.Database = parameters[DbParametersKeys.DatabaseKey].ToLower(); // otherwise is not working, mysql way;
             if (parameters.ContainsKey(DbParametersKeys.LoginKey))
                 builder.Username = parameters[DbParametersKeys.LoginKey];
             if (parameters.ContainsKey(DbParametersKeys.PasswordKey))
                 builder.Password = parameters[DbParametersKeys.PasswordKey];
+            //builder.Timeout = 0;
             return builder.ConnectionString;
         }
     }

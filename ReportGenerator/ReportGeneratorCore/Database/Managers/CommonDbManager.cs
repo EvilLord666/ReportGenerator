@@ -63,7 +63,8 @@ namespace ReportGenerator.Core.Database.Managers
                 string dropSqlStatement = GetDropDatabaseStatement(dbName);
                 if (_dbEngine == DbEngine.SqlServer)
                     connectionString = ConnectionStringHelper.GetSqlServerMasterConnectionString(connectionString);
-                
+                if (_dbEngine == DbEngine.PostgresSql)
+                    connectionString = ConnectionStringHelper.GetPostgresSqlDbNameLessConnectionString(connectionString);
 
                 return ExecuteStatement(connectionString, dropSqlStatement);
             }
@@ -94,6 +95,18 @@ namespace ReportGenerator.Core.Database.Managers
             return result;
         }
 
+        public bool ExecuteNonQuery(string connectionString, string cmdText)
+        {
+            using (DbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString))
+            {
+                IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
+                connection.Open();
+                bool result = ExecuteNonQuery(command as DbCommand);
+                connection.Close();
+                return result;
+            }
+        }
+
         public async Task<bool> ExecuteNonQueryAsync(DbCommand command)
         {
             bool result = true;
@@ -119,7 +132,7 @@ namespace ReportGenerator.Core.Database.Managers
             using (DbConnection connection = DbConnectionFactory.Create(_dbEngine, connectionString))
             {
                 IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText);
-                await connection.OpenAsync();
+                await connection.OpenAsync().ConfigureAwait(false);
                 bool result = await ExecuteNonQueryAsync(command as DbCommand);
                 connection.Close();
                 return result;
