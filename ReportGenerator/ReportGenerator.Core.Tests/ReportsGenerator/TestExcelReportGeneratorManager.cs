@@ -165,7 +165,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         
         private void TearDownPostgresSqlTestData()
         {
-            
+            _dbManager.DropDatabase(_connectionString);
         }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
@@ -173,7 +173,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string SqlServerDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
         private const string SqLiteDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
         private const string MySqlDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
-        private const string PostgresSqlDataExecutionConfig = @"..\..\..\postgresViewDataExtractionParams.xml";
+        private const string PostgresSqlDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewDataExtractionParams.xml";
 
         private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
         private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";
