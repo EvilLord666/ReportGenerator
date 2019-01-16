@@ -44,3 +44,35 @@ AS $$
 $$
 
 LANGUAGE 'plpgsql';
+
+CREATE FUNCTION GetCitizensWithCities()
+RETURNS TABLE (
+    FirstName VARCHAR(100),
+	LastName VARCHAR(100),
+	Name VARCHAR(200)
+)
+AS $$
+  BEGIN
+    SELECT FirstName, LastName, Name AS CityName FROM Citizen AS Cz
+	INNER JOIN City AS Ci ON  Cz.CityId = Ci.Id;
+  END;
+$$
+
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION GetCitizensWithCitiesByCity(IN CityName VARCHAR(200))
+RETURNS TABLE (
+    FirstName VARCHAR(100),
+	LastName VARCHAR(100),
+	Age INTEGER,
+	City VARCHAR(200)
+)
+AS $$
+  BEGIN
+    SELECT Cz.FirstName, Cz.LastName, Ci.Name AS City FROM Citizen AS Cz
+	INNER JOIN City AS Ci ON Cz.CityId = Ci.Id
+	WHERE Ci.Name = CityName;
+  END;
+$$
+
+LANGUAGE 'plpgsql';
