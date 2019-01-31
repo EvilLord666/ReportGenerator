@@ -1,5 +1,6 @@
 В конфигурации все параметры, описывающие параметры хранимых процедур задаются 3 атрибутами:
- - Тип параметра (см. SqlDbType -> https://msdn.microsoft.com/ru-ru/library/system.data.sqldbtype(v=vs.110).aspx)
+ - Тип параметра (целочисленное значения, см. SqlDbType для SQL Server
+                  -> https://msdn.microsoft.com/ru-ru/library/system.data.sqldbtype(v=vs.110).aspx)
  - Имя параметра
  - Значения параметра (строковые параметры, даты, уникальные идентификаторы необходимо задавать в кавычках)
 
@@ -7,20 +8,26 @@
 
 <?xml version="1.0"?>
 <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!-- 
+       If use SQL Server see for parameters Type : https://docs.microsoft.com/ru-ru/dotnet/api/system.data.sqldbtype 
+   -->
   <DataSource>StoredProcedure</DataSource>
   <Name>GetSitizensByCityAndDateOfBirth</Name>
   <StoredProcedureParameters>
-    <ParameterType>NVarChar</ParameterType>
+    <!-- SQL Server NVarChar enum value is 12-->
+    <ParameterType>12</ParameterType> 
     <ParameterName>City</ParameterName>
     <ParameterValue xsi:type="xsd:string">N'Yekaterinburg</ParameterValue>
   </StoredProcedureParameters>
   <StoredProcedureParameters>
-    <ParameterType>Int</ParameterType>
+    <!-- SQL Server Int enum value is 8-->
+    <ParameterType>8</ParameterType>
     <ParameterName>PostalCode</ParameterName>
     <ParameterValue xsi:type="xsd:string">620000</ParameterValue>
   </StoredProcedureParameters>
   <StoredProcedureParameters>
-    <ParameterType>DateTime</ParameterType>
+    <!-- SQL Server Date enum value is 4-->
+    <ParameterType>4</ParameterType>
     <ParameterName>DateOfBirth</ParameterName>
     <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
   </StoredProcedureParameters>
