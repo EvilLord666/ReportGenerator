@@ -2,23 +2,22 @@
 <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <!-- 
        If use Postgres See for parameters Type : https://www.npgsql.org/doc/api/NpgsqlTypes.NpgsqlDbType.html
+       https://github.com/npgsql/npgsql/blob/dev/src/Npgsql/NpgsqlTypes/NpgsqlDbType.cs/#L38
    -->
   <DataSource>StoredProcedure</DataSource>
-  <!-- MySqL stored procedure name should be defined as dbName.procedureName -->
-  <Name>public.getcitizenswithcitiesbycity</Name>
+  <!-- Postgres stored procedure name should be defined as schema.procedureName, schema is optional -->
+  <Name>public.getcitizenswithcitiesbycityandage</Name>
+  <!-- ALL PARAMS, FUNCTIONS NAME are in LOWER CASE in Postgres SQL-->
   <StoredProcedureParameters>
     <!-- Postgres VarChar - 22-->
     <ParameterType>22</ParameterType>
-    <ParameterName>CityName</ParameterName>
+    <ParameterName>cityname</ParameterName>
     <ParameterValue xsi:type="xsd:string">'Yekaterinburg'</ParameterValue>
   </StoredProcedureParameters>
-  <!-- Postgres Integer enum value is 9-->
-  <!--
   <StoredProcedureParameters>
-    
+    <!-- Postgres Integer enum value is 9 -->
     <ParameterType>9</ParameterType>
-    <ParameterName>PersonAge</ParameterName>
-    <ParameterValue xsi:type="xsd:string">18</ParameterValue>
+    <ParameterName>personage</ParameterName>
+    <ParameterValue xsi:type="xsd:int">18</ParameterValue>
   </StoredProcedureParameters>
-  -->
 </ExecutionConfig>
