@@ -27,7 +27,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqlServer, 
                                                                               GlobalTestsParams.TestSqlServerHost, 
                                                                               _testSqlServerDbName);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqlServerDataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, GlobalTestsParams.SqlServerViewDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownSqlServerTestData();
@@ -42,7 +42,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             // loggerFactory.AddConsole();
             // loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, GlobalTestsParams.SqLiteViewDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownSqLiteTestData();
@@ -57,7 +57,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             // loggerFactory.AddConsole();
             // loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.PostgresSql, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, PostgresSqlViewDataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, GlobalTestsParams.PostgresSqlViewDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownPostgresSqlTestData();
@@ -72,7 +72,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             // loggerFactory.AddConsole();
             // loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, MySqlDataExecutionConfig, ReportFile, parameters);
+            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, GlobalTestsParams.MySqlStoredProcedureDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
             TearDownMySqlTestData();
@@ -173,11 +173,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
         private const string ReportFile = @".\Report.xlsx";
-        private const string SqlServerDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
-        private const string SqLiteDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
-        private const string MySqlDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
-        private const string PostgresSqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewDataExtractionParams.xml";
-        private const string PostgresSqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\postgresStoredProcDataExtractionParams.xml";
 
         private string _testSqlServerDbName;
         private string _connectionString;
