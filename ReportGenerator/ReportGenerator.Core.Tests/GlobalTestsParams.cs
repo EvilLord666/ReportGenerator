@@ -28,7 +28,7 @@ namespace ReportGenerator.Core.Tests
         public const string SqlServerStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerStoredProcedureConfig.xml";
         public const string SqLiteViewDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteViewConfig.xml";
         public const string MySqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\mySqlStoredProcedureConfig.xml";
-        public const string MySqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml"; // todo: this one
+        public const string MySqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\mySqlViewConfig.xml";
         public const string PostgresSqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewConfig.xml";
         public const string PostgresSqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\postgresStoredProcedureConfig.xml";
     }

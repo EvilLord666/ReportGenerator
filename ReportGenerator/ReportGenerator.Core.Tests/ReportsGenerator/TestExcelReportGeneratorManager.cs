@@ -17,7 +17,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
     // todo: umv: test data execution both with View and StoredProcedure config and check resulting data
     public class TestExcelReportGeneratorManager
     {
-
+        // todo: postgres stored procedure
         [Theory]
         [InlineData(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, GlobalTestsParams.TestSqlServerDatabasePattern, true, "", "", 
                     GlobalTestsParams.SqlServerCreateDatabaseScript, GlobalTestsParams.SqlServerInsertDataScript, 
@@ -31,6 +31,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [InlineData(DbEngine.MySql, GlobalTestsParams.TestMySqlHost, GlobalTestsParams.TestMySqlDatabase, false, "root", "123", 
                     GlobalTestsParams.MySqlCreateDatabaseScript, GlobalTestsParams.MySqlInsertDataScript, 
                     GlobalTestsParams.MySqlStoredProcedureDataExecutionConfig)]
+        [InlineData(DbEngine.MySql, GlobalTestsParams.TestMySqlHost, GlobalTestsParams.TestMySqlDatabase, false, "root", "123", 
+                    GlobalTestsParams.MySqlCreateDatabaseScript, GlobalTestsParams.MySqlInsertDataScript, 
+                    GlobalTestsParams.MySqlViewDataExecutionConfig)]
         [InlineData(DbEngine.PostgresSql, GlobalTestsParams.TestPostgresSqlHost, GlobalTestsParams.TestPostgresSqlDatabase, false, "postgres", "123", 
                     GlobalTestsParams.PostgresSqlCreateDatabaseScript, GlobalTestsParams.PostgresSqlInsertDataScript, 
                     GlobalTestsParams.PostgresSqlViewDataExecutionConfig)]
