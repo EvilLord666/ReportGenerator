@@ -12,16 +12,16 @@ using Xunit;
 
 namespace ReportGenerator.Core.Tests.Extensions
 {
-    public class ServiceCollectionExtensionsTests : IDisposable
+    public class TestServiceCollectionExtensions : IDisposable
     {
-        public ServiceCollectionExtensionsTests()
+        public TestServiceCollectionExtensions()
         {
-            _testDbName = TestDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
+            string testDbName = GlobalTestsParams.TestSqlServerDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
-                {DbParametersKeys.HostKey, Server},
-                {DbParametersKeys.DatabaseKey, _testDbName},
+                {DbParametersKeys.HostKey, GlobalTestsParams.TestSqlServerHost},
+                {DbParametersKeys.DatabaseKey, testDbName},
                 {DbParametersKeys.UseIntegratedSecurityKey, "true"},
                 {DbParametersKeys.UseTrustedConnectionKey, "true"}
             };
@@ -45,14 +45,10 @@ namespace ReportGenerator.Core.Tests.Extensions
             
             Assert.NotNull(reportGenerator);
         }
-
-        private const string Server = @"(localdb)\mssqllocaldb";
-        private const string TestDatabasePattern = "ReportGeneratorTestDb";
         
         private readonly IServiceCollection _services;
-        private readonly string _testDbName;
         private readonly string _connectionString;
-        private IDbManager _dbManager;
+        private readonly IDbManager _dbManager;
         private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
     }
 }
