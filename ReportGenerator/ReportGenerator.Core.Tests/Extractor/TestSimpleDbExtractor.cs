@@ -125,22 +125,18 @@ namespace ReportGenerator.Core.Tests.Extractor
         }
 
         private void SetUpTestData()
-        {            
+        {
+            
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
-            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
-            {
-                {DbParametersKeys.HostKey, GlobalTestsParams.TestSqlServerHost},
-                {DbParametersKeys.DatabaseKey, GlobalTestsParams.TestSqlServerDatabasePattern},
-                {DbParametersKeys.UseIntegratedSecurityKey, "true"},
-                {DbParametersKeys.UseTrustedConnectionKey, "true"}
-            };
-            _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
-            _dbManager.CreateDatabase(_connectionString, true);
-            // 
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqlServerCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqlServerInsertDataScript));
-            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
-            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
+            _connectionString = DbTools.Simple.Extensions.CommonDbManagerExtensions.Create(_dbManager, DbEngine.SqlServer,
+                                                                                           GlobalTestsParams.TestSqlServerHost, 
+                                                                                           GlobalTestsParams.TestSqlServerDatabasePattern, true, 
+                                                                                           string.Empty, string.Empty, 
+                                                                                           new List<string>()
+                                                                                           {
+                                                                                               GlobalTestsParams.SqlServerCreateDatabaseScript,
+                                                                                               GlobalTestsParams.SqlServerInsertDataScript
+                                                                                           });
         }
 
         private void TearDownTestData()
