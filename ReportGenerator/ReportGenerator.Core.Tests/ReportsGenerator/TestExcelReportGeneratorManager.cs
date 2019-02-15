@@ -22,6 +22,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [InlineData(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, GlobalTestsParams.TestSqlServerDatabasePattern, true, "", "", 
                     GlobalTestsParams.SqlServerCreateDatabaseScript, GlobalTestsParams.SqlServerInsertDataScript, 
                     GlobalTestsParams.SqlServerViewDataExecutionConfig)]
+        [InlineData(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, GlobalTestsParams.TestSqlServerDatabasePattern, true, "", "", 
+                    GlobalTestsParams.SqlServerCreateDatabaseScript, GlobalTestsParams.SqlServerInsertDataScript, 
+                    GlobalTestsParams.SqlServerStoredProcedureDataExecutionConfig)]
         [InlineData(DbEngine.SqLite, "", GlobalTestsParams.TestSqLiteDatabase, true, "", "", 
                     GlobalTestsParams.SqLiteCreateDatabaseScript, GlobalTestsParams.SqLiteInsertDataScript, 
                     GlobalTestsParams.SqLiteViewDataExecutionConfig)]

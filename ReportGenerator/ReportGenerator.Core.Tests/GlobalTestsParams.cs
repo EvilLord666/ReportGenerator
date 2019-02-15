@@ -24,6 +24,7 @@ namespace ReportGenerator.Core.Tests
         // Config files
         public const string SqlServerViewDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerViewConfig.xml";
         public const string SqlServerViewAdvancedDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerAdvancedViewConfig.xml";
+        public const string SqlServerStoredProcedureExampleDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerStoredProcedureExampleConfig.xml";
         public const string SqlServerStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerStoredProcedureConfig.xml";
         public const string SqLiteViewDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteViewConfig.xml";
         public const string MySqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\mySqlStoredProcedureConfig.xml";

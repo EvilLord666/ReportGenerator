@@ -24,7 +24,7 @@ namespace ReportGenerator.Core.Tests.Config
         }
 
         [Theory]
-        [InlineData(ReportDataSource.StoredProcedure, GlobalTestsParams.SqlServerStoredProcedureDataExecutionConfig)]
+        [InlineData(ReportDataSource.StoredProcedure, GlobalTestsParams.SqlServerStoredProcedureExampleDataExecutionConfig)]
         [InlineData(ReportDataSource.View, GlobalTestsParams.SqlServerViewAdvancedDataExecutionConfig)]
         public void TestReadConfig(ReportDataSource source, string file)
         {
