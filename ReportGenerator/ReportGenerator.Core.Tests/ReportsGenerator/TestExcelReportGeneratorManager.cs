@@ -19,13 +19,14 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [Fact]
         public void TestGenerateReportSqlServer()
         {
-            _testSqlServerDbName = TestSqlServerDatabasePattern + "_" + DateTime.Now.Millisecond.ToString();
+            _testSqlServerDbName = GlobalTestsParams.TestSqlServerDatabasePattern + "_" + DateTime.Now.Millisecond.ToString();
             SetUpSqlServerTestData();
             // executing extraction ...
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqlServer, 
-                                                                              TestSqlServerHost, _testSqlServerDbName);
+                                                                              GlobalTestsParams.TestSqlServerHost, 
+                                                                              _testSqlServerDbName);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqlServerDataExecutionConfig, ReportFile, parameters);
             result.Wait();
             Assert.True(result.Result);
@@ -82,7 +83,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
-                {DbParametersKeys.HostKey, TestSqlServerHost},
+                {DbParametersKeys.HostKey, GlobalTestsParams.TestSqlServerHost},
                 {DbParametersKeys.DatabaseKey, _testSqlServerDbName},
                 {DbParametersKeys.UseIntegratedSecurityKey, "true"},
                 {DbParametersKeys.UseTrustedConnectionKey, "true"}
@@ -90,8 +91,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
             _dbManager.CreateDatabase(_connectionString, true);
             // 
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqlServerCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqlServerInsertDataScript));
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqlServerCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqlServerInsertDataScript));
             _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
             _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
@@ -106,13 +107,13 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _dbManager = new CommonDbManager(DbEngine.SqLite, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
-                {DbParametersKeys.DatabaseKey, TestSqLiteDatabase},
+                {DbParametersKeys.DatabaseKey, GlobalTestsParams.TestSqLiteDatabase},
                 {DbParametersKeys.DatabaseEngineVersion, "3"}
             };
             _connectionString = ConnectionStringBuilder.Build(DbEngine.SqLite, connectionStringParams);
             _dbManager.CreateDatabase(_connectionString, true);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqLiteCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqLiteInsertDataScript));
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqLiteCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqLiteInsertDataScript));
             _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
             _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
@@ -127,16 +128,16 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _dbManager = new CommonDbManager(DbEngine.MySql, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
-                {DbParametersKeys.HostKey, TestMySqlHost},
-                {DbParametersKeys.DatabaseKey, TestMySqlDatabase},
+                {DbParametersKeys.HostKey, GlobalTestsParams.TestMySqlHost},
+                {DbParametersKeys.DatabaseKey, GlobalTestsParams.TestMySqlDatabase},
                 // {DbParametersKeys.UseIntegratedSecurityKey, "true"} // is not working ...
                 {DbParametersKeys.LoginKey, "root"},
                 {DbParametersKeys.PasswordKey, "123"}
             };
             _connectionString = ConnectionStringBuilder.Build(DbEngine.MySql, connectionStringParams);
             _dbManager.CreateDatabase(_connectionString, true);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(MySqlCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(MySqlInsertDataScript));
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.MySqlCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.MySqlInsertDataScript));
             _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
             _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
@@ -151,16 +152,16 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _dbManager = new CommonDbManager(DbEngine.PostgresSql, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
-                {DbParametersKeys.HostKey, TestPostgresSqlHost},
-                {DbParametersKeys.DatabaseKey, TestPostgresSqlDatabase},
+                {DbParametersKeys.HostKey, GlobalTestsParams.TestPostgresSqlHost},
+                {DbParametersKeys.DatabaseKey, GlobalTestsParams.TestPostgresSqlDatabase},
                 // {DbParametersKeys.UseIntegratedSecurityKey, "true"} // is not working ...
                 {DbParametersKeys.LoginKey, "postgres"},
                 {DbParametersKeys.PasswordKey, "123"}
             };
             _connectionString = ConnectionStringBuilder.Build(DbEngine.PostgresSql, connectionStringParams);
             _dbManager.CreateDatabase(_connectionString, true);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(PostgresSqlCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(PostgresSqlInsertDataScript));
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.PostgresSqlCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.PostgresSqlInsertDataScript));
             _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
             _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
@@ -177,23 +178,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         private const string MySqlDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
         private const string PostgresSqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewDataExtractionParams.xml";
         private const string PostgresSqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\postgresStoredProcDataExtractionParams.xml";
-
-        private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
-        private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";
-        private const string TestSqLiteDatabase = "ReportGeneratorTestDb.sqlite";
-        private const string TestMySqlHost = "localhost";
-        private const string TestMySqlDatabase = "ReportGeneratorTestDb";
-        private const string TestPostgresSqlHost = "localhost";
-        private const string TestPostgresSqlDatabase = "ReportGeneratorTestDb";
-
-        private const string SqlServerCreateDatabaseScript = @"..\..\..\DbScripts\SqlServerCreateDb.sql";
-        private const string SqlServerInsertDataScript = @"..\..\..\DbScripts\SqlServerCreateData.sql";
-        private const string SqLiteCreateDatabaseScript = @"..\..\..\DbScripts\SqLiteCreateDb.sql";
-        private const string SqLiteInsertDataScript = @"..\..\..\DbScripts\SqLiteCreateData.sql";
-        private const string MySqlCreateDatabaseScript = @"..\..\..\DbScripts\MySqlCreateDb.sql";
-        private const string MySqlInsertDataScript = @"..\..\..\DbScripts\MySqlCreateData.sql";
-        private const string PostgresSqlCreateDatabaseScript = @"..\..\..\DbScripts\PostgresSqlCreateDb.sql";
-        private const string PostgresSqlInsertDataScript = @"..\..\..\DbScripts\PostgresSqlCreateData.sql";
 
         private string _testSqlServerDbName;
         private string _connectionString;
