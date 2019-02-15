@@ -28,7 +28,9 @@ namespace ReportGenerator.Core.Tests.Extractor
             SetUpTestData();
             // testing is here
             
-            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, 
+                                                           GlobalTestsParams.TestSqlServerHost, 
+                                                           GlobalTestsParams.TestSqlServerDatabasePattern);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithoutParams, new List<StoredProcedureParameter>());
             result.Wait();
             DbData rows = result.Result;
@@ -46,7 +48,8 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, 
+                                                           GlobalTestsParams.TestSqlServerDatabasePattern);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCity, 
                                                          new List<StoredProcedureParameter>{ new StoredProcedureParameter((int)SqlDbType.NVarChar, "City", parameterValue) });
             result.Wait();
@@ -64,7 +67,8 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, 
+                                                           GlobalTestsParams.TestSqlServerDatabasePattern);
             Task<DbData> result = extractor.ExtractAsync(TestStoredProcedureWithCityAndAge,  new List<StoredProcedureParameter>
             {
                 new StoredProcedureParameter((int)SqlDbType.NVarChar, "City", cityParameterValue),
@@ -81,7 +85,8 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             SetUpTestData();
             // testing is here
-            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, 
+                                                           GlobalTestsParams.TestSqlServerDatabasePattern);
             Task<DbData> result = extractor.ExtractAsync(TestView, new ViewParameters());
             result.Wait();
             DbData rows = result.Result;
@@ -110,7 +115,8 @@ namespace ReportGenerator.Core.Tests.Extractor
                 IList<JoinCondition> sexJoin = parameters.WhereParameters.Count > 0 ? new List<JoinCondition>() {JoinCondition.And}  : null;
                 parameters.WhereParameters.Add(new DbQueryParameter(sexJoin, "Sex", "=", sex.Value ? "1" : "0"));
             }
-            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, Server, TestDatabase);
+            IDbExtractor extractor = new SimpleDbExtractor(_loggerFactory, DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, 
+                                                           GlobalTestsParams.TestSqlServerDatabasePattern);
             Task<DbData> result = extractor.ExtractAsync(TestView, parameters);
             result.Wait();
             DbData rows = result.Result;
@@ -123,16 +129,16 @@ namespace ReportGenerator.Core.Tests.Extractor
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
             IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
             {
-                {DbParametersKeys.HostKey, Server},
-                {DbParametersKeys.DatabaseKey, TestDatabase},
+                {DbParametersKeys.HostKey, GlobalTestsParams.TestSqlServerHost},
+                {DbParametersKeys.DatabaseKey, GlobalTestsParams.TestSqlServerDatabasePattern},
                 {DbParametersKeys.UseIntegratedSecurityKey, "true"},
                 {DbParametersKeys.UseTrustedConnectionKey, "true"}
             };
             _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
             _dbManager.CreateDatabase(_connectionString, true);
             // 
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(CreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(InsertDataScript));
+            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqlServerCreateDatabaseScript));
+            string insertDataStatement = File.ReadAllText(Path.GetFullPath(GlobalTestsParams.SqlServerInsertDataScript));
             _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
             _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
         }
@@ -141,12 +147,6 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             _dbManager.DropDatabase(_connectionString);
         }
-
-        private const string Server = @"(localdb)\mssqllocaldb";
-        private const string TestDatabase = "ReportGeneratorTestDb";
-
-        private const string CreateDatabaseScript = @"..\..\..\DbScripts\SqlServerCreateDb.sql";
-        private const string InsertDataScript = @"..\..\..\DbScripts\SqlServerCreateData.sql";
 
         private const string TestStoredProcedureWithoutParams = "SelectCitizensWithCities";
         private const string TestStoredProcedureWithCity = "SelectCitizensWithCitiesByCity";
