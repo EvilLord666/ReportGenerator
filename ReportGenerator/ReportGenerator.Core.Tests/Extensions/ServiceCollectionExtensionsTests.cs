@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using DbTools.Core;
+using DbTools.Core.Managers;
+using DbTools.Simple.Managers;
+using DbTools.Simple.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ReportGenerator.Core.Database;
-using ReportGenerator.Core.Database.Managers;
-using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.Extensions;
 using ReportGenerator.Core.ReportsGenerator;
 using Xunit;

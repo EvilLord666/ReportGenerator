@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using DbTools.Core;
+using DbTools.Core.Managers;
+using DbTools.Simple.Managers;
+using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
-using ReportGenerator.Core.Database;
-using ReportGenerator.Core.Database.Managers;
-using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using Xunit;
@@ -37,8 +38,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             SetUpSqLiteTestData();
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
+            // loggerFactory.AddConsole();
+            // loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
             result.Wait();
@@ -52,8 +53,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             SetUpPostgresSqlTestData();
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
+            // loggerFactory.AddConsole();
+            // loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.PostgresSql, _connectionString);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, PostgresSqlViewDataExecutionConfig, ReportFile, parameters);
             result.Wait();
@@ -67,8 +68,8 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             SetUpMySqlTestData();
             object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
             ILoggerFactory loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
+            // loggerFactory.AddConsole();
+            // loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, _connectionString);
             Task<bool> result = manager.GenerateAsync(TestExcelTemplate, MySqlDataExecutionConfig, ReportFile, parameters);
             result.Wait();

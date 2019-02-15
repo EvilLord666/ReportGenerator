@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DbTools.Core;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Config;
 using ReportGenerator.Core.Data;
-using ReportGenerator.Core.Database;
 using ReportGenerator.Core.Extractor;
 
 namespace ReportGenerator.Core.ReportsGenerator

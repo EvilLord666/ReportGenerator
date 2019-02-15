@@ -2,12 +2,13 @@
 using System.Data;
 using System.IO;
 using System.Threading.Tasks;
+using DbTools.Core;
+using DbTools.Core.Managers;
+using DbTools.Simple.Managers;
+using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
-using ReportGenerator.Core.Database;
-using ReportGenerator.Core.Database.Managers;
-using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.Extractor;
 using Xunit;
 
