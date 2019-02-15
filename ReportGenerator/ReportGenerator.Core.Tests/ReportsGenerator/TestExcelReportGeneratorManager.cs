@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using DbTools.Core;
 using DbTools.Core.Managers;
 using DbTools.Simple.Extensions;
 using DbTools.Simple.Managers;
-using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
@@ -65,36 +63,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             result.Wait();
             Assert.True(result.Result);
             _dbManager.DropDatabase(_connectionString);
-        }
-        
-        [Fact]
-        public void TestGenerateReportPostgres()
-        {
-            SetUpPostgresSqlTestData();
-            object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
-            ILoggerFactory loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.PostgresSql, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, PostgresSqlViewDataExecutionConfig, ReportFile, parameters);
-            result.Wait();
-            Assert.True(result.Result);
-            TearDownPostgresSqlTestData();
-        }
-        
-        [Fact]
-        public void TestGenerateReportMySql()
-        {
-            SetUpMySqlTestData();
-            object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
-            ILoggerFactory loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, MySqlDataExecutionConfig, ReportFile, parameters);
-            result.Wait();
-            Assert.True(result.Result);
-            TearDownMySqlTestData();
         }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";

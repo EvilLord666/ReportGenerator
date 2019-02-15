@@ -11,10 +11,6 @@ using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
-using ReportGenerator.Core.Database;
-using ReportGenerator.Core.Database.Factories;
-using ReportGenerator.Core.Database.Managers;
-using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.StatementsGenerator;
 
 namespace ReportGenerator.Core.Extractor
