@@ -37,6 +37,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
         [InlineData(DbEngine.PostgresSql, GlobalTestsParams.TestPostgresSqlHost, GlobalTestsParams.TestPostgresSqlDatabase, false, "postgres", "123", 
                     GlobalTestsParams.PostgresSqlCreateDatabaseScript, GlobalTestsParams.PostgresSqlInsertDataScript, 
                     GlobalTestsParams.PostgresSqlViewDataExecutionConfig)]
+        [InlineData(DbEngine.PostgresSql, GlobalTestsParams.TestPostgresSqlHost, GlobalTestsParams.TestPostgresSqlDatabase, false, "postgres", "123", 
+                    GlobalTestsParams.PostgresSqlCreateDatabaseScript, GlobalTestsParams.PostgresSqlInsertDataScript, 
+                    GlobalTestsParams.PostgresSqlStoredProcedureDataExecutionConfig)]
         public void TestGenerateReport(DbEngine dbEngine, string host, string database, bool useIntegratedSecurity,
                                        string userName, string password, string dbCreateScriptFile, string insertDataScriptFile,
                                        string executionConfigFile)
