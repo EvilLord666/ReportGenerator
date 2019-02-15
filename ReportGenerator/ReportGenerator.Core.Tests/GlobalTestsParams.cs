@@ -22,11 +22,13 @@ namespace ReportGenerator.Core.Tests
         public const string PostgresSqlInsertDataScript = @"..\..\..\DbScripts\PostgresSqlCreateData.sql";
         
         // Config files
-        public const string SqlServerViewDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
-        public const string SqLiteViewDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
-        public const string MySqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
-        public const string MySqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
-        public const string PostgresSqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewDataExtractionParams.xml";
-        public const string PostgresSqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\postgresStoredProcDataExtractionParams.xml";
+        public const string SqlServerViewDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerViewConfig.xml";
+        public const string SqlServerViewAdvancedDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerAdvancedViewConfig.xml";
+        public const string SqlServerStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerStoredProcedureConfig.xml";
+        public const string SqLiteViewDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteViewConfig.xml";
+        public const string MySqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\mySqlStoredProcedureConfig.xml";
+        public const string MySqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml"; // todo: this one
+        public const string PostgresSqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewConfig.xml";
+        public const string PostgresSqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\postgresStoredProcedureConfig.xml";
     }
 }
