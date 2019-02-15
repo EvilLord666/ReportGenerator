@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using DbTools.Core;
+using DbTools.Core.Managers;
+using DbTools.Simple.Extensions;
+using DbTools.Simple.Managers;
+using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
-using ReportGenerator.Core.Database;
-using ReportGenerator.Core.Database.Managers;
-using ReportGenerator.Core.Database.Utils;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using Xunit;
@@ -15,35 +17,54 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
     // todo: umv: test data execution both with View and StoredProcedure config and check resulting data
     public class TestExcelReportGeneratorManager
     {
-        [Fact]
-        public void TestGenerateReportSqlServer()
+        // todo: postgres stored procedure
+        [Theory]
+        [InlineData(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, GlobalTestsParams.TestSqlServerDatabasePattern, true, "", "", 
+                    GlobalTestsParams.SqlServerCreateDatabaseScript, GlobalTestsParams.SqlServerInsertDataScript, 
+                    GlobalTestsParams.SqlServerViewDataExecutionConfig)]
+        [InlineData(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, GlobalTestsParams.TestSqlServerDatabasePattern, true, "", "", 
+                    GlobalTestsParams.SqlServerCreateDatabaseScript, GlobalTestsParams.SqlServerInsertDataScript, 
+                    GlobalTestsParams.SqlServerStoredProcedureDataExecutionConfig)]
+        [InlineData(DbEngine.SqLite, "", GlobalTestsParams.TestSqLiteDatabase, true, "", "", 
+                    GlobalTestsParams.SqLiteCreateDatabaseScript, GlobalTestsParams.SqLiteInsertDataScript, 
+                    GlobalTestsParams.SqLiteViewDataExecutionConfig)]
+        [InlineData(DbEngine.MySql, GlobalTestsParams.TestMySqlHost, GlobalTestsParams.TestMySqlDatabase, false, "root", "123", 
+                    GlobalTestsParams.MySqlCreateDatabaseScript, GlobalTestsParams.MySqlInsertDataScript, 
+                    GlobalTestsParams.MySqlStoredProcedureDataExecutionConfig)]
+        [InlineData(DbEngine.MySql, GlobalTestsParams.TestMySqlHost, GlobalTestsParams.TestMySqlDatabase, false, "root", "123", 
+                    GlobalTestsParams.MySqlCreateDatabaseScript, GlobalTestsParams.MySqlInsertDataScript, 
+                    GlobalTestsParams.MySqlViewDataExecutionConfig)]
+        [InlineData(DbEngine.PostgresSql, GlobalTestsParams.TestPostgresSqlHost, GlobalTestsParams.TestPostgresSqlDatabase, false, "postgres", "123", 
+                    GlobalTestsParams.PostgresSqlCreateDatabaseScript, GlobalTestsParams.PostgresSqlInsertDataScript, 
+                    GlobalTestsParams.PostgresSqlViewDataExecutionConfig)]
+        [InlineData(DbEngine.PostgresSql, GlobalTestsParams.TestPostgresSqlHost, GlobalTestsParams.TestPostgresSqlDatabase, false, "postgres", "123", 
+                    GlobalTestsParams.PostgresSqlCreateDatabaseScript, GlobalTestsParams.PostgresSqlInsertDataScript, 
+                    GlobalTestsParams.PostgresSqlStoredProcedureDataExecutionConfig)]
+        public void TestGenerateReport(DbEngine dbEngine, string host, string database, bool useIntegratedSecurity,
+                                       string userName, string password, string dbCreateScriptFile, string insertDataScriptFile,
+                                       string executionConfigFile)
         {
-            _testSqlServerDbName = TestSqlServerDatabasePattern + "_" + DateTime.Now.Millisecond.ToString();
-            SetUpSqlServerTestData();
-            // executing extraction ...
-            object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
-            ILoggerFactory loggerFactory = new LoggerFactory();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqlServer, 
-                                                                              TestSqlServerHost, _testSqlServerDbName);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqlServerDataExecutionConfig, ReportFile, parameters);
-            result.Wait();
-            Assert.True(result.Result);
-            TearDownSqlServerTestData();
+            database = dbEngine == DbEngine.SqlServer ? database + "_" + DateTime.Now.Millisecond : database;
+            IList<string> scripts = new List<string>() {dbCreateScriptFile, insertDataScriptFile};
+            object[] executionParameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
+            TestGenerateReportImplAndCheck(dbEngine, host, database, useIntegratedSecurity, userName, password, scripts,
+                                           TestExcelTemplate, executionConfigFile, ReportFile, executionParameters);
         }
 
-        [Fact]
-        public void TestGenerateReportSqLite()
+        private void TestGenerateReportImplAndCheck(DbEngine dbEngine, string host, string database, 
+                                                    bool integratedSecurity, string userName, string password,
+                                                    IList<string> scripts, 
+                                                    string excelTemplateFile, string executionConfigFile, string outputReportFile, 
+                                                    object[] executionParameters)
         {
-            SetUpSqLiteTestData();
-            object[] parameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
+            _dbManager = new CommonDbManager(dbEngine, _loggerFactory.CreateLogger<CommonDbManager>());
+            _connectionString = _dbManager.Create(dbEngine, host, database, integratedSecurity, userName, password, scripts);
             ILoggerFactory loggerFactory = new LoggerFactory();
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
-            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
-            Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
+            IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, dbEngine, _connectionString);
+            Task<bool> result = manager.GenerateAsync(excelTemplateFile, executionConfigFile, outputReportFile, executionParameters);
             result.Wait();
             Assert.True(result.Result);
-            TearDownSqLiteTestData();
+            _dbManager.DropDatabase(_connectionString);
         }
         
         [Fact]
@@ -76,125 +97,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             TearDownMySqlTestData();
         }
 
-        private void SetUpSqlServerTestData()
-        {
-            _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
-            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
-            {
-                {DbParametersKeys.HostKey, TestSqlServerHost},
-                {DbParametersKeys.DatabaseKey, _testSqlServerDbName},
-                {DbParametersKeys.UseIntegratedSecurityKey, "true"},
-                {DbParametersKeys.UseTrustedConnectionKey, "true"}
-            };
-            _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
-            _dbManager.CreateDatabase(_connectionString, true);
-            // 
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqlServerCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqlServerInsertDataScript));
-            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
-            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
-        }
-
-        private void TearDownSqlServerTestData()
-        {
-            _dbManager.DropDatabase(_connectionString);
-        }
-
-        private void SetUpSqLiteTestData()
-        {
-            _dbManager = new CommonDbManager(DbEngine.SqLite, _loggerFactory.CreateLogger<CommonDbManager>());
-            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
-            {
-                {DbParametersKeys.DatabaseKey, TestSqLiteDatabase},
-                {DbParametersKeys.DatabaseEngineVersion, "3"}
-            };
-            _connectionString = ConnectionStringBuilder.Build(DbEngine.SqLite, connectionStringParams);
-            _dbManager.CreateDatabase(_connectionString, true);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(SqLiteCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(SqLiteInsertDataScript));
-            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
-            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
-        }
-
-        private void TearDownSqLiteTestData()
-        {
-            _dbManager.DropDatabase(_connectionString);
-        }
-        
-        private void SetUpMySqlTestData()
-        {
-            _dbManager = new CommonDbManager(DbEngine.MySql, _loggerFactory.CreateLogger<CommonDbManager>());
-            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
-            {
-                {DbParametersKeys.HostKey, TestMySqlHost},
-                {DbParametersKeys.DatabaseKey, TestMySqlDatabase},
-                // {DbParametersKeys.UseIntegratedSecurityKey, "true"} // is not working ...
-                {DbParametersKeys.LoginKey, "root"},
-                {DbParametersKeys.PasswordKey, "123"}
-            };
-            _connectionString = ConnectionStringBuilder.Build(DbEngine.MySql, connectionStringParams);
-            _dbManager.CreateDatabase(_connectionString, true);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(MySqlCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(MySqlInsertDataScript));
-            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
-            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
-        }
-
-        private void TearDownMySqlTestData()
-        {
-            _dbManager.DropDatabase(_connectionString);
-        }
-
-        private void SetUpPostgresSqlTestData()
-        {
-            _dbManager = new CommonDbManager(DbEngine.PostgresSql, _loggerFactory.CreateLogger<CommonDbManager>());
-            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
-            {
-                {DbParametersKeys.HostKey, TestPostgresSqlHost},
-                {DbParametersKeys.DatabaseKey, TestPostgresSqlDatabase},
-                // {DbParametersKeys.UseIntegratedSecurityKey, "true"} // is not working ...
-                {DbParametersKeys.LoginKey, "postgres"},
-                {DbParametersKeys.PasswordKey, "123"}
-            };
-            _connectionString = ConnectionStringBuilder.Build(DbEngine.PostgresSql, connectionStringParams);
-            _dbManager.CreateDatabase(_connectionString, true);
-            string createDatabaseStatement = File.ReadAllText(Path.GetFullPath(PostgresSqlCreateDatabaseScript));
-            string insertDataStatement = File.ReadAllText(Path.GetFullPath(PostgresSqlInsertDataScript));
-            _dbManager.ExecuteNonQueryAsync(_connectionString, createDatabaseStatement).Wait();
-            _dbManager.ExecuteNonQueryAsync(_connectionString, insertDataStatement).Wait();
-        }
-        
-        private void TearDownPostgresSqlTestData()
-        {
-            _dbManager.DropDatabase(_connectionString);
-        }
-
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
         private const string ReportFile = @".\Report.xlsx";
-        private const string SqlServerDataExecutionConfig = @"..\..\..\ExampleConfig\sqlServerDataExtractionParams.xml";
-        private const string SqLiteDataExecutionConfig = @"..\..\..\ExampleConfig\sqLiteDataExtractionParams.xml";
-        private const string MySqlDataExecutionConfig = @"..\..\..\ExampleConfig\mySql_testReport4_StoredProcedure.xml";
-        private const string PostgresSqlViewDataExecutionConfig = @"..\..\..\ExampleConfig\postgresViewDataExtractionParams.xml";
-        private const string PostgresSqlStoredProcedureDataExecutionConfig = @"..\..\..\ExampleConfig\postgresStoredProcDataExtractionParams.xml";
 
-        private const string TestSqlServerHost = @"(localdb)\mssqllocaldb";
-        private const string TestSqlServerDatabasePattern = "ReportGeneratorTestDb";
-        private const string TestSqLiteDatabase = "ReportGeneratorTestDb.sqlite";
-        private const string TestMySqlHost = "localhost";
-        private const string TestMySqlDatabase = "ReportGeneratorTestDb";
-        private const string TestPostgresSqlHost = "localhost";
-        private const string TestPostgresSqlDatabase = "ReportGeneratorTestDb";
-
-        private const string SqlServerCreateDatabaseScript = @"..\..\..\DbScripts\SqlServerCreateDb.sql";
-        private const string SqlServerInsertDataScript = @"..\..\..\DbScripts\SqlServerCreateData.sql";
-        private const string SqLiteCreateDatabaseScript = @"..\..\..\DbScripts\SqLiteCreateDb.sql";
-        private const string SqLiteInsertDataScript = @"..\..\..\DbScripts\SqLiteCreateData.sql";
-        private const string MySqlCreateDatabaseScript = @"..\..\..\DbScripts\MySqlCreateDb.sql";
-        private const string MySqlInsertDataScript = @"..\..\..\DbScripts\MySqlCreateData.sql";
-        private const string PostgresSqlCreateDatabaseScript = @"..\..\..\DbScripts\PostgresSqlCreateDb.sql";
-        private const string PostgresSqlInsertDataScript = @"..\..\..\DbScripts\PostgresSqlCreateData.sql";
-
-        private string _testSqlServerDbName;
         private string _connectionString;
         private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
         private IDbManager _dbManager;

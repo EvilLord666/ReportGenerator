@@ -24,8 +24,8 @@ namespace ReportGenerator.Core.Tests.Config
         }
 
         [Theory]
-        [InlineData(ReportDataSource.StoredProcedure, ExecutionConfigForStoredProcedure)]
-        [InlineData(ReportDataSource.View, ExecutionConfigForView)]
+        [InlineData(ReportDataSource.StoredProcedure, GlobalTestsParams.SqlServerStoredProcedureExampleDataExecutionConfig)]
+        [InlineData(ReportDataSource.View, GlobalTestsParams.SqlServerViewAdvancedDataExecutionConfig)]
         public void TestReadConfig(ReportDataSource source, string file)
         {
             ExecutionConfig expectedConfig = GetConfig(source);
@@ -122,8 +122,5 @@ namespace ReportGenerator.Core.Tests.Config
                 }
             }
         }
-
-        private const string ExecutionConfigForStoredProcedure = @"..\..\..\ExampleConfig\sqlServer_testReport4_StoredProcedure.xml";
-        private const string ExecutionConfigForView = @"..\..\..\ExampleConfig\testReport4_View.xml";
     }
 }

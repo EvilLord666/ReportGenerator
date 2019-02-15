@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DbTools.Core;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Config;
 using ReportGenerator.Core.Data;

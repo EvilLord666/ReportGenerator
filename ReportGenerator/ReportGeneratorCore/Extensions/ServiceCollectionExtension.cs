@@ -1,7 +1,7 @@
 using System;
+using DbTools.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ReportGenerator.Core.Database;
 using ReportGenerator.Core.ReportsGenerator;
 
 namespace ReportGenerator.Core.Extensions

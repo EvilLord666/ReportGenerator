@@ -35,13 +35,13 @@ RETURNS TABLE (
 	Age INTEGER,
 	City VARCHAR(200)
 )
-AS $$
+AS $body$
   BEGIN
     RETURN QUERY SELECT Cz.FirstName, Cz.LastName, Cz.Age, Ci.Name AS City FROM Citizen AS Cz
-	INNER JOIN City AS Ci ON  Cz.CityId = Ci.Id
-	WHERE Ci.Name = CityName AND Cz.Age > PersonAge;
+	             INNER JOIN City AS Ci ON  Cz.CityId = Ci.Id
+	             WHERE Ci.Name = CityName AND Cz.Age > PersonAge;
   END;
-$$
+$body$
 
 LANGUAGE 'plpgsql';
 
@@ -51,12 +51,12 @@ RETURNS TABLE (
 	LastName VARCHAR(100),
 	Name VARCHAR(200)
 )
-AS $$
+AS $body$
   BEGIN
-    SELECT FirstName, LastName, Name AS CityName FROM Citizen AS Cz
-	INNER JOIN City AS Ci ON  Cz.CityId = Ci.Id;
+    RETURN QUERY SELECT Cz.FirstName, Cz.LastName, Ci.Name AS CityName FROM Citizen AS Cz
+	             INNER JOIN City AS Ci ON  Cz.CityId = Ci.Id;
   END;
-$$
+$body$
 
 LANGUAGE 'plpgsql';
 
@@ -67,12 +67,12 @@ RETURNS TABLE (
 	Age INTEGER,
 	City VARCHAR(200)
 )
-AS $$
+AS $body$
   BEGIN
-    SELECT Cz.FirstName, Cz.LastName, Ci.Name AS City FROM Citizen AS Cz
-	INNER JOIN City AS Ci ON Cz.CityId = Ci.Id
-	WHERE Ci.Name = CityName;
+    RETURN QUERY SELECT Cz.FirstName, Cz.LastName, Cz.Age, Ci.Name AS City FROM Citizen AS Cz
+	             INNER JOIN City AS Ci ON Cz.CityId = Ci.Id
+	             WHERE Ci.Name = CityName;
   END;
-$$
+$body$
 
 LANGUAGE 'plpgsql';
