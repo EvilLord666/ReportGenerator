@@ -51,8 +51,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _dbManager = new CommonDbManager(dbEngine, _loggerFactory.CreateLogger<CommonDbManager>());
             _connectionString = _dbManager.Create(dbEngine, host, database, integratedSecurity, userName, password, scripts);
             ILoggerFactory loggerFactory = new LoggerFactory();
-            // loggerFactory.AddConsole();
-            // loggerFactory.AddDebug();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, dbEngine, _connectionString);
             Task<bool> result = manager.GenerateAsync(excelTemplateFile, executionConfigFile, outputReportFile, executionParameters);
             result.Wait();
