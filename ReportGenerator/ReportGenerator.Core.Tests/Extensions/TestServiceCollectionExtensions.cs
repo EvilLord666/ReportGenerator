@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DbTools.Core;
 using DbTools.Core.Managers;
+using DbTools.Simple.Extensions;
 using DbTools.Simple.Managers;
 using DbTools.Simple.Utils;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,15 +19,13 @@ namespace ReportGenerator.Core.Tests.Extensions
         {
             string testDbName = GlobalTestsParams.TestSqlServerDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
-            IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
-            {
-                {DbParametersKeys.HostKey, GlobalTestsParams.TestSqlServerHost},
-                {DbParametersKeys.DatabaseKey, testDbName},
-                {DbParametersKeys.UseIntegratedSecurityKey, "true"},
-                {DbParametersKeys.UseTrustedConnectionKey, "true"}
-            };
-            _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
-            _dbManager.CreateDatabase(_connectionString, true);
+            _connectionString = _dbManager.Create(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, 
+                                                  testDbName, true, string.Empty, string.Empty, 
+                                                  new List<string>()
+                                                  {
+                                                      GlobalTestsParams.SqlServerCreateDatabaseScript,
+                                                      GlobalTestsParams.SqlServerInsertDataScript
+                                                  });
             _services = new ServiceCollection();
             _services.AddScoped<ILoggerFactory>(_ => new LoggerFactory());
             _services.AddReportGenerator(DbEngine.SqlServer, _connectionString);

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Threading.Tasks;
 using DbTools.Core;
 using DbTools.Core.Managers;
+using DbTools.Simple.Extensions;
 using DbTools.Simple.Managers;
-using DbTools.Simple.Utils;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.Data.Parameters;
@@ -128,15 +127,14 @@ namespace ReportGenerator.Core.Tests.Extractor
         {
             
             _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
-            _connectionString = DbTools.Simple.Extensions.CommonDbManagerExtensions.Create(_dbManager, DbEngine.SqlServer,
-                                                                                           GlobalTestsParams.TestSqlServerHost, 
-                                                                                           GlobalTestsParams.TestSqlServerDatabasePattern, true, 
-                                                                                           string.Empty, string.Empty, 
-                                                                                           new List<string>()
-                                                                                           {
-                                                                                               GlobalTestsParams.SqlServerCreateDatabaseScript,
-                                                                                               GlobalTestsParams.SqlServerInsertDataScript
-                                                                                           });
+            _connectionString = _dbManager.Create(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, 
+                                                  GlobalTestsParams.TestSqlServerDatabasePattern, 
+                                                  true, string.Empty, string.Empty, 
+                                                  new List<string>()
+                                                  {
+                                                      GlobalTestsParams.SqlServerCreateDatabaseScript,
+                                                      GlobalTestsParams.SqlServerInsertDataScript
+                                                  });
         }
 
         private void TearDownTestData()
