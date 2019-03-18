@@ -46,12 +46,16 @@ namespace ReportGenerator.Core.Tests.Config
                 procedureParameters.Add(new StoredProcedureParameter((int)SqlDbType.DateTime, "DateOfBirth", "'2018-01-01'"));
                 config.StoredProcedureParameters = procedureParameters;
                 config.Name = "GetSitizensByCityAndDateOfBirth";
+                config.DisplayName = "Get citizens";
+                config.Description = "Get citizens from SQL Server via parametrized stored procedure (city, postal code and date of birth)";
             }
             else
             {
                 ViewParameters viewParameters = new ViewParameters();
                 config.ViewParameters = viewParameters;
                 config.Name = "CitizensView";
+                config.DisplayName = "Get citizens";
+                config.Description = "Get citizens from SQL Server view by group of params";
                 List<DbQueryParameter> whereParameters = new List<DbQueryParameter>();
                 whereParameters.Add(new DbQueryParameter(null, "FirstName", "=", "N'Michael'"));
                 whereParameters.Add(new DbQueryParameter(new List<JoinCondition>(){ JoinCondition.And, JoinCondition.Not }, "City", "=", "N'Yekaterinburg'"));
@@ -75,6 +79,8 @@ namespace ReportGenerator.Core.Tests.Config
         private void CheckConfigs(ExecutionConfig expectedConfig, ExecutionConfig actualConfig)
         {
             Assert.Equal(expectedConfig.Name, actualConfig.Name);
+            Assert.Equal(expectedConfig.DisplayName, actualConfig.DisplayName);
+            Assert.Equal(expectedConfig.Description, actualConfig.Description);
             Assert.Equal(expectedConfig.DataSource, actualConfig.DataSource);
             if (expectedConfig.DataSource == ReportDataSource.StoredProcedure)
             {

@@ -2,6 +2,7 @@
 <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DataSource>View</DataSource>
   <Name>CitizensWithRegion</Name>
+  <DisplayName>Список жителей через представление с фильтрацией по городу и имени</DisplayName>
   <ViewParameters>
     <WhereParameters>
       <DbQueryParameter>

@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace ReportGenerator.Core.Config
 {
-    public class ExecutionConfigManager
+    public static class ExecutionConfigManager
     {
         public static ExecutionConfig Read(string file)
         {
@@ -13,7 +13,7 @@ namespace ReportGenerator.Core.Config
             ExecutionConfig result;
             using (Stream reader = new FileStream(file, FileMode.Open))
             {
-                result = _serializer.Deserialize(reader) as ExecutionConfig;
+                result = Serializer.Deserialize(reader) as ExecutionConfig;
             }
             return result;
         }
@@ -26,12 +26,12 @@ namespace ReportGenerator.Core.Config
                 File.Delete(file);
             using (Stream writer = new FileStream(file, FileMode.CreateNew))
             {
-                _serializer.Serialize(writer, config);
+                Serializer.Serialize(writer, config);
                 writer.Flush();
             }
             return true;
         }
 
-        private static XmlSerializer _serializer = new XmlSerializer(typeof(ExecutionConfig));
+        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(ExecutionConfig));
     }
 }

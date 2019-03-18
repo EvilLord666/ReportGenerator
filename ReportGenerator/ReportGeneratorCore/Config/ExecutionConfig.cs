@@ -20,11 +20,13 @@ namespace ReportGenerator.Core.Config
         {
         }
 
-        public ExecutionConfig(ReportDataSource dataSource, string name, IList<StoredProcedureParameter> storedProcedureParameters,
-                               ViewParameters viewParameters)
+        public ExecutionConfig(ReportDataSource dataSource, string name, string displayName, string description,
+                               IList<StoredProcedureParameter> storedProcedureParameters, ViewParameters viewParameters)
         {
             DataSource = dataSource;
             Name = name;
+            DisplayName = displayName;
+            Description = description;
             StoredProcedureParameters = storedProcedureParameters.ToList();
             ViewParameters = viewParameters;
         }
@@ -34,6 +36,12 @@ namespace ReportGenerator.Core.Config
 
         [XmlElement("Name")]
         public string Name { get; set; }
+        
+        [XmlElement("DisplayName")]
+        public string DisplayName { get; set; }
+        
+        [XmlElement("Description")]
+        public string Description { get; set; }
 
         [XmlElement("StoredProcedureParameters")]
         public List<StoredProcedureParameter> StoredProcedureParameters { get; set; }

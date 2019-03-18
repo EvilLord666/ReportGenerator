@@ -5,6 +5,8 @@
    -->
   <DataSource>StoredProcedure</DataSource>
   <Name>GetSitizensByCityAndDateOfBirth</Name>
+  <DisplayName>Get citizens</DisplayName>>
+  <Description>Get citizens from SQL Server via parametrized stored procedure (city, postal code and date of birth)</Description>
   <StoredProcedureParameters>
     <!-- SQL Server NVarChar enum value is 12-->
     <ParameterType>12</ParameterType> 
