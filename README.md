@@ -408,9 +408,10 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
 		  }
 	  }
   `
+  # 4 GUI
   
-  A Full Web application (NET Core) with usage Report Generator as DI service will be implemented in this project: https://github.com/EvilLord666/ReportGeneratorWebGui
+  A Full Web application (NET Core) with usage Report Generator as DI service will be implemented in this project: https://github.com/EvilLord666/ReportGeneratorWebGui it is also allow to use Web API for ReportsGeneration 
   
-  # 4 Nuget Package
+  # 5 Nuget Package
   Nuget package is available on nuget.org : https://www.nuget.org/packages/ReportsGenerator/
   There are some strange troubles with import of version 1.1.0 and 1.1.1 they are **Broken and unlisted**. **ACTUAL NUGET PACKAGE IS 1.1.2**
