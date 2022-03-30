@@ -10,8 +10,7 @@ namespace ReportGenerator.Core.ReportsGenerator
 {
     public class ExcelReportGeneratorManager : IReportGeneratorManager
     {
-        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory,
-                                           DbEngine dbEngine,
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, DbEngine dbEngine,
                                            string server, string database, bool trustedConnection = true, 
                                            string userName = null, string password = null)
         {

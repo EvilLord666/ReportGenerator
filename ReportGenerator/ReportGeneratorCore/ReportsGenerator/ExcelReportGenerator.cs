@@ -14,7 +14,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             _logger = logger;
             if (string.IsNullOrEmpty(template))
             {
-                _logger.LogError("Template var is null");
+                _logger.LogError("Template is null");
                 throw new ArgumentNullException("template");
             }
 
