@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.ReportsGenerator;
@@ -28,7 +29,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             data.Rows.Add(GetDataRow("Юра", "Первоуральский", 32, "м.", "Курган", "Курганская область"));
             data.Rows.Add(GetDataRow("Елена", "Головач", 22, "ж.", "Пермь", "Пермская область"));
 
-            bool result = generator.Generate(data, parameters);
+            Task<bool> generatorTask = generator.GenerateAsync(data, parameters);
+            generatorTask.Wait();
+            bool result = generatorTask.Result;
             Assert.True(result);
             Assert.True(File.Exists(reportFile));
 

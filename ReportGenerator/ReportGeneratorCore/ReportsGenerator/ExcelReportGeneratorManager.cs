@@ -49,7 +49,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                     return false;
                 IReportGenerator generator = new ExcelReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, reportFile);
                 _logger.LogDebug("Report generation completed");
-                return generator.Generate(result, parameters);
+                return await generator.GenerateAsync(result, parameters);
             }
             catch (Exception e)
             {

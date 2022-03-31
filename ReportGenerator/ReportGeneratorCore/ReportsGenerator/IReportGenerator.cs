@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ReportGenerator.Core.Data;
 
 namespace ReportGenerator.Core.ReportsGenerator
 {
     public interface IReportGenerator
     {
-        bool Generate(DbData data, object[] parameters);
+        Task<bool> GenerateAsync(DbData data, object[] parameters);
     }
 }

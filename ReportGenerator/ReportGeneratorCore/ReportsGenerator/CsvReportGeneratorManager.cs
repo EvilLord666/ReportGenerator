@@ -43,7 +43,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                     return false;
                 IReportGenerator generator = new CsvReportGenerator(_loggerFactory, template, _separator, reportFile);
                 _logger.LogDebug("Report generation completed");
-                return generator.Generate(result, parameters);
+                return await generator.GenerateAsync(result, parameters);
             }
             catch (Exception e)
             {

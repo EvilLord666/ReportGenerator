@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 
@@ -13,7 +14,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             _reportFile = reportFile;
         }
 
-        public bool Generate(DbData data, object[] parameters)
+        public Task<bool> GenerateAsync(DbData data, object[] parameters)
         {
             throw new System.NotImplementedException();
         }

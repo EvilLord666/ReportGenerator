@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using ReportGenerator.Core.Data;
@@ -30,7 +31,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             }
         }
 
-        public bool Generate(DbData data, object[] parameters)
+        public async Task<bool> GenerateAsync(DbData data, object[] parameters)
         {
             
             const int parametersNumber = 3;
