@@ -41,9 +41,9 @@ namespace ReportGenerator.Core.ReportsGenerator
                     : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
                 if (result == null)
                     return false;
-                IReportGenerator generator = new CsvReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, _separator, reportFile);
+                IReportGenerator generator = new CsvReportGenerator(_loggerFactory, template, _separator, reportFile);
                 _logger.LogDebug("Report generation completed");
-                return true;
+                return generator.Generate(result, parameters);
             }
             catch (Exception e)
             {
