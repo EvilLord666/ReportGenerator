@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReportGenerator.Core.Data;
 using ReportGenerator.Core.ReportsGenerator;
+using ReportGenerator.Core.Tests.TestUtils;
 using Xunit;
 
 namespace ReportGenerator.Core.Tests.ReportsGenerator
@@ -22,13 +23,7 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             IReportGenerator generator = new ExcelReportGenerator(logger, TestExcelTemplate, reportFile);
             // Worksheet - 1, start row - 2, start column - 3
             object[] parameters = {1, 2, 3};
-            DbData data = new DbData();
-            data.Rows.Add(GetDataRow("Иван", "Иванов", 20, "м.", "Екатеринбург", "Свердловская область"));
-            data.Rows.Add(GetDataRow("Алексей", "Козлов", 25, "м.", "Нижний Тагил", "Свердловская область"));
-            data.Rows.Add(GetDataRow("Татьяно", "Трололоева", 29, "ж.", "Челябинск", "Челябинская область"));
-            data.Rows.Add(GetDataRow("Юра", "Первоуральский", 32, "м.", "Курган", "Курганская область"));
-            data.Rows.Add(GetDataRow("Елена", "Головач", 22, "ж.", "Пермь", "Пермская область"));
-
+            DbData data = TestData.GetSampleData();
             Task<bool> generatorTask = generator.GenerateAsync(data, parameters);
             generatorTask.Wait();
             bool result = generatorTask.Result;
@@ -39,19 +34,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
             if (File.Exists(reportFile))
                 File.Delete(reportFile);
-        }
-
-        private IList<DbValue> GetDataRow(string firstName, string lastName, int age, string sex, string city, string region)
-        {
-            return (new[]
-            {
-                new DbValue("FirstName", firstName),
-                new DbValue("LastName", lastName),
-                new DbValue("Age", age),
-                new DbValue("Sex", sex),
-                new DbValue("City", city),
-                new DbValue("Region", region),
-            });
         }
 
         private const string TestExcelTemplate = @"..\..\..\TestExcelTemplates\CitizensTemplate.xlsx";
