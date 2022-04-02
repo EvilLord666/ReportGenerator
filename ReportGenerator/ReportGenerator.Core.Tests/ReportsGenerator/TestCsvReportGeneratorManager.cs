@@ -54,14 +54,14 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
 
         private void TestGenerateReportImplAndCheck(DbEngine dbEngine, string host, string database,
                                                     bool integratedSecurity, string userName, string password,
-                                                    IList<string> scripts, string excelTemplateFile, string executionConfigFile, 
+                                                    IList<string> scripts, string templateFile, string executionConfigFile, 
                                                     string outputReportFile, object[] executionParameters)
         {
             _dbManager = new CommonDbManager(dbEngine, _loggerFactory.CreateLogger<CommonDbManager>());
             _connectionString = _dbManager.Create(dbEngine, host, database, integratedSecurity, userName, password, scripts);
             ILoggerFactory loggerFactory = new LoggerFactory();
             IReportGeneratorManager manager = new CsvReportGeneratorManager(loggerFactory, dbEngine, _connectionString, CommaSeparator);
-            Task<bool> result = manager.GenerateAsync(excelTemplateFile, executionConfigFile, outputReportFile, executionParameters);
+            Task<bool> result = manager.GenerateAsync(templateFile, executionConfigFile, outputReportFile, executionParameters);
             result.Wait();
             Assert.True(result.Result);
             _dbManager.DropDatabase(_connectionString);
