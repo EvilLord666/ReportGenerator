@@ -10,8 +10,7 @@ namespace ReportGenerator.Core.ReportsGenerator
 {
     public class ExcelReportGeneratorManager : IReportGeneratorManager
     {
-        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory,
-                                           DbEngine dbEngine,
+        public ExcelReportGeneratorManager(ILoggerFactory loggerFactory, DbEngine dbEngine,
                                            string server, string database, bool trustedConnection = true, 
                                            string userName = null, string password = null)
         {
@@ -50,7 +49,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                     return false;
                 IReportGenerator generator = new ExcelReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, reportFile);
                 _logger.LogDebug("Report generation completed");
-                return generator.Generate(result, parameters);
+                return await generator.GenerateAsync(result, parameters);
             }
             catch (Exception e)
             {

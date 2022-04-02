@@ -56,7 +56,7 @@ namespace ReportGenerator.Core.Extractor
             _connectionString = ConnectionStringBuilder.Build(dbEngine, parameters);
         }
 
-        public async Task<DbData> ExtractAsync(string storedPocedureName, IList<StoredProcedureParameter> parameters)
+        public async Task<DbData> ExtractAsync(string storedProcedureName, IList<StoredProcedureParameter> parameters)
         {
             using (DbConnection connection = DbConnectionFactory.Create(_dbEngine, _connectionString))
             {
@@ -65,7 +65,7 @@ namespace ReportGenerator.Core.Extractor
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" started");
                     DbData result = null;
                     await connection.OpenAsync().ConfigureAwait(false);
-                    using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, storedPocedureName))
+                    using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, storedProcedureName))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         // command.CommandText = "call " + command.CommandText;
