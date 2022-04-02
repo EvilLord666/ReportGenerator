@@ -27,7 +27,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                 if (File.Exists(_reportFile))
                     File.Delete(_reportFile);
                 // we assume that valid file was passed here (at least have .csv extension)
-                File.Create(_reportFile);
+                File.Create(_reportFile).Close();
                 // 2. Write CSV header to reportFile
                 string[] headers = File.ReadAllLines(_template);
                 File.WriteAllLines(_reportFile, headers);
@@ -69,7 +69,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                 builder.Append(column.Value);
             }
 
-            builder.Append(Environment.NewLine);
+            // builder.Append(Environment.NewLine);
             return builder.ToString();
         }
 

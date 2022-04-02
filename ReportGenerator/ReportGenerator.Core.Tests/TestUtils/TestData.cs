@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using ReportGenerator.Core.Data;
 
 namespace ReportGenerator.Core.Tests.TestUtils
@@ -16,7 +18,18 @@ namespace ReportGenerator.Core.Tests.TestUtils
 
             return data;
         }
-        
+
+        public static IList<string> GetCsvSampleData(IList<string> headers, string separator)
+        {
+            List<string> csvLines = new List<string>();
+            csvLines.AddRange(headers);
+            IList<string> lines = GetSampleData().Rows.Select(r => $"{r[0].Value}{separator}{r[1].Value}{separator}{r[2].Value}{separator}" +
+                                                                                $"{r[3].Value}{separator}{r[4].Value}{separator}{r[5].Value}")
+                                                 .ToList();
+            csvLines.AddRange(lines);
+            return csvLines;
+        }
+
         private static IList<DbValue> GetDataRow(string firstName, string lastName, int age, string sex, string city, string region)
         {
             return (new[]
