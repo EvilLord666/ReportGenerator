@@ -1,6 +1,6 @@
 # ReportGenerator
 # 1 Overview
-A small tool 4 generating excel tables (further they will be mentioned as reports) based (***MS SQL or SQL Server, SqLite, MySQL and Postgres***) on data from DATABASE using excel template (typically Header only), logic of data extracting depends on parametrs (variables) Stored procedures or Views (WHERE parameters, ORDER BY and GROUP BY parameters). Report generator core passes parameters for data filtering in View or Variables for Stored Procedures, parameters are taking from 1) ExecutionConfig (xml file) or fully in runtime (as instance of ExecutionConfig class).
+A small tool 4 generating excel tables and csv(further they will be mentioned as reports) based (***MS SQL or SQL Server, SqLite, MySQL and Postgres***) on data from DATABASE using excel template (typically Header only), logic of data extracting depends on parametrs (variables) Stored procedures or Views (WHERE parameters, ORDER BY and GROUP BY parameters). Report generator core passes parameters for data filtering in View or Variables for Stored Procedures, parameters are taking from 1) ExecutionConfig (xml file) or fully in runtime (as instance of ExecutionConfig class).
 
 There are two ways for getting data:
 
@@ -25,7 +25,7 @@ MySQL Server - MySqlDbType (https://dev.mysql.com/doc/dev/connector-net/8.0/html
 Postgres - NpgsqlDbType (https://www.npgsql.org/doc/api/NpgsqlTypes.NpgsqlDbType.html)
 `
 Example of config for SQL server (examples of config could be found in ReportGenerator.Core.Tests/ExampleConfig)
-
+```xml
 <?xml version="1.0"?>
     <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <!-- 
@@ -52,8 +52,7 @@ Example of config for SQL server (examples of config could be found in ReportGen
             <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
          </StoredProcedureParameters>
     </ExecutionConfig>
-  `
-
+```
 For View Configuration is a little similar as DataSource we must note View:
 
 <DataSource>View</DataSource>
@@ -73,8 +72,8 @@ DbQueryParameter consist of following:
 -parameter value works for WHERE (value for comparison) and ORDER BY (ASC or DESC),  THESE are DEFAULT values, they OF COURSE could be set during the runtime
 
 Example:
-`
 
+```xml
     <?xml version="1.0"?>
         <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <DataSource>View</DataSource>
@@ -141,7 +140,7 @@ Example:
 Top interface is - IReportGeneratorManager.
 For all functionality were written Unit tests with xUnit (sucks), full example could be found in unit test project (ReportGenerator.Core.Tests/ReportsGenerator/TestExcelReportGeneratorManager):
 
-`
+```c#
 
     using System;
     using System.Collections.Generic;
@@ -407,7 +406,7 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
 			  private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
 		  }
 	  }
-  `
+```
   # 4 GUI
   
   A Full Web application (NET Core) with usage Report Generator as DI service will be implemented in this project: https://github.com/EvilLord666/ReportGeneratorWebGui it is also allow to use Web API for ReportsGeneration 
