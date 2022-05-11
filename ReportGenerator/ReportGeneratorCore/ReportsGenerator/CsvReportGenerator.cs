@@ -19,7 +19,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             _reportFile = reportFile;
         }
 
-        public async Task<bool> GenerateAsync(DbData data, object[] parameters)
+        public async Task<int> GenerateAsync(DbData data, object[] parameters)
         {
             try
             {
@@ -50,12 +50,12 @@ namespace ReportGenerator.Core.ReportsGenerator
                     }
                 }
 
-                return true;
+                return data.Rows.Count;
             }
             catch (Exception e)
             {
                 _logger.LogError($"An error occurred during csv report generation: {e.Message}");
-                return false;
+                return -1;
             }
         }
 

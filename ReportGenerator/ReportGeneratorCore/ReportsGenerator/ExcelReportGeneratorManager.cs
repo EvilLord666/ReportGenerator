@@ -27,18 +27,18 @@ namespace ReportGenerator.Core.ReportsGenerator
             _extractor = new SimpleDbExtractor(_loggerFactory, dbEngine, connectionString);
         }
 
-        public async Task<bool> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)
+        public async Task<int> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)
         {
             ExecutionConfig config = ExecutionConfigManager.Read(executionConfigFile);
             return await GenerateImplAsync(template, config, reportFile, parameters);
         }
 
-        public async Task<bool> GenerateAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
+        public async Task<int> GenerateAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
         {
             return await GenerateImplAsync(template, config, reportFile, parameters);
         }
 
-        private async Task<bool> GenerateImplAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
+        private async Task<int> GenerateImplAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                 DbData result = config.DataSource == ReportDataSource.View ? await _extractor.ExtractAsync(config.Name, config.ViewParameters)
                     : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
                 if (result == null)
-                    return false;
+                    return -1;
                 IReportGenerator generator = new ExcelReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, reportFile);
                 _logger.LogDebug("Report generation completed");
                 return await generator.GenerateAsync(result, parameters);
@@ -54,7 +54,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             catch (Exception e)
             {
                 _logger.LogError($"An error occurred during report generation, exception is: {e}");
-                return false;
+                return -1;
             }
         }
 

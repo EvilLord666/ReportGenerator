@@ -5,7 +5,7 @@ namespace ReportGenerator.Core.ReportsGenerator
 {
     public interface IReportGeneratorManager
     {
-        Task<bool> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters);
-        Task<bool> GenerateAsync(string template, ExecutionConfig config, string reportFile, object[] parameters);
+        Task<int> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters);
+        Task<int> GenerateAsync(string template, ExecutionConfig config, string reportFile, object[] parameters);
     }
 }

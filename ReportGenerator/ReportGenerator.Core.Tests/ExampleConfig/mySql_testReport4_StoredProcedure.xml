@@ -10,7 +10,7 @@
     <!-- MySql VarString enum value is 15, VarChar - 253-->
     <ParameterType>253</ParameterType> 
     <ParameterName>CityName</ParameterName>
-    <ParameterValue xsi:type="xsd:string">'Yekaterinburg'</ParameterValue>
+    <ParameterValue xsi:type="xsd:string">Yekaterinburg</ParameterValue>
   </StoredProcedureParameters>
   
   <StoredProcedureParameters>

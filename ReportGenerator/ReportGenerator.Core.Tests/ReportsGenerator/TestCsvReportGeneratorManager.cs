@@ -61,9 +61,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _connectionString = _dbManager.Create(dbEngine, host, database, integratedSecurity, userName, password, scripts);
             ILoggerFactory loggerFactory = new LoggerFactory();
             IReportGeneratorManager manager = new CsvReportGeneratorManager(loggerFactory, dbEngine, _connectionString, CommaSeparator);
-            Task<bool> result = manager.GenerateAsync(templateFile, executionConfigFile, outputReportFile, executionParameters);
+            Task<int> result = manager.GenerateAsync(templateFile, executionConfigFile, outputReportFile, executionParameters);
             result.Wait();
-            Assert.True(result.Result);
+            Assert.True(result.Result > 0);
             _dbManager.DropDatabase(_connectionString);
         }
 
