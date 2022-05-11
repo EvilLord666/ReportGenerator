@@ -53,21 +53,6 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
                                            TestExcelTemplate, executionConfigFile, ReportFile, executionParameters);
         }
 
-        /*[Theory]
-        [InlineData(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, GlobalTestsParams.TestSqlServerDatabasePattern, true, "", "",
-            GlobalTestsParams.SqlServerCreateDatabaseScript, GlobalTestsParams.SqlServerInsertDataScript,
-            GlobalTestsParams.SqlServerStoredProcedureDataExecutionConfig)]
-        public void TestGenerateWithParametersAssignWithTypeConversion(DbEngine dbEngine, string host, string database, bool useIntegratedSecurity,
-                                                                       string userName, string password, string dbCreateScriptFile, 
-                                                                       string insertDataScriptFile, string executionConfigFile)
-        {
-            database = dbEngine == DbEngine.SqlServer ? database + "_" + DateTime.Now.Millisecond : database;
-            IList<string> scripts = new List<string>() { dbCreateScriptFile, insertDataScriptFile };
-            object[] executionParameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
-            ExecutionConfig config = ExecutionConfigManager.Read(executionConfigFile);
-            int a = 1;
-        }*/
-
         private void TestGenerateReportImplAndCheck(DbEngine dbEngine, string host, string database, 
                                                     bool integratedSecurity, string userName, string password,
                                                     IList<string> scripts, 
