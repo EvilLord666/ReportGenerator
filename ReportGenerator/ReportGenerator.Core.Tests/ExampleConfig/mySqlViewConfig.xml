@@ -7,7 +7,7 @@
     <WhereParameters>
       <DbQueryParameter>
         <ParameterName>City</ParameterName>
-        <ParameterValue>N'г. Екатеринбург'</ParameterValue>
+        <ParameterValue>'г. Екатеринбург'</ParameterValue>
         <ComparisonOperator>=</ComparisonOperator>
       </DbQueryParameter>
     </WhereParameters>
