@@ -1,17 +1,26 @@
 # ReportGenerator
-# 1 Overview
-A small tool 4 generating excel tables and csv(further they will be mentioned as reports) based (***MS SQL or SQL Server, SqLite, MySQL and Postgres***) on data from DATABASE using excel template (typically Header only), logic of data extracting depends on parametrs (variables) Stored procedures or Views (WHERE parameters, ORDER BY and GROUP BY parameters). Report generator core passes parameters for data filtering in View or Variables for Stored Procedures, parameters are taking from 1) ExecutionConfig (xml file) or fully in runtime (as instance of ExecutionConfig class).
+## 1 Overview
+A small tool (library) for generating reports (plain dataset) from ***Stored Procedures*** or ***Views*** following databases:
+* MS SQL (SQL Server)
+* MySQL
+* Postgres
+
+These reports could be generated in ***MS Excel*** or ***CSV*** formats with templates files (typically Headers only).
+Logic of data extracting depends on parameters (variables) Stored procedures or Views (**WHERE** parameters, **ORDER BY** and **GROUP BY** parameters). 
+
+Report generator core passes parameters for data filtering in View or Variables for Stored Procedures, parameters are taking from:
+* 1) ExecutionConfig (.xml file)
+* 2) in runtime (as instance of ExecutionConfig class).
 
 There are two ways for getting data:
 
 - from stored procedure (passing variables)
-
 - from view (passing where clauses, ordering and grouping conditions)
 
-In both 2 ways there are a possibility to manipulate data selection by setting parameters (for stored procedure) and automatic sql generation for filtering View data.
-It should be noted that there is a configuration of View and StoredProcedure in xml.
+In both 2 ways there are a possibility to manipulate data selection by setting parameters (for stored procedure) and automatic sql generation for filtering 
+View data. It should be noted that there is a configuration of View and StoredProcedure in xml.
 
-# 1.1 Configuration
+### 1.1 Configuration
 For Stored Procedure Configuration we must set <DataSource>StoredProcedure</DataSource>
 
 Name to stored procedure name
@@ -27,31 +36,31 @@ Postgres - NpgsqlDbType (https://www.npgsql.org/doc/api/NpgsqlTypes.NpgsqlDbType
 Example of config for SQL server (examples of config could be found in ReportGenerator.Core.Tests/ExampleConfig)
 ```xml
 <?xml version="1.0"?>
-    <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <!-- 
        If use SQL Server see for parameters Type : https://docs.microsoft.com/ru-ru/dotnet/api/system.data.sqldbtype 
     -->
-        <DataSource>StoredProcedure</DataSource>
-        <Name>GetSitizensByCityAndDateOfBirth</Name>
-        <StoredProcedureParameters>
-            <!-- SQL Server NVarChar enum value is 12-->
-            <ParameterType>12</ParameterType> 
-            <ParameterName>City</ParameterName>
-            <ParameterValue xsi:type="xsd:string">N'Yekaterinburg</ParameterValue>
-        </StoredProcedureParameters>
-        <StoredProcedureParameters>
-            <!-- SQL Server Int enum value is 8-->
-            <ParameterType>8</ParameterType>
-            <ParameterName>PostalCode</ParameterName>
-            <ParameterValue xsi:type="xsd:string">620000</ParameterValue>
-        </StoredProcedureParameters>
-        <StoredProcedureParameters>
-            <!-- SQL Server Date enum value is 4-->
-            <ParameterType>4</ParameterType>
-            <ParameterName>DateOfBirth</ParameterName>
-            <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
-         </StoredProcedureParameters>
-    </ExecutionConfig>
+    <DataSource>StoredProcedure</DataSource>
+    <Name>GetSitizensByCityAndDateOfBirth</Name>
+    <StoredProcedureParameters>
+        <!-- SQL Server NVarChar enum value is 12-->
+        <ParameterType>12</ParameterType> 
+        <ParameterName>City</ParameterName>
+        <ParameterValue xsi:type="xsd:string">N'Yekaterinburg</ParameterValue>
+    </StoredProcedureParameters>
+    <StoredProcedureParameters>
+        <!-- SQL Server Int enum value is 8-->
+        <ParameterType>8</ParameterType>
+        <ParameterName>PostalCode</ParameterName>
+        <ParameterValue xsi:type="xsd:string">620000</ParameterValue>
+    </StoredProcedureParameters>
+    <StoredProcedureParameters>
+        <!-- SQL Server Date enum value is 4-->
+        <ParameterType>4</ParameterType>
+        <ParameterName>DateOfBirth</ParameterName>
+        <ParameterValue xsi:type="xsd:string">'2018-01-01'</ParameterValue>
+    </StoredProcedureParameters>
+</ExecutionConfig>
 ```
 For View Configuration is a little similar as DataSource we must note View:
 
@@ -74,74 +83,73 @@ DbQueryParameter consist of following:
 Example:
 
 ```xml
-    <?xml version="1.0"?>
-        <ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-        <DataSource>View</DataSource>
-        <Name>CitizensView</Name>
-        <ViewParameters>
-            <WhereParameters>
-                <DbQueryParameter>
-                    <ParameterName>FirstName</ParameterName>
-                    <ParameterValue>N'Michael'</ParameterValue>
-                    <ComparisonOperator>=</ComparisonOperator>
-                </DbQueryParameter>
-                <DbQueryParameter>
-                    <Conditions>
-                        <JoinCondition>And</JoinCondition>
-                        <JoinCondition>Not</JoinCondition>
-                    </Conditions>
-                    <ParameterName>City</ParameterName>
-                    <ParameterValue>N'Yekaterinburg'</ParameterValue>
-                    <ComparisonOperator>=</ComparisonOperator>
-                </DbQueryParameter>
-                <DbQueryParameter>
-                    <Conditions>
-                       <JoinCondition>Between</JoinCondition>
-                    </Conditions>
-                    <ParameterName>Age</ParameterName>
-                    <ParameterValue>18 AND 60</ParameterValue>
-                </DbQueryParameter>
-                <DbQueryParameter>
-                    <Conditions>
-                        <JoinCondition>In</JoinCondition>
-                    </Conditions>
-                    <ParameterName>District</ParameterName>
-                    <ParameterValue>(N'D1', N'A3', N'A5', N'C7')</ParameterValue>
-                </DbQueryParameter>
-                <DbQueryParameter>
-                    <Conditions>
-                        <JoinCondition>Or</JoinCondition>
-                    </Conditions>
-                    <ParameterName>Region</ParameterName>
-                    <ParameterValue>N'Sverdlovskaya oblast'</ParameterValue>
-                    <ComparisonOperator>!=</ComparisonOperator>
-                </DbQueryParameter>
-            </WhereParameters>
-            <OrderByParameters>
-                <DbQueryParameter>
-                    <ParameterName>FirstName</ParameterName>
-                    <ParameterValue>ASC</ParameterValue>
-                </DbQueryParameter>
-                <DbQueryParameter>
-                    <ParameterName>LastName</ParameterName>
-                    <ParameterValue>DESC</ParameterValue>
-                </DbQueryParameter>
-            </OrderByParameters>
-            <GroupByParameters>
-                <DbQueryParameter>
-                    <ParameterName>District</ParameterName>
-                </DbQueryParameter>
-            </GroupByParameters>
-        </ViewParameters>
-    </ExecutionConfig>
-`
+<?xml version="1.0"?>
+<ExecutionConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <DataSource>View</DataSource>
+    <Name>CitizensView</Name>
+    <ViewParameters>
+        <WhereParameters>
+            <DbQueryParameter>
+                <ParameterName>FirstName</ParameterName>
+                <ParameterValue>N'Michael'</ParameterValue>
+                <ComparisonOperator>=</ComparisonOperator>
+            </DbQueryParameter>
+            <DbQueryParameter>
+                <Conditions>
+                    <JoinCondition>And</JoinCondition>
+                    <JoinCondition>Not</JoinCondition>
+                </Conditions>
+                <ParameterName>City</ParameterName>
+                <ParameterValue>N'Yekaterinburg'</ParameterValue>
+                <ComparisonOperator>=</ComparisonOperator>
+            </DbQueryParameter>
+            <DbQueryParameter>
+                <Conditions>
+                    <JoinCondition>Between</JoinCondition>
+                </Conditions>
+                <ParameterName>Age</ParameterName>
+                <ParameterValue>18 AND 60</ParameterValue>
+            </DbQueryParameter>
+            <DbQueryParameter>
+                <Conditions>
+                    <JoinCondition>In</JoinCondition>
+                </Conditions>
+                <ParameterName>District</ParameterName>
+                <ParameterValue>(N'D1', N'A3', N'A5', N'C7')</ParameterValue>
+            </DbQueryParameter>
+            <DbQueryParameter>
+                <Conditions>
+                    <JoinCondition>Or</JoinCondition>
+                </Conditions>
+                <ParameterName>Region</ParameterName>
+                <ParameterValue>N'Sverdlovskaya oblast'</ParameterValue>
+                <ComparisonOperator>!=</ComparisonOperator>
+            </DbQueryParameter>
+        </WhereParameters>
+        <OrderByParameters>
+            <DbQueryParameter>
+                <ParameterName>FirstName</ParameterName>
+                <ParameterValue>ASC</ParameterValue>
+            </DbQueryParameter>
+            <DbQueryParameter>
+                <ParameterName>LastName</ParameterName>
+                <ParameterValue>DESC</ParameterValue>
+            </DbQueryParameter>
+        </OrderByParameters>
+        <GroupByParameters>
+            <DbQueryParameter>
+                <ParameterName>District</ParameterName>
+            </DbQueryParameter>
+        </GroupByParameters>
+    </ViewParameters>
+</ExecutionConfig>
+```
 
-# 2 Example of usage
+## 2 Example of usage
 Top interface is - IReportGeneratorManager.
 For all functionality were written Unit tests with xUnit (sucks), full example could be found in unit test project (ReportGenerator.Core.Tests/ReportsGenerator/TestExcelReportGeneratorManager):
 
-```c#
-
+```csharp
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -168,9 +176,9 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
                 ILoggerFactory loggerFactory = new LoggerFactory();
                 IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqlServer, 
                                                                                   TestSqlServerHost, _testSqlServerDbName);
-                Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqlServerDataExecutionConfig, ReportFile, parameters);
+                Task<int> result = manager.GenerateAsync(TestExcelTemplate, SqlServerDataExecutionConfig, ReportFile, parameters);
                 result.Wait();
-                Assert.True(result.Result);
+                Assert.True(result.Result > 0);
                 TearDownSqlServerTestData();
             }
 
@@ -183,9 +191,9 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
                 loggerFactory.AddConsole();
                 loggerFactory.AddDebug();
                 IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.SqLite, _connectionString);
-                Task<bool> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
+                Task<int> result = manager.GenerateAsync(TestExcelTemplate, SqLiteDataExecutionConfig, ReportFile, parameters);
                 result.Wait();
-                Assert.True(result.Result);
+                Assert.True(result.Result > 0);
                 TearDownSqLiteTestData();
             }
         
@@ -198,9 +206,9 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
                 loggerFactory.AddConsole();
                 loggerFactory.AddDebug();
                 IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.PostgresSql, _connectionString);
-                Task<bool> result = manager.GenerateAsync(TestExcelTemplate, PostgresSqlViewDataExecutionConfig, ReportFile, parameters);
+                Task<int> result = manager.GenerateAsync(TestExcelTemplate, PostgresSqlViewDataExecutionConfig, ReportFile, parameters);
                 result.Wait();
-                Assert.True(result.Result);
+                Assert.True(result.Result > 0);
                 TearDownPostgresSqlTestData();
             }
         
@@ -213,9 +221,9 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
                 loggerFactory.AddConsole();
                 loggerFactory.AddDebug();
                 IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, DbEngine.MySql, _connectionString);
-                Task<bool> result = manager.GenerateAsync(TestExcelTemplate, MySqlDataExecutionConfig, ReportFile, parameters);
+                Task<int> result = manager.GenerateAsync(TestExcelTemplate, MySqlDataExecutionConfig, ReportFile, parameters);
                 result.Wait();
-                Assert.True(result.Result);
+                Assert.True(result.Result > 0);
                 TearDownMySqlTestData();
             }
 
@@ -345,72 +353,73 @@ For all functionality were written Unit tests with xUnit (sucks), full example c
     }
   `
 
-  # 3 Service for Dependency injection
+## 3 Service for Dependency injection
   
-  Here is example of how to use ReportGenerator with dependency injection:
-  `
-  	  using System;
-	  using System.Collections.Generic;
-	  using Microsoft.Extensions.DependencyInjection;
-	  using Microsoft.Extensions.Logging;
-	  using ReportGenerator.Core.Database;
-	  using ReportGenerator.Core.Database.Managers;
-	  using ReportGenerator.Core.Database.Utils;
-	  using ReportGenerator.Core.Extensions;
-	  using ReportGenerator.Core.ReportsGenerator;
-	  using Xunit;
+Here is example of how to use ReportGenerator with dependency injection:
+`csharp
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using ReportGenerator.Core.Database;
+    using ReportGenerator.Core.Database.Managers;
+    using ReportGenerator.Core.Database.Utils;
+    using ReportGenerator.Core.Extensions;
+    using ReportGenerator.Core.ReportsGenerator;
+    using Xunit;
 
-	  namespace ReportGenerator.Core.Tests.Extensions
-	  {
-		  public class ServiceCollectionExtensionsTests : IDisposable
-		  {
-			  public ServiceCollectionExtensionsTests()
-			  {
-				  _testDbName = TestDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
-				  _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
-				  IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
-				  {
-					  {DbParametersKeys.HostKey, Server},
-					  {DbParametersKeys.DatabaseKey, _testDbName},
-					  {DbParametersKeys.UseIntegratedSecurityKey, "true"},
-					  {DbParametersKeys.UseTrustedConnectionKey, "true"}
-				  };
-				  _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
-				  _dbManager.CreateDatabase(_connectionString, true);
-				  _services = new ServiceCollection();
-				  _services.AddScoped<ILoggerFactory>(_ => new LoggerFactory());
-				  _services.AddReportGenerator(DbEngine.SqlServer, _connectionString);
-			  }
+    namespace ReportGenerator.Core.Tests.Extensions
+    {
+        public class ServiceCollectionExtensionsTests : IDisposable
+        {
+            public ServiceCollectionExtensionsTests()
+            {
+                _testDbName = TestDatabasePattern + "_" + DateTime.Now.ToString("YYYYMMDDHHmmss");
+                _dbManager = new CommonDbManager(DbEngine.SqlServer, _loggerFactory.CreateLogger<CommonDbManager>());
+                IDictionary<string, string> connectionStringParams = new Dictionary<string, string>()
+                {
+                    {DbParametersKeys.HostKey, Server},
+                    {DbParametersKeys.DatabaseKey, _testDbName},
+                    {DbParametersKeys.UseIntegratedSecurityKey, "true"},
+                    {DbParametersKeys.UseTrustedConnectionKey, "true"}
+                };
+                _connectionString = ConnectionStringBuilder.Build(DbEngine.SqlServer, connectionStringParams);
+                _dbManager.CreateDatabase(_connectionString, true);
+                _services = new ServiceCollection();
+                _services.AddScoped<ILoggerFactory>(_ => new LoggerFactory());
+                _services.AddReportGenerator(DbEngine.SqlServer, _connectionString);
+            }
 
-			  public void Dispose()
-			  {
-				  _dbManager.DropDatabase(_connectionString);
-			  }
+            public void Dispose()
+            {
+                _dbManager.DropDatabase(_connectionString);
+            }
 
-			  [Fact]
-			  public void TestServiceInstantiationViaProvider()
-			  {
-				  IServiceProvider serviceProvider = _services.BuildServiceProvider();
-				  IReportGeneratorManager reportGenerator = serviceProvider.GetService<IReportGeneratorManager>();
-				
-				  Assert.NotNull(reportGenerator);
-			  }
+            [Fact]
+            public void TestServiceInstantiationViaProvider()
+            {
+                IServiceProvider serviceProvider = _services.BuildServiceProvider();
+                IReportGeneratorManager reportGenerator = serviceProvider.GetService<IReportGeneratorManager>();
+                
+                Assert.NotNull(reportGenerator);
+            }
 
-			  private const string Server = @"(localdb)\mssqllocaldb";
-			  private const string TestDatabasePattern = "ReportGeneratorTestDb";
-			
-			  private readonly IServiceCollection _services;
-			  private readonly string _testDbName;
-			  private readonly string _connectionString;
-			  private IDbManager _dbManager;
-			  private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
-		  }
-	  }
+            private const string Server = @"(localdb)\mssqllocaldb";
+            private const string TestDatabasePattern = "ReportGeneratorTestDb";
+
+            private readonly IServiceCollection _services;
+            private readonly string _testDbName;
+            private readonly string _connectionString;
+            private IDbManager _dbManager;
+            private readonly ILoggerFactory _loggerFactory = new LoggerFactory();
+        }
+    }
 ```
-  # 4 GUI
+## 4 GUI
   
-  A Full Web application (NET Core) with usage Report Generator as DI service will be implemented in this project: https://github.com/EvilLord666/ReportGeneratorWebGui it is also allow to use Web API for ReportsGeneration 
+A Full Web application (NET Core) with usage Report Generator as DI service will be implemented in this project: 
+https://github.com/Wissance/ReportGeneratorWebGui it is also allow to use Web API for ReportsGeneration 
   
-  # 5 Nuget Package
-  Nuget package is available on nuget.org : https://www.nuget.org/packages/ReportsGenerator/
-  There are some strange troubles with import of version 1.1.0 and 1.1.1 they are **Broken and unlisted**. **ACTUAL NUGET PACKAGE IS 1.1.2**
+# 5 Nuget Package
+Nuget package is available on nuget.org : https://www.nuget.org/packages/ReportsGenerator/
+There are some strange troubles with import of version 1.1.0 and 1.1.1 they are **Broken and unlisted**. **ACTUAL NUGET PACKAGE IS 1.1.2**
