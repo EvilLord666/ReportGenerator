@@ -6,6 +6,7 @@ using DbTools.Core.Managers;
 using DbTools.Simple.Extensions;
 using DbTools.Simple.Managers;
 using Microsoft.Extensions.Logging;
+using ReportGenerator.Core.Config;
 using ReportGenerator.Core.Helpers;
 using ReportGenerator.Core.ReportsGenerator;
 using Xunit;
@@ -52,6 +53,21 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
                                            TestExcelTemplate, executionConfigFile, ReportFile, executionParameters);
         }
 
+        /*[Theory]
+        [InlineData(DbEngine.SqlServer, GlobalTestsParams.TestSqlServerHost, GlobalTestsParams.TestSqlServerDatabasePattern, true, "", "",
+            GlobalTestsParams.SqlServerCreateDatabaseScript, GlobalTestsParams.SqlServerInsertDataScript,
+            GlobalTestsParams.SqlServerStoredProcedureDataExecutionConfig)]
+        public void TestGenerateWithParametersAssignWithTypeConversion(DbEngine dbEngine, string host, string database, bool useIntegratedSecurity,
+                                                                       string userName, string password, string dbCreateScriptFile, 
+                                                                       string insertDataScriptFile, string executionConfigFile)
+        {
+            database = dbEngine == DbEngine.SqlServer ? database + "_" + DateTime.Now.Millisecond : database;
+            IList<string> scripts = new List<string>() { dbCreateScriptFile, insertDataScriptFile };
+            object[] executionParameters = ExcelReportGeneratorHelper.CreateParameters(1, 2, 3);
+            ExecutionConfig config = ExecutionConfigManager.Read(executionConfigFile);
+            int a = 1;
+        }*/
+
         private void TestGenerateReportImplAndCheck(DbEngine dbEngine, string host, string database, 
                                                     bool integratedSecurity, string userName, string password,
                                                     IList<string> scripts, 
@@ -62,9 +78,9 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             _connectionString = _dbManager.Create(dbEngine, host, database, integratedSecurity, userName, password, scripts);
             ILoggerFactory loggerFactory = new LoggerFactory();
             IReportGeneratorManager manager = new ExcelReportGeneratorManager(loggerFactory, dbEngine, _connectionString);
-            Task<bool> result = manager.GenerateAsync(excelTemplateFile, executionConfigFile, outputReportFile, executionParameters);
+            Task<int> result = manager.GenerateAsync(excelTemplateFile, executionConfigFile, outputReportFile, executionParameters);
             result.Wait();
-            Assert.True(result.Result);
+            Assert.True(result.Result > 0);
             _dbManager.DropDatabase(_connectionString);
         }
 

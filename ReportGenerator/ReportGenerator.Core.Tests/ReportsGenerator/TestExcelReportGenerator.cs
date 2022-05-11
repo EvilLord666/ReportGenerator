@@ -24,10 +24,10 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             // Worksheet - 1, start row - 2, start column - 3
             object[] parameters = {1, 2, 3};
             DbData data = TestData.GetSampleData();
-            Task<bool> generatorTask = generator.GenerateAsync(data, parameters);
+            Task<int> generatorTask = generator.GenerateAsync(data, parameters);
             generatorTask.Wait();
-            bool result = generatorTask.Result;
-            Assert.True(result);
+            int result = generatorTask.Result;
+            Assert.True(result > 0);
             Assert.True(File.Exists(reportFile));
 
             // todo: umv: add read excel doc and check

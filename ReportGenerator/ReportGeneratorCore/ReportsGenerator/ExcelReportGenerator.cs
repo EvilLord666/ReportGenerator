@@ -31,7 +31,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             }
         }
 
-        public async Task<bool> GenerateAsync(DbData data, object[] parameters)
+        public async Task<int> GenerateAsync(DbData data, object[] parameters)
         {
             
             const int parametersNumber = 3;
@@ -44,7 +44,7 @@ namespace ReportGenerator.Core.ReportsGenerator
             if (data == null)
             {
                 _logger.LogWarning("Db data is NULL (data obtained from database)");
-                return false;
+                return 0;
             }
 
             try
@@ -75,12 +75,12 @@ namespace ReportGenerator.Core.ReportsGenerator
 
                 _package.SaveAs(fileInfo);
                 _logger.LogDebug("Write DB data to excel file completed");
-                return true;
+                return data.Rows.Count;
             }
             catch (Exception e)
             {
                 _logger.LogError($"An error occurred during writing report data to ms excel file, exception is: {e}");
-                return false;
+                return -1;
             }
         }
 

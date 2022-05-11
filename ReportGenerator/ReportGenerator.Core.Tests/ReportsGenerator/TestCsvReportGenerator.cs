@@ -23,11 +23,11 @@ namespace ReportGenerator.Core.Tests.ReportsGenerator
             IReportGenerator generator = new CsvReportGenerator(loggerFactory, TestCsvTemplate, CommaSeparator, reportFile);
             object[] parameters = {};
             DbData data = TestData.GetSampleData();
-            Task<bool> generatorTask = generator.GenerateAsync(data, parameters);
+            Task<int> generatorTask = generator.GenerateAsync(data, parameters);
             
             generatorTask.Wait();
-            bool result = generatorTask.Result;
-            Assert.True(result);
+            int result = generatorTask.Result;
+            Assert.True(result > 0);
             Assert.True(File.Exists(reportFile));
 
             IList<string> header = File.ReadAllLines(TestCsvTemplate).ToList();
