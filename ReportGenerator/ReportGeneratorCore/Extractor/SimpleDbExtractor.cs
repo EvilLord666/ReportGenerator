@@ -142,6 +142,8 @@ namespace ReportGenerator.Core.Extractor
                     }
                     result.Rows.Add(dbRow);
                 }
+                reader.Close();
+                reader.Dispose();
                 return result;
             }
             catch (Exception e)
