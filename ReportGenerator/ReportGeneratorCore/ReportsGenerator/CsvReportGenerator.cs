@@ -49,7 +49,6 @@ namespace ReportGenerator.Core.ReportsGenerator
                         break;
                     }
                 }
-
                 return data.Rows.Count;
             }
             catch (Exception e)
@@ -69,7 +68,6 @@ namespace ReportGenerator.Core.ReportsGenerator
                 builder.Append(column.Value);
             }
 
-            // builder.Append(Environment.NewLine);
             return builder.ToString();
         }
 
