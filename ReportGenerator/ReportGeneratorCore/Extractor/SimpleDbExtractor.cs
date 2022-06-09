@@ -64,7 +64,7 @@ namespace ReportGenerator.Core.Extractor
                 {
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" started");
                     DbData result = null;
-                    await connection.OpenAsync().ConfigureAwait(false);
+                    await connection.OpenAsync();
                     using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, storedProcedureName))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -86,6 +86,7 @@ namespace ReportGenerator.Core.Extractor
                     }
 
                     connection.Close();
+                    connection.Dispose();
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" completed");
                     return result;
                 }
@@ -105,7 +106,7 @@ namespace ReportGenerator.Core.Extractor
                 {
                     _logger.LogDebug("Extract db data async via \"View\" started");
                     DbData result = null;
-                    await connection.OpenAsync().ConfigureAwait(false);
+                    await connection.OpenAsync();
                     string cmdText = SqlStatmentsGenerator.CreateSelectStatement(SqlStatmentsGenerator.SelectAllColumns, viewName, parameters);
                     using (IDbCommand command = DbCommandFactory.Create(_dbEngine, connection, cmdText))
                     {
@@ -114,12 +115,13 @@ namespace ReportGenerator.Core.Extractor
                     }
 
                     connection.Close();
+                    connection.Dispose();
                     _logger.LogDebug("Extract db data async via \"View\" completed");
                     return result;
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"An error occured during async data extraction via \"View\", exception: {e}");
+                    _logger.LogError($"An error occurred during async data extraction via \"View\", exception: {e}");
                     return null;
                 }
             }
@@ -148,8 +150,7 @@ namespace ReportGenerator.Core.Extractor
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occured during read data impl async, exception: {e}");
-                //throw;
+                _logger.LogError($"An error occurred during read data impl async, exception: {e}");
                 return null;
             }
         }
