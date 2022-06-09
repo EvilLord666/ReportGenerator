@@ -82,13 +82,12 @@ namespace ReportGenerator.Core.Extractor
 
                         result = await ReadDataImplAsync((DbCommand)command);
                     }
-
                     _logger.LogDebug("Extract db data async via \"Stored procedure\" completed");
                     return result;
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"An error occured during async data extraction via \"Stored procedure\", exception: {e}");
+                    _logger.LogError($"An error occurred during async data extraction via \"Stored procedure\", exception: {e}");
                     return null;
                 }
             }
