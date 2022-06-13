@@ -11,14 +11,12 @@ namespace ReportGenerator.Core.ReportsGenerator
 {
     public class CsvReportGeneratorManager : IReportGeneratorManager
     {
-        public CsvReportGeneratorManager(ILoggerFactory loggerFactory, DbEngine dbEngine, string connectionString,
-                                         string separator/*, IList<string>columns*/)
+        public CsvReportGeneratorManager(ILoggerFactory loggerFactory, DbEngine dbEngine, string connectionString, string separator = DefaultCsvSeparator)
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<CsvReportGeneratorManager>();
             _extractor = new SimpleDbExtractor(loggerFactory, dbEngine, connectionString);
             _separator = separator;
-            //_columns = columns;
         }
 
         public async Task<int> GenerateAsync(string template, string executionConfigFile, string reportFile, object[] parameters)
@@ -36,26 +34,38 @@ namespace ReportGenerator.Core.ReportsGenerator
         {
             try
             {
-                _logger.LogDebug("Report generation started");
+                _logger.LogInformation("CSV RepGen: Report generation was started");
+                _logger.LogInformation("CSV RepGen: Database data extraction was started");
                 DbData result = config.DataSource == ReportDataSource.View ? await _extractor.ExtractAsync(config.Name, config.ViewParameters)
                     : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
+                _logger.LogInformation("CSV RepGen: Database data extraction was finished");
                 if (result == null)
+                {
+                    _logger.LogInformation("CSV RepGen: Report generation was terminated (error during data reading).");
                     return -1;
+                }
+
                 IReportGenerator generator = new CsvReportGenerator(_loggerFactory, template, _separator, reportFile);
-                _logger.LogDebug("Report generation completed");
-                return await generator.GenerateAsync(result, parameters);
+                
+                _logger.LogInformation("CSV RepGen: Database data write to csv file was started");
+                int rowsWritten = await generator.GenerateAsync(result, parameters);
+                _logger.LogInformation($"CSV RepGen: Database data write to csv file was finished, written {rowsWritten} lines");
+                _logger.LogInformation("CSV RepGen: Report generation was completed");
+                return rowsWritten;
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during report generation, exception is: {e}");
+                _logger.LogError($"CSV RepGen: An error occurred during report generation, exception is: {e}");
+                _logger.LogInformation("CSV RepGen: Report generation was terminated (error during data reading).");
                 return -1;
             }
         }
+
+        public const string DefaultCsvSeparator = ",";
 
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<CsvReportGeneratorManager> _logger;
         private readonly IDbExtractor _extractor;
         private readonly string _separator;
-        //private readonly IList<string> _columns;
     }
 }
