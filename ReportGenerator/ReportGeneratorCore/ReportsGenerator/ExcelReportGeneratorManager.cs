@@ -38,18 +38,27 @@ namespace ReportGenerator.Core.ReportsGenerator
             return await GenerateImplAsync(template, config, reportFile, parameters);
         }
 
+        //todo: umv: almost same as csv ...
         private async Task<int> GenerateImplAsync(string template, ExecutionConfig config, string reportFile, object[] parameters)
         {
             try
             {
-                _logger.LogDebug("Report generation started");
+                _logger.LogInformation("Excel RepGen: Report generation was started");
+                _logger.LogInformation("Excel RepGen: Database data extraction was started");
                 DbData result = config.DataSource == ReportDataSource.View ? await _extractor.ExtractAsync(config.Name, config.ViewParameters)
                     : await _extractor.ExtractAsync(config.Name, config.StoredProcedureParameters);
                 if (result == null)
+                {
+                    _logger.LogInformation("Excel RepGen: Report generation was terminated (error during data reading).");
                     return -1;
+                }
+                _logger.LogInformation("Excel RepGen: Database data extraction was finished");
+                _logger.LogInformation("Excel RepGen: Database data write to excel file was started");
                 IReportGenerator generator = new ExcelReportGenerator(_loggerFactory.CreateLogger<ExcelReportGenerator>(), template, reportFile);
-                _logger.LogDebug("Report generation completed");
-                return await generator.GenerateAsync(result, parameters);
+                int rowsWritten = await generator.GenerateAsync(result, parameters);
+                _logger.LogInformation($"Excel RepGen: Database data write to excel file was finished, written {rowsWritten} lines");
+                _logger.LogInformation("Excel RepGen: Report generation was completed");
+                return rowsWritten;
             }
             catch (Exception e)
             {

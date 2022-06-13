@@ -21,7 +21,6 @@ namespace ReportGenerator.Core.Extractor
         {
             if (string.IsNullOrEmpty(connectionString))
             {
-                _logger.LogError("Connection string is Null.");
                 throw new ArgumentNullException(connectionString);
             }
 
