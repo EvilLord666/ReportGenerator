@@ -75,6 +75,8 @@ namespace ReportGenerator.Core.ReportsGenerator
 
                 _package.SaveAs(fileInfo);
                 _logger.LogDebug("Write DB data to excel file completed");
+                GC.Collect(2);
+                GC.Collect(1);
                 return data.Rows.Count;
             }
             catch (Exception e)
