@@ -50,6 +50,7 @@ namespace ReportGenerator.Core.ReportsGenerator
                     data.Rows.RemoveRange(0, BatchSize);
                 }
                 GC.Collect(2);
+                GC.Collect(1);
                 return rowsNumber;
             }
             catch (Exception e)
