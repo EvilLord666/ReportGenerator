@@ -140,6 +140,7 @@ namespace ReportGenerator.Core.Extractor
                         IList<DbValue> dbRow = new List<DbValue>();
                         for (int columnNumber = 0; columnNumber < reader.FieldCount; columnNumber++)
                         {
+                            // reader.GetFieldValueAsync<>()
                             object value = reader.GetValue(columnNumber);
                             string column = reader.GetName(columnNumber);
                             dbRow.Add(new DbValue(column, value));

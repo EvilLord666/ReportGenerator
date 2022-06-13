@@ -32,15 +32,14 @@ namespace ReportGenerator.Core.ReportsGenerator
                 string[] headers = File.ReadAllLines(_template);
                 File.WriteAllLines(_reportFile, headers);
                 // 3. Get Batch from dbData
-                int batchCounter = 0;
+                int rowsNumber = data.Rows.Count;
                 while (true)
                 {
-                    IList<IList<DbValue>> rowsBatch = data.Rows.Skip(batchCounter * BatchSize).Take(BatchSize).ToList();
-                    batchCounter++;
+                    IList<IList<DbValue>> rowsBatch = data.Rows.Take(BatchSize).ToList();
                     // 4. Append every batch to the end of file
                     if (rowsBatch.Any())
                     {
-                        IList<string> linesToAdd = rowsBatch.Select(r => CreateCsvRow(r)).ToList();
+                        IList<string> linesToAdd = rowsBatch.Select(CreateCsvRow).ToList();
                         File.AppendAllLines(_reportFile, linesToAdd);
                     }
                     // 5. Stop if number of rows < BatchSize
@@ -48,8 +47,10 @@ namespace ReportGenerator.Core.ReportsGenerator
                     {
                         break;
                     }
+                    data.Rows.RemoveRange(0, BatchSize);
                 }
-                return data.Rows.Count;
+                GC.Collect(2);
+                return rowsNumber;
             }
             catch (Exception e)
             {
